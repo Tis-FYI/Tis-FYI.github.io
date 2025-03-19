@@ -1,0 +1,746 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="T-AO">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="配置系统环境查看系统版本1[root@localhost]# cat &#x2F;etc&#x2F;centos-release  配置网络(根据自己本地的网络环境设置主机IP地址)1234567891011121314151617181920[root@localhost ~]# cat &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-enp0s3TYPE&#x3D;EthernetPROXY_ME">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用kubeadm1.23.x版本部署kubernetes（一主两从）">
+<meta property="og:url" content="https://b.t-ao.cn/2025/03/19/%E4%BD%BF%E7%94%A8kubeadm1-23-x%E7%89%88%E6%9C%AC%E9%83%A8%E7%BD%B2kubernetes%EF%BC%88%E4%B8%80%E4%B8%BB%E4%B8%A4%E4%BB%8E%EF%BC%89/index.html">
+<meta property="og:site_name" content="T-AO&#39;s Blog">
+<meta property="og:description" content="配置系统环境查看系统版本1[root@localhost]# cat &#x2F;etc&#x2F;centos-release  配置网络(根据自己本地的网络环境设置主机IP地址)1234567891011121314151617181920[root@localhost ~]# cat &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-enp0s3TYPE&#x3D;EthernetPROXY_ME">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-19T03:13:45.000Z">
+<meta property="article:modified_time" content="2025-03-19T03:31:51.004Z">
+<meta property="article:author" content="T-AO">
+<meta property="article:tag" content="k8s、云原生">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>使用kubeadm1.23.x版本部署kubernetes（一主两从） - T-AO&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"b.t-ao.cn","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>T-AO</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>常用站点</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="使用kubeadm1.23.x版本部署kubernetes（一主两从）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-03-19 11:13" pubdate>
+          2025年3月19日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          44 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">使用kubeadm1.23.x版本部署kubernetes（一主两从）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="配置系统环境"><a href="#配置系统环境" class="headerlink" title="配置系统环境"></a>配置系统环境</h3><h5 id="查看系统版本"><a href="#查看系统版本" class="headerlink" title="查看系统版本"></a><strong>查看系统版本</strong></h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">[root@localhost]# </span><span class="language-bash"><span class="hljs-built_in">cat</span> /etc/centos-release</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="配置网络-根据自己本地的网络环境设置主机IP地址"><a href="#配置网络-根据自己本地的网络环境设置主机IP地址" class="headerlink" title="配置网络(根据自己本地的网络环境设置主机IP地址)"></a><strong>配置网络(根据自己本地的网络环境设置主机IP地址)</strong></h5><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[root@localhost ~]</span><span class="hljs-comment"># cat /etc/sysconfig/network-scripts/ifcfg-enp0s3</span><br><span class="hljs-attr">TYPE</span>=Ethernet<br><span class="hljs-attr">PROXY_METHOD</span>=none<br><span class="hljs-attr">BROWSER_ONLY</span>=<span class="hljs-literal">no</span><br><span class="hljs-attr">BOOTPROTO</span>=static<br><span class="hljs-attr">DEFROUTE</span>=<span class="hljs-literal">yes</span><br><span class="hljs-attr">IPV4_FAILURE_FATAL</span>=<span class="hljs-literal">no</span><br><span class="hljs-attr">IPV6INIT</span>=<span class="hljs-literal">yes</span><br><span class="hljs-attr">IPV6_AUTOCONF</span>=<span class="hljs-literal">yes</span><br><span class="hljs-attr">IPV6_DEFROUTE</span>=<span class="hljs-literal">yes</span><br><span class="hljs-attr">IPV6_FAILURE_FATAL</span>=<span class="hljs-literal">no</span><br><span class="hljs-attr">IPV6_ADDR_GEN_MODE</span>=stable-privacy<br><span class="hljs-attr">NAME</span>=enp0s3<br><span class="hljs-attr">UUID</span>=<span class="hljs-number">039303</span>a5-c70d-<span class="hljs-number">4973</span>-<span class="hljs-number">8</span>c91-<span class="hljs-number">97</span>eaa071c23d<br><span class="hljs-attr">DEVICE</span>=enp0s3<br><span class="hljs-attr">ONBOOT</span>=<span class="hljs-literal">yes</span><br><span class="hljs-attr">IPADDR</span>=<span class="hljs-number">192.168</span>.<span class="hljs-number">1.31</span><br><span class="hljs-attr">NETMASK</span>=<span class="hljs-number">255.255</span>.<span class="hljs-number">255.0</span><br><span class="hljs-attr">GATEWAY</span>=<span class="hljs-number">192.168</span>.<span class="hljs-number">122.1</span><br><span class="hljs-attr">DNS1</span>=<span class="hljs-number">223.5</span>.<span class="hljs-number">5.5</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="设置主机名"><a href="#设置主机名" class="headerlink" title="设置主机名"></a><strong>设置主机名</strong></h5><figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dsconfig"><span class="hljs-string">hostnamectl</span> <span class="hljs-built_in">set-hostname</span> <span class="hljs-string">k8s-master01</span><br><span class="hljs-string">hostnamectl</span> <span class="hljs-built_in">set-hostname</span> <span class="hljs-string">k8s-node01</span><br><span class="hljs-string">hostnamectl</span> <span class="hljs-built_in">set-hostname</span> <span class="hljs-string">k8s-node02</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="添加并启动源"><a href="#添加并启动源" class="headerlink" title="添加并启动源"></a><strong>添加并启动源</strong></h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Ubuntu忽略，CentOS执行</span><br><br><span class="hljs-comment"># 为 RHEL-8或 CentOS-8配置源</span><br>yum install https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm -y <br>sed -i <span class="hljs-string">&quot;s@mirrorlist@#mirrorlist@g&quot;</span> /etc/yum.repos.d/elrepo.repo <br>sed -i <span class="hljs-string">&quot;s@elrepo.org/linux@mirrors.tuna.tsinghua.edu.cn/elrepo@g&quot;</span> /etc/yum.repos.d/elrepo.repo <br><br><span class="hljs-comment"># 为 RHEL-7 SL-7 或 CentOS-7 安装 ELRepo </span><br>yum install https://www.elrepo.org/elrepo-release-7.el7.elrepo.noarch.rpm -y <br>sed -i <span class="hljs-string">&quot;s@mirrorlist@#mirrorlist@g&quot;</span> /etc/yum.repos.d/elrepo.repo <br>sed -i <span class="hljs-string">&quot;s@elrepo.org/linux@mirrors.tuna.tsinghua.edu.cn/elrepo@g&quot;</span> /etc/yum.repos.d/elrepo.repo <br><br><span class="hljs-comment"># 查看可用安装包</span><br>yum  --disablerepo=<span class="hljs-string">&quot;*&quot;</span>  --enablerepo=<span class="hljs-string">&quot;elrepo-kernel&quot;</span>  list  available<br></code></pre></td></tr></table></figure>
+
+<h5 id="配置yum源"><a href="#配置yum源" class="headerlink" title="配置yum源"></a><strong>配置yum源</strong></h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 其他系统的源地址</span><br><span class="hljs-comment"># https://mirrors.tuna.tsinghua.edu.cn/help/</span><br><br><span class="hljs-comment"># 对于 Ubuntu</span><br>sed -i <span class="hljs-string">&#x27;s/cn.archive.ubuntu.com/mirrors.ustc.edu.cn/g&#x27;</span> /etc/apt/sources.list<br><br><span class="hljs-comment"># 对于 CentOS 7</span><br><span class="hljs-built_in">sudo</span> sed -e <span class="hljs-string">&#x27;s|^mirrorlist=|#mirrorlist=|g&#x27;</span> \<br>         -e <span class="hljs-string">&#x27;s|^#baseurl=http://mirror.centos.org/centos|baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos|g&#x27;</span> \<br>         -i.bak \<br>         /etc/yum.repos.d/CentOS-*.repo<br><br><span class="hljs-comment"># 对于 CentOS 8</span><br><span class="hljs-built_in">sudo</span> sed -e <span class="hljs-string">&#x27;s|^mirrorlist=|#mirrorlist=|g&#x27;</span> \<br>         -e <span class="hljs-string">&#x27;s|^#baseurl=http://mirror.centos.org/$contentdir|baseurl=https://mirrors.tuna.tsinghua.edu.cn/centos|g&#x27;</span> \<br>         -i.bak \<br>         /etc/yum.repos.d/CentOS-*.repo<br><br><span class="hljs-comment"># 对于私有仓库</span><br>sed -e <span class="hljs-string">&#x27;s|^mirrorlist=|#mirrorlist=|g&#x27;</span> -e <span class="hljs-string">&#x27;s|^#baseurl=http://mirror.centos.org/\$contentdir|baseurl=http://192.168.1.123/centos|g&#x27;</span> -i.bak  /etc/yum.repos.d/CentOS-*.repo<br></code></pre></td></tr></table></figure>
+
+<h5 id="安装一些必备工具"><a href="#安装一些必备工具" class="headerlink" title="安装一些必备工具"></a><strong>安装一些必备工具</strong></h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 对于 Ubuntu</span><br>apt update &amp;&amp; apt upgrade -y &amp;&amp; apt install -y wget psmisc vim net-tools nfs-kernel-server telnet lvm2 git tar curl<br><br><span class="hljs-comment"># 对于 CentOS 7</span><br>yum update -y &amp;&amp; yum -y install  wget psmisc vim net-tools nfs-utils telnet yum-utils device-mapper-persistent-data lvm2 git tar curl<br>yum install -y bash-completion net-tools gcc<br><br><span class="hljs-comment"># 对于 CentOS 8</span><br>yum update -y &amp;&amp; yum -y install wget psmisc vim net-tools nfs-utils telnet yum-utils device-mapper-persistent-data lvm2 git network-scripts tar curl<br></code></pre></td></tr></table></figure>
+
+<h5 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Ubuntu忽略，CentOS执行</span><br>systemctl <span class="hljs-built_in">disable</span> --now firewalld<br></code></pre></td></tr></table></figure>
+
+<h5 id="关闭selinux（记得升级内核后重启）"><a href="#关闭selinux（记得升级内核后重启）" class="headerlink" title="关闭selinux（记得升级内核后重启）"></a>关闭selinux（记得升级内核后重启）</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Ubuntu忽略，CentOS执行</span><br>setenforce 0<br>sed -i <span class="hljs-string">&#x27;s#SELINUX=enforcing#SELINUX=disabled#g&#x27;</span> /etc/selinux/config<br><br><span class="hljs-comment"># 参数解释</span><br><span class="hljs-comment"># </span><br><span class="hljs-comment"># setenforce 0</span><br><span class="hljs-comment"># 此命令用于设置 SELinux 的执行模式。0 表示关闭 SELinux。</span><br><span class="hljs-comment"># </span><br><span class="hljs-comment"># sed -i &#x27;s#SELINUX=enforcing#SELINUX=disabled#g&#x27; /etc/selinux/config</span><br><span class="hljs-comment"># 该命令使用 sed 工具来编辑 /etc/selinux/config 文件。其中 &#x27;-i&#x27; 参数表示直接修改原文件，而不是输出到终端或另一个文件。&#x27;s#SELINUX=enforcing#SELINUX=disabled#g&#x27; 是 sed 的替换命令，它将文件中所有的 &quot;SELINUX=enforcing&quot; 替换为 &quot;SELINUX=disabled&quot;。这里的 &#x27;#&#x27; 是分隔符，用于替代传统的 &#x27;/&#x27; 分隔符，以避免与路径中的 &#x27;/&#x27; 冲突。</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="关闭交换分区"><a href="#关闭交换分区" class="headerlink" title="关闭交换分区"></a>关闭交换分区</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs shell">sed -ri &#x27;s/.*swap.*/#&amp;/&#x27; /etc/fstab<br>swapoff -a &amp;&amp; sysctl -w vm.swappiness=0<br><br>cat /etc/fstab<br><span class="hljs-meta prompt_"># </span><span class="language-bash">/dev/mapper/centos-swap swap                    swap    defaults        0 0</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">参数解释：</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># -ri: 这个参数用于在原文件中替换匹配的模式。-r表示扩展正则表达式，-i允许直接修改文件。</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"><span class="hljs-string">&#x27;s/.*swap.*/#&amp;/&#x27;</span>: 这是一个sed命令，用于在文件/etc/fstab中找到包含swap的行，并在行首添加#来注释掉该行。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">/etc/fstab: 这是一个文件路径，即/etc/fstab文件，用于存储文件系统表。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">swapoff -a: 这个命令用于关闭所有启用的交换分区。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">sysctl -w vm.swappiness=0: 这个命令用于修改vm.swappiness参数的值为0，表示系统在物理内存充足时更倾向于使用物理内存而非交换分区。</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="网络配置（俩种方式二选一）"><a href="#网络配置（俩种方式二选一）" class="headerlink" title="网络配置（俩种方式二选一）"></a>网络配置（俩种方式二选一）</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Ubuntu忽略，CentOS执行</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">方式一</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">systemctl <span class="hljs-built_in">disable</span> --now NetworkManager</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">systemctl start network &amp;&amp; systemctl <span class="hljs-built_in">enable</span> network</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">方式二</span><br>cat &gt; /etc/NetworkManager/conf.d/calico.conf &lt;&lt; EOF <br>[keyfile]<br>unmanaged-devices=interface-name:cali*;interface-name:tunl*<br>EOF<br>systemctl restart NetworkManager<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">参数解释</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 这个参数用于指定不由 NetworkManager 管理的设备。它由以下两个部分组成</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># interface-name:cali*</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">表示以 <span class="hljs-string">&quot;cali&quot;</span> 开头的接口名称被排除在 NetworkManager 管理之外。例如，<span class="hljs-string">&quot;cali0&quot;</span>, <span class="hljs-string">&quot;cali1&quot;</span> 等接口不受 NetworkManager 管理。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># interface-name:tunl*</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">表示以 <span class="hljs-string">&quot;tunl&quot;</span> 开头的接口名称被排除在 NetworkManager 管理之外。例如，<span class="hljs-string">&quot;tunl0&quot;</span>, <span class="hljs-string">&quot;tunl1&quot;</span> 等接口不受 NetworkManager 管理。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 通过使用这个参数，可以将特定的接口排除在 NetworkManager 的管理范围之外，以便其他工具或进程可以独立地管理和配置这些接口。</span></span><br></code></pre></td></tr></table></figure>
+
+<h5 id="进行时间同步"><a href="#进行时间同步" class="headerlink" title="进行时间同步"></a>进行时间同步</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">服务端</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">apt install chrony -y</span><br>yum install chrony -y<br>cat &gt; /etc/chrony.conf &lt;&lt; EOF <br>pool ntp.aliyun.com iburst<br>driftfile /var/lib/chrony/drift<br>makestep 1.0 3<br>rtcsync<br>allow 192.168.101.0/24<br>local stratum 10<br>keyfile /etc/chrony.keys<br>leapsectz right/UTC<br>logdir /var/log/chrony<br>EOF<br><br>systemctl restart chronyd ; systemctl enable chronyd<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">客户端</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">apt install chrony -y</span><br>yum install chrony -y<br>cat &gt; /etc/chrony.conf &lt;&lt; EOF <br>pool 192.168.1.31 iburst<br>driftfile /var/lib/chrony/drift<br>makestep 1.0 3<br>rtcsync<br>keyfile /etc/chrony.keys<br>leapsectz right/UTC<br>logdir /var/log/chrony<br>EOF<br><br>systemctl restart chronyd ; systemctl enable chronyd<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">使用客户端进行验证</span><br>chronyc sources -v<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">参数解释</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># pool ntp.aliyun.com iburst</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">指定使用ntp.aliyun.com作为时间服务器池，iburst选项表示在初始同步时会发送多个请求以加快同步速度。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># driftfile /var/lib/chrony/drift</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">指定用于保存时钟漂移信息的文件路径。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># makestep 1.0 3</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">设置当系统时间与服务器时间偏差大于1秒时，会以1秒的步长进行调整。如果偏差超过3秒，则立即进行时间调整。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># rtcsync</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">启用硬件时钟同步功能，可以提高时钟的准确性。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># allow 192.168.0.0/24</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">允许192.168.0.0/24网段范围内的主机与chrony进行时间同步。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># local stratum 10</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">将本地时钟设为stratum 10，stratum值表示时钟的准确度，值越小表示准确度越高。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># keyfile /etc/chrony.keys</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">指定使用的密钥文件路径，用于对时间同步进行身份验证。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># leapsectz right/UTC</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">指定时区为UTC。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># logdir /var/log/chrony</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">指定日志文件存放目录。</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="配置ulimit-根据自己服务器性能设置"><a href="#配置ulimit-根据自己服务器性能设置" class="headerlink" title="配置ulimit(根据自己服务器性能设置)"></a>配置ulimit(根据自己服务器性能设置)</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs shell">ulimit -SHn 65535<br>cat &gt;&gt; /etc/security/limits.conf &lt;&lt;EOF<br>* soft nofile 655360<br>* hard nofile 131072<br>* soft nproc 655350<br>* hard nproc 655350<br>* soft memlock unlimited<br>* hard memlock unlimited<br>EOF<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">参数解释</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># soft nofile 655360</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">soft表示软限制，nofile表示一个进程可打开的最大文件数，默认值为1024。这里的软限制设置为655360，即一个进程可打开的最大文件数为655360。</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># hard nofile 131072</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">hard表示硬限制，即系统设置的最大值。nofile表示一个进程可打开的最大文件数，默认值为4096。这里的硬限制设置为131072，即系统设置的最大文件数为131072。</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># soft nproc 655350</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">soft表示软限制，<span class="hljs-built_in">nproc</span>表示一个用户可创建的最大进程数，默认值为30720。这里的软限制设置为655350，即一个用户可创建的最大进程数为655350。</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># hard nproc 655350</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">hard表示硬限制，即系统设置的最大值。<span class="hljs-built_in">nproc</span>表示一个用户可创建的最大进程数，默认值为4096。这里的硬限制设置为655350，即系统设置的最大进程数为655350。</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># soft memlock unlimited</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">soft表示软限制，memlock表示一个进程可锁定在RAM中的最大内存，默认值为64 KB。这里的软限制设置为unlimited，即一个进程可锁定的最大内存为无限制。</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># hard memlock unlimited</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">hard表示硬限制，即系统设置的最大值。memlock表示一个进程可锁定在RAM中的最大内存，默认值为64 KB。这里的硬限制设置为unlimited，即系统设置的最大内存锁定为无限制。</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="配置免密登录"><a href="#配置免密登录" class="headerlink" title="配置免密登录"></a>配置免密登录</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">apt install -y sshpass</span><br>yum install -y sshpass<br>ssh-keygen -f /root/.ssh/id_rsa -P &#x27;&#x27;<br>export IP=&quot;192.168.1.31 192.168.1.32 192.168.1.33 192.168.1.34 192.168.1.35&quot;<br>export SSHPASS=123123<br>for HOST in $IP;do<br>     sshpass -e ssh-copy-id -o StrictHostKeyChecking=no $HOST<br>done<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">这段脚本的作用是在一台机器上安装sshpass工具，并通过sshpass自动将本机的SSH公钥复制到多个远程主机上，以实现无需手动输入密码的SSH登录。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 具体解释如下：</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 1. `apt install -y sshpass` 或 `yum install -y sshpass`：通过包管理器（apt或yum）安装sshpass工具，使得后续可以使用sshpass命令。</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 2. `ssh-keygen -f /root/.ssh/id_rsa -P &#x27;&#x27;`：生成SSH密钥对。该命令会在/root/.ssh目录下生成私钥文件id_rsa和公钥文件id_rsa.pub，同时不设置密码（即-P参数后面为空），方便后续通过ssh-copy-id命令自动复制公钥。</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 3. `export IP=&quot;192.168.1.31 192.168.1.32 192.168.1.33 192.168.1.34 192.168.1.35&quot;`：设置一个包含多个远程主机IP地址的环境变量IP，用空格分隔开，表示要将SSH公钥复制到这些远程主机上。</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 4. `export SSHPASS=123123`：设置环境变量SSHPASS，将sshpass所需的SSH密码（在这里是&quot;123123&quot;）赋值给它，这样sshpass命令可以自动使用这个密码进行登录。</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 5. `for HOST in $IP;do`：遍历环境变量IP中的每个IP地址，并将当前IP地址赋值给变量HOST。</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 6. `sshpass -e ssh-copy-id -o StrictHostKeyChecking=no $HOST`：使用sshpass工具复制本机的SSH公钥到远程主机。其中，-e选项表示使用环境变量中的密码（即SSHPASS）进行登录，-o StrictHostKeyChecking=no选项表示连接时不检查远程主机的公钥，以避免交互式确认。</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 通过这段脚本，可以方便地将本机的SSH公钥复制到多个远程主机上，实现无需手动输入密码的SSH登录。</span></span><br></code></pre></td></tr></table></figure>
+
+<h5 id="升级内核至4-18版本以上"><a href="#升级内核至4-18版本以上" class="headerlink" title="升级内核至4.18版本以上"></a>升级内核至4.18版本以上</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">Ubuntu忽略，CentOS执行</span><br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">安装最新的内核</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">我这里选择的是稳定版kernel-ml   如需更新长期维护版本kernel-lt</span>  <br>yum -y --enablerepo=elrepo-kernel  install  kernel-ml<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">查看已安装那些内核</span><br>rpm -qa | grep kernel<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">查看默认内核</span><br>grubby --default-kernel<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">若不是最新的使用命令设置</span><br>grubby --set-default $(ls /boot/vmlinuz-* | grep elrepo)<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">重启生效</span><br>reboot<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">v8 整合命令为：</span><br>yum install https://www.elrepo.org/elrepo-release-8.el8.elrepo.noarch.rpm -y ; sed -i &quot;s@mirrorlist@#mirrorlist@g&quot; /etc/yum.repos.d/elrepo.repo ; sed -i &quot;s@elrepo.org/linux@mirrors.tuna.tsinghua.edu.cn/elrepo@g&quot; /etc/yum.repos.d/elrepo.repo ; yum  --disablerepo=&quot;*&quot;  --enablerepo=&quot;elrepo-kernel&quot;  list  available -y ; yum  --enablerepo=elrepo-kernel  install kernel-lt -y ; grubby --default-kernel ; reboot <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">v7 整合命令为：</span><br>yum install https://www.elrepo.org/elrepo-release-7.el7.elrepo.noarch.rpm -y ; sed -i &quot;s@mirrorlist@#mirrorlist@g&quot; /etc/yum.repos.d/elrepo.repo ; sed -i &quot;s@elrepo.org/linux@mirrors.tuna.tsinghua.edu.cn/elrepo@g&quot; /etc/yum.repos.d/elrepo.repo ; yum  --disablerepo=&quot;*&quot;  --enablerepo=&quot;elrepo-kernel&quot;  list  available -y ; yum  --enablerepo=elrepo-kernel  install  kernel-lt -y ; grubby --set-default $(ls /boot/vmlinuz-* | grep elrepo) ; grubby --default-kernel ; reboot <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">离线版本</span> <br>yum install -y /root/cby/kernel-lt-*-1.el7.elrepo.x86_64.rpm ; grubby --set-default $(ls /boot/vmlinuz-* | grep elrepo) ; grubby --default-kernel ; reboot <br></code></pre></td></tr></table></figure>
+
+<h5 id="修改内核参数"><a href="#修改内核参数" class="headerlink" title="修改内核参数"></a>修改内核参数</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt;EOF &gt; /etc/sysctl.d/k8s.conf<br>net.ipv4.ip_forward = 1<br>net.bridge.bridge-nf-call-iptables = 1<br>fs.may_detach_mounts = 1<br>vm.overcommit_memory=1<br>vm.panic_on_oom=0<br>fs.inotify.max_user_watches=89100<br>fs.file-max=52706963<br>fs.nr_open=52706963<br>net.netfilter.nf_conntrack_max=2310720<br><br>net.ipv4.tcp_keepalive_time = 600<br>net.ipv4.tcp_keepalive_probes = 3<br>net.ipv4.tcp_keepalive_intvl =15<br>net.ipv4.tcp_max_tw_buckets = 36000<br>net.ipv4.tcp_tw_reuse = 1<br>net.ipv4.tcp_max_orphans = 327680<br>net.ipv4.tcp_orphan_retries = 3<br>net.ipv4.tcp_syncookies = 1<br>net.ipv4.tcp_max_syn_backlog = 16384<br>net.ipv4.ip_conntrack_max = 65536<br>net.ipv4.tcp_max_syn_backlog = 16384<br>net.ipv4.tcp_timestamps = 0<br>net.core.somaxconn = 16384<br><br>net.ipv6.conf.all.disable_ipv6 = 0<br>net.ipv6.conf.default.disable_ipv6 = 0<br>net.ipv6.conf.lo.disable_ipv6 = 0<br>net.ipv6.conf.all.forwarding = 1<br>EOF<br><br>sysctl --system<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">这些是Linux系统的一些参数设置，用于配置和优化网络、文件系统和虚拟内存等方面的功能。以下是每个参数的详细解释：</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 1. net.ipv4.ip_forward = 1</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   - 这个参数启用了IPv4的IP转发功能，允许服务器作为网络路由器转发数据包。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 2. net.bridge.bridge-nf-call-iptables = 1</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   - 当使用网络桥接技术时，将数据包传递到iptables进行处理。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"> </span> <br><span class="hljs-meta prompt_"># </span><span class="language-bash">3. fs.may_detach_mounts = 1</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   - 允许在挂载文件系统时，允许被其他进程使用。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"> </span> <br><span class="hljs-meta prompt_"># </span><span class="language-bash">4. vm.overcommit_memory=1</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   - 该设置允许原始的内存过量分配策略，当系统的内存已经被完全使用时，系统仍然会分配额外的内存。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 5. vm.panic_on_oom=0</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   - 当系统内存不足（OOM）时，禁用系统崩溃和重启。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"> </span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">6. fs.inotify.max_user_watches=89100</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   - 设置系统允许一个用户的inotify实例可以监控的文件数目的上限。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 7. fs.file-max=52706963</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   - 设置系统同时打开的文件数的上限。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 8. fs.nr_open=52706963</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   - 设置系统同时打开的文件描述符数的上限。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 9. net.netfilter.nf_conntrack_max=2310720</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">   - 设置系统可以创建的网络连接跟踪表项的最大数量。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 10. net.ipv4.tcp_keepalive_time = 600</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 设置TCP套接字的空闲超时时间（秒），超过该时间没有活动数据时，内核会发送心跳包。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 11. net.ipv4.tcp_keepalive_probes = 3</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 设置未收到响应的TCP心跳探测次数。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 12. net.ipv4.tcp_keepalive_intvl = 15</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 设置TCP心跳探测的时间间隔（秒）。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 13. net.ipv4.tcp_max_tw_buckets = 36000</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 设置系统可以使用的TIME_WAIT套接字的最大数量。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 14. net.ipv4.tcp_tw_reuse = 1</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 启用TIME_WAIT套接字的重新利用，允许新的套接字使用旧的TIME_WAIT套接字。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 15. net.ipv4.tcp_max_orphans = 327680</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 设置系统可以同时存在的TCP套接字垃圾回收包裹数的最大数量。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 16. net.ipv4.tcp_orphan_retries = 3</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 设置系统对于孤立的TCP套接字的重试次数。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 17. net.ipv4.tcp_syncookies = 1</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 启用TCP SYN cookies保护，用于防止SYN洪泛攻击。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 18. net.ipv4.tcp_max_syn_backlog = 16384</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 设置新的TCP连接的半连接数（半连接队列）的最大长度。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 19. net.ipv4.ip_conntrack_max = 65536</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 设置系统可以创建的网络连接跟踪表项的最大数量。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 20. net.ipv4.tcp_timestamps = 0</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 关闭TCP时间戳功能，用于提供更好的安全性。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 21. net.core.somaxconn = 16384</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 设置系统核心层的连接队列的最大值。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 22. net.ipv6.conf.all.disable_ipv6 = 0</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 启用IPv6协议。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 23. net.ipv6.conf.default.disable_ipv6 = 0</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 启用IPv6协议。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 24. net.ipv6.conf.lo.disable_ipv6 = 0</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 启用IPv6协议。</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash"></span><br><span class="language-bash"><span class="hljs-comment"># 25. net.ipv6.conf.all.forwarding = 1</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">    - 允许IPv6数据包转发。</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="使用aliyun源安装docker-ce"><a href="#使用aliyun源安装docker-ce" class="headerlink" title="使用aliyun源安装docker-ce"></a>使用aliyun源安装docker-ce</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 底层是用docker运行，所以每台主机都需要安装docker</span><br>yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo<br>yum -y install docker-ce<br></code></pre></td></tr></table></figure>
+
+<p>Kubernetes是一个开源系统，用于容器化应用的自动部署、扩缩和管理。它将构成应用的容器按逻辑单位进行分组以便于管理和发现。</p>
+<p>由于 Kubernetes 官方变更了仓库的存储路径以及使用方式，如果需要使用 1.28 及以上版本，请使用 新版配置方法 进行配置。</p>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://mirrors.aliyun.com/kubernetes/">https://mirrors.aliyun.com/kubernetes/</a></p>
+<p>新版下载地址：<a target="_blank" rel="noopener" href="https://mirrors.aliyun.com/kubernetes-new/">https://mirrors.aliyun.com/kubernetes-new/</a></p>
+<h4 id="k8s组件安装配置方法"><a href="#k8s组件安装配置方法" class="headerlink" title="k8s组件安装配置方法"></a>k8s组件安装配置方法</h4><h5 id="新版配置方法"><a href="#新版配置方法" class="headerlink" title="新版配置方法"></a>新版配置方法</h5><p>新版 kubernetes 源使用方法和之前有一定区别，请求按照如下配置方法配置使用。</p>
+<p>其中新版 kubernetes 源按照安装版本区分不同仓库，该文档示例为配置 1.30 版本，如需其他版本请在对应位置字符串替换即可。</p>
+<h6 id="Debian-Ubuntu"><a href="#Debian-Ubuntu" class="headerlink" title="Debian &#x2F; Ubuntu"></a>Debian &#x2F; Ubuntu</h6><ol>
+<li>在配置中添加镜像（注意修改为自己需要的版本号）：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-get update &amp;&amp; apt-get install -y apt-transport-https<br>curl -fsSL https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/deb/Release.key |<br>    gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg<br>echo &quot;deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.28/deb/ /&quot; |<br>    tee /etc/apt/sources.list.d/kubernetes.list<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>安装必要应用：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-get update<br>apt-get install -y kubelet kubeadm kubectl<br>systemctl enable kubelet &amp;&amp; systemctl start kubelet<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">如安装指定版本</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">apt install kubelet=1.28.2-00 kubeadm=1.28.2-00 kubectl=1.28.2-00</span><br></code></pre></td></tr></table></figure>
+
+<h6 id="CentOS-RHEL-Fedora"><a href="#CentOS-RHEL-Fedora" class="headerlink" title="CentOS &#x2F; RHEL &#x2F; Fedora"></a>CentOS &#x2F; RHEL &#x2F; Fedora</h6><ol>
+<li>执行如下命令（注意修改为自己需要的版本号）：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt;EOF | tee /etc/yum.repos.d/kubernetes.repo<br>[kubernetes]<br>name=Kubernetes<br>baseurl=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/rpm/<br>enabled=1<br>gpgcheck=1<br>gpgkey=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/rpm/repodata/repomd.xml.key<br>EOF<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>安装必要应用：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">查看kubelet的版本，方便在安装的时候使用k8s 1.23的新版本</span><br>yum search kubelet --showduplicates <br><span class="hljs-meta prompt_"># </span><span class="language-bash">根据查询出来的kubelet，选择对应的安装版本，这里以1.23.9为例</span><br>yum install kubelet-1.23.9-0 kubeadm-1.23.9-0 kubectl-1.23.9-0<br><span class="hljs-meta prompt_"># </span><span class="language-bash">配置kubelet自动启动，但是查看状态的时候是没有启动的，在kubeadm初始化集群的时候会自动启动</span><br>systemctl enable kubelet &amp;&amp; systemctl start kubelet<br><br></code></pre></td></tr></table></figure>
+
+<p>ps: 由于官网未开放同步方式, 可能会有索引gpg检查失败的情况, 这时请用 <code>yum install -y --nogpgcheck kubelet kubeadm kubectl</code> 安装</p>
+<h5 id="旧版配置方法"><a href="#旧版配置方法" class="headerlink" title="旧版配置方法"></a>旧版配置方法</h5><p>目前由于kubernetes官方变更了仓库的存储路径以及使用方式，旧版 kubernetes 源只更新到 1.28 部分版本，后续更新版本请使用 新源配置方法 进行配置。</p>
+<h6 id="Debian-Ubuntu-1"><a href="#Debian-Ubuntu-1" class="headerlink" title="Debian &#x2F; Ubuntu"></a>Debian &#x2F; Ubuntu</h6><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">apt-get update &amp;&amp; apt-get install -y apt-transport-https<br>curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add - <br>cat &lt;&lt;EOF &gt;/etc/apt/sources.list.d/kubernetes.list<br>deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main<br>EOF<br>apt-get update<br>apt-get install -y kubelet kubeadm kubectl<br></code></pre></td></tr></table></figure>
+
+<h6 id="CentOS-RHEL-Fedora-1"><a href="#CentOS-RHEL-Fedora-1" class="headerlink" title="CentOS &#x2F; RHEL &#x2F; Fedora"></a>CentOS &#x2F; RHEL &#x2F; Fedora</h6><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo<br>[kubernetes]<br>name=Kubernetes<br>baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/<br>enabled=1<br>gpgcheck=1<br>repo_gpgcheck=1<br>gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg<br>EOF<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">查看kubelet的版本，方便在安装的时候使用k8s 1.23的新版本</span><br>yum search kubelet --showduplicates <br><span class="hljs-meta prompt_"># </span><span class="language-bash">根据查询出来的kubelet，选择对应的安装版本，这里以1.23.9为例</span><br>yum install kubelet-1.23.9-0 kubeadm-1.23.9-0 kubectl-1.23.9-0<br><span class="hljs-meta prompt_"># </span><span class="language-bash">配置kubelet自动启动，但是查看状态的时候是没有启动的，在kubeadm初始化集群的时候会自动启动</span><br>systemctl enable kubelet &amp;&amp; systemctl start kubelet<br></code></pre></td></tr></table></figure>
+
+<p>ps: 由于官网未开放同步方式, 可能会有索引gpg检查失败的情况, 这时请用 <code>yum install -y --nogpgcheck kubelet kubeadm kubectl</code> 安装</p>
+<h4 id="使用kubeadm初始化安装"><a href="#使用kubeadm初始化安装" class="headerlink" title="使用kubeadm初始化安装"></a>使用kubeadm初始化安装</h4><h5 id="配置k8s使用阿里云源"><a href="#配置k8s使用阿里云源" class="headerlink" title="配置k8s使用阿里云源"></a>配置k8s使用阿里云源</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@master01 ~]# <span class="hljs-built_in">cat</span> &lt;&lt;<span class="hljs-string">EOF &gt; /etc/yum.repos.d/kubernetes.repo</span><br><span class="hljs-string">[kubernetes]</span><br><span class="hljs-string">name=Kubernetes</span><br><span class="hljs-string">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64/</span><br><span class="hljs-string">enabled=1</span><br><span class="hljs-string">gpgcheck=1</span><br><span class="hljs-string">repo_gpgcheck=1</span><br><span class="hljs-string">gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="查看k8s版本使用的镜像（可以先拉取下来这样比较快一点）"><a href="#查看k8s版本使用的镜像（可以先拉取下来这样比较快一点）" class="headerlink" title="查看k8s版本使用的镜像（可以先拉取下来这样比较快一点）"></a>查看k8s版本使用的镜像（可以先拉取下来这样比较快一点）</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看最新版本有那些镜像</span><br>[root@k8s-master01 ~]# kubeadm config images list --image-repository registry.cn-hangzhou.aliyuncs.com/google_containers<br><br><span class="hljs-comment"># 如果想要查看默认配置，可以使用下面的这个命令将配置重定向到文件当中，后面自行修改</span><br>[root@k8s-master01 ~]# kubeadm config <span class="hljs-built_in">print</span> init-defaults &gt; kubeadm-init.yaml<br><br><span class="hljs-comment"># 上面的配置文件配置完成了之后，使用指定配置文件的方式初始化集群</span><br>[root@k8s-master01 ~]# kubeadm init --config=kubeadm.yaml<br><br><span class="hljs-comment"># 如果安装失败，执行下面的命令</span><br><span class="hljs-comment"># 重新初始化</span><br>[root@k8s-master01 ~]# kubeadm reset<br><br><span class="hljs-comment"># 使用参数的形式初始化</span><br>[root@k8s-master01 ~]# kubeadminit--kubernetes-version=1.23.9 --apiserver-advertise-address=10.0.0.19       --image-repository registry.aliyuncs.com/google_containers --service-cidr=10.96.0.0/12 --pod-network-cidr=10.244.0.0/16 <br><br><span class="hljs-comment"># 这个参数可加可不加（因为前面关闭了swap，并重启了机器）</span><br>--ignore-preflight-errors=Swap<br></code></pre></td></tr></table></figure>
+
+<h5 id="安装完成后"><a href="#安装完成后" class="headerlink" title="安装完成后"></a>安装完成后</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@k8s-master01 ~]#  <span class="hljs-built_in">mkdir</span> -p <span class="hljs-variable">$HOME</span>/.kube<br>[root@k8s-master01 ~]#  <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> -i /etc/kubernetes/admin.conf <span class="hljs-variable">$HOME</span>/.kube/config<br>[root@k8s-master01 ~]#  <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chown</span> $(<span class="hljs-built_in">id</span> -u):$(<span class="hljs-built_in">id</span> -g) <span class="hljs-variable">$HOME</span>/.kube/config<br></code></pre></td></tr></table></figure>
+
+<h5 id="把其他节点以node方式加入k8s"><a href="#把其他节点以node方式加入k8s" class="headerlink" title="把其他节点以node方式加入k8s"></a>把其他节点以node方式加入k8s</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 把其他的节点作为master（control-plane ）加入</span><br><span class="hljs-comment"># 但是下面的命令不要复制这里的，kubeadm安装完成后会自己输出在终端内</span><br>You can now <span class="hljs-built_in">join</span> any number of control-plane nodes by copying certificate authorities<br>and service account keys on each node and <span class="hljs-keyword">then</span> running the following as root:<br><br>  kubeadm <span class="hljs-built_in">join</span> 192.168.1.36:9443 --token abcdef.0123456789abcdef \<br>	--discovery-token-ca-cert-hash sha256:583ddadd1318dae447c3890aa3a2469c5b00c6775e87102458db07e691c724be \<br>	--control-plane <br><br><span class="hljs-comment"># 把其他节点作为work节点加入</span><br>Then you can <span class="hljs-built_in">join</span> any number of worker nodes by running the following on each as root:<br><br>kubeadm <span class="hljs-built_in">join</span> 192.168.1.36:9443 --token abcdef.0123456789abcdef \<br>	--discovery-token-ca-cert-hash sha256:583ddadd1318dae447c3890aa3a2469c5b00c6775e87102458db07e691c724be <br></code></pre></td></tr></table></figure>
+
+<h4 id="安装网络插件"><a href="#安装网络插件" class="headerlink" title="安装网络插件"></a>安装网络插件</h4><h5 id="打开k8s官网网址提供的网络插件"><a href="#打开k8s官网网址提供的网络插件" class="headerlink" title="打开k8s官网网址提供的网络插件"></a>打开k8s官网网址提供的网络插件</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">https://kubernetes.io/docs/concepts/cluster-administration/addons/<br><span class="hljs-comment"># 找到Networking and Network Policy  这个部分，根据需要安装网络插件</span><br><span class="hljs-comment"># 这里选择的是flannel网络插件，可以直接复制这里的地址打开github上的地址，也可以自己打开上面的k8s页面，自己找到对应的网址，建议还是打开看一下</span><br>https://github.com/flannel-io/flannel#deploying-flannel-manually<br><br><span class="hljs-comment"># For Kubernetes v1.17+ Deploying Flannel with kubectl</span><br>[root@master01 ~]# kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml<br><br><span class="hljs-comment"># 如果想用calico网络插件</span><br>[root@master01 ~]# kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml<br><br><span class="hljs-comment"># 等待kube-flannel命名空间内的pod容器启动完成</span><br><span class="hljs-comment"># 可以使用下面的命令监视</span><br>watch -n 1 kubectl get po  -n kube-flannel<br></code></pre></td></tr></table></figure>
+
+<h4 id="查看k8s集群状态"><a href="#查看k8s集群状态" class="headerlink" title="查看k8s集群状态"></a>查看k8s集群状态</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@k8s-master01 ~]# kubectl get nodes<br>NAME           STATUS     ROLES           AGE     VERSION<br>k8s-master01   NotReady   control-plane   2m14s   v1.23.9<br>k8s-node01     NotReady   &lt;none&gt;          19s     v1.23.9<br>k8s-node02     NotReady   &lt;none&gt;          9s      v1.23.9<br></code></pre></td></tr></table></figure>
+
+<h4 id="安装后完善"><a href="#安装后完善" class="headerlink" title="安装后完善"></a>安装后完善</h4><h5 id="执行下面命令，使kubectl可以自动补充"><a href="#执行下面命令，使kubectl可以自动补充" class="headerlink" title="执行下面命令，使kubectl可以自动补充"></a>执行下面命令，使kubectl可以自动补充</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@master01 ~]# <span class="hljs-built_in">source</span> &lt;(kubectl completion bash)<br>[root@master01 ~]# <span class="hljs-built_in">source</span> &lt;(kubeadm completion bash)<br></code></pre></td></tr></table></figure>
+
+<h4 id="安装kubernetes-dashboard"><a href="#安装kubernetes-dashboard" class="headerlink" title="安装kubernetes-dashboard"></a>安装kubernetes-dashboard</h4><h5 id="为dashboard配置nodeport端口"><a href="#为dashboard配置nodeport端口" class="headerlink" title="为dashboard配置nodeport端口"></a>为dashboard配置nodeport端口</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 官方部署`dashboard`的服务没使用`nodeport`，将yaml文件下载到本地，在service里添加nodeport</span><br>[root@master01 ~]# wget  https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc7/aio/deploy/recommended.yaml<br>[root@master01 ~]# vim recommended.yaml<br>kind: Service<br>apiVersion: v1<br>metadata:<br>  labels:<br>    k8s-app: kubernetes-dashboard<br>  name: kubernetes-dashboard<br>  namespace: kubernetes-dashboard<br>spec:<br>  <span class="hljs-built_in">type</span>: NodePort<br>  ports:<br>    - port: 443<br>      targetPort: 8443<br>      nodePort: 30000<br>  selector:<br>    k8s-app: kubernetes-dashboard<br><br>[root@master01 ~]# kubectl create -f recommended.yaml<br>namespace/kubernetes-dashboard created<br>serviceaccount/kubernetes-dashboard created<br>service/kubernetes-dashboard created<br>secret/kubernetes-dashboard-certs created<br>secret/kubernetes-dashboard-csrf created<br>secret/kubernetes-dashboard-key-holder created<br>configmap/kubernetes-dashboard-settings created<br>role.rbac.authorization.k8s.io/kubernetes-dashboard created<br>clusterrole.rbac.authorization.k8s.io/kubernetes-dashboard created<br>rolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created<br>clusterrolebinding.rbac.authorization.k8s.io/kubernetes-dashboard created<br>deployment.apps/kubernetes-dashboard created<br>service/dashboard-metrics-scraper created<br>deployment.apps/dashboard-metrics-scraper created<br></code></pre></td></tr></table></figure>
+
+<h5 id="查看pod，service"><a href="#查看pod，service" class="headerlink" title="查看pod，service"></a>查看pod，service</h5><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">NAME</span>                                        READY   STATUS    RESTARTS   AGE<br><span class="hljs-attribute">dashboard</span>-metrics-scraper-dc6947fbf-<span class="hljs-number">869</span>kf   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">37</span>s<br><span class="hljs-attribute">kubernetes</span>-dashboard-<span class="hljs-number">5</span>d4dc8b976-sdxxt       <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">37</span>s<span class="hljs-meta"></span><br><span class="hljs-meta">[root@master01 ~]# kubectl get svc -n kubernetes-dashboard</span><br><span class="hljs-meta">NAME                        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)         AGE</span><br><span class="hljs-meta">dashboard-metrics-scraper   ClusterIP   10.10.58.93    &lt;none&gt;        8000/TCP        44s</span><br><span class="hljs-meta">kubernetes-dashboard        NodePort    10.10.132.66   &lt;none&gt;        443:30000/TCP   44s</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="通过页面访问，推荐使用firefox浏览器"><a href="#通过页面访问，推荐使用firefox浏览器" class="headerlink" title="通过页面访问，推荐使用firefox浏览器"></a>通过页面访问，推荐使用firefox浏览器</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 根据自己的网络环境打开对应的网址</span><br>打开浏览器输入https://192.168.1.30000  <br></code></pre></td></tr></table></figure>
+
+
+
+<h5 id="使用token进行登录，执行下面命令获取token"><a href="#使用token进行登录，执行下面命令获取token" class="headerlink" title="使用token进行登录，执行下面命令获取token"></a>使用token进行登录，执行下面命令获取token</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@master01 ~]# kubectl describe secrets -n kubernetes-dashboard kubernetes-dashboard-token-t4hxz  | grep token | awk <span class="hljs-string">&#x27;NR==3&#123;print $2&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>登录后，如果没有namespace可选，并且提示找不到资源 ，那么就是权限问题。</p>
+<p>通过查看dashboard日志，得到如下 信息，出现以下信息的原因是，登录dashboard的权限不够，不能获取到内容</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">2023/04/08 01:54:31 Non-critical <span class="hljs-built_in">error</span> occurred during<span class="hljs-built_in"> resource </span>retrieval: jobs.batch is forbidden:<span class="hljs-built_in"> User </span><span class="hljs-string">&quot;system:serviceaccount:kubernetes-dashboard:kubernetes-dashboard&quot;</span> cannot list<span class="hljs-built_in"> resource </span><span class="hljs-string">&quot;jobs&quot;</span> <span class="hljs-keyword">in</span> API<span class="hljs-built_in"> group </span><span class="hljs-string">&quot;batch&quot;</span> <span class="hljs-keyword">in</span> the namespace <span class="hljs-string">&quot;default&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="创建集群角色绑定"><a href="#创建集群角色绑定" class="headerlink" title="创建集群角色绑定"></a>创建集群角色绑定</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 解决办法就是创建集群角色绑定，以集群管理员的方式，管理dashboard</span><br>[root@master01 ~]# kubectl create clusterrolebinding serviceaccount-cluster-admin --clusterrole=cluster-admin --group=system:serviceaccount <br>clusterrolebinding.rbac.authorization.k8s.io/serviceaccount-cluster-admin created<br></code></pre></td></tr></table></figure>
+
+<h5 id="查看dashboard日志"><a href="#查看dashboard日志" class="headerlink" title="查看dashboard日志"></a>查看dashboard日志</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@master01 ~]# kubectl logs -f -n kubernetes-dashboard kubernetes-dashboard-5d4dc8b976-sdxx<br></code></pre></td></tr></table></figure>
+
+<h5 id="此时再查看dashboard，即可看到有资源展示"><a href="#此时再查看dashboard，即可看到有资源展示" class="headerlink" title="此时再查看dashboard，即可看到有资源展示"></a>此时再查看dashboard，即可看到有资源展示</h5>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="category-chain-item">云原生</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/k8s%E3%80%81%E4%BA%91%E5%8E%9F%E7%94%9F/" class="print-no-link">#k8s、云原生</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>使用kubeadm1.23.x版本部署kubernetes（一主两从）</div>
+      <div>https://b.t-ao.cn/2025/03/19/使用kubeadm1-23-x版本部署kubernetes（一主两从）/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>T-AO</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年3月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/03/19/CephOSD%E7%A3%81%E7%9B%98%E6%9B%B4%E6%8D%A2%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B0%E6%8D%AE%E5%8F%91%E7%94%9F%E8%BF%81%E7%A7%BB%E7%9A%84%E6%97%B6%E9%97%B4%E4%B8%8D%E5%90%8C%EF%BC%89/" title="CephOSD磁盘更换的三种方法（数据发生迁移的时间不同）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CephOSD磁盘更换的三种方法（数据发生迁移的时间不同）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/03/19/Kubernetes%E9%9B%86%E7%BE%A4%E5%8C%85%E7%AE%A1%E7%90%86%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-helm/" title="Kubernetes集群包管理解决方案-helm">
+                        <span class="hidden-mobile">Kubernetes集群包管理解决方案-helm</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

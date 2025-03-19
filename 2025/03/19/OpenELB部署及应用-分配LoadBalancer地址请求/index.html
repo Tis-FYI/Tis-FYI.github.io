@@ -1,0 +1,766 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="T-AO">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、OpenELB介绍 网址： openelb.io  OpenELB 是一个开源的云原生负载均衡器实现，可以在基于裸金属服务器、边缘以及虚拟化的 Kubernetes 环境中使用 LoadBalancer 类型的 Service 对外暴露服务。OpenELB 项目最初由 KubeSphere 社区发起，目前已作为 CNCF 沙箱项目加入 CNCF 基金会，由 OpenELB 开源社区维护与支持">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenELB部署及应用(分配LoadBalancer地址请求)">
+<meta property="og:url" content="https://b.t-ao.cn/2025/03/19/OpenELB%E9%83%A8%E7%BD%B2%E5%8F%8A%E5%BA%94%E7%94%A8-%E5%88%86%E9%85%8DLoadBalancer%E5%9C%B0%E5%9D%80%E8%AF%B7%E6%B1%82/index.html">
+<meta property="og:site_name" content="T-AO&#39;s Blog">
+<meta property="og:description" content="一、OpenELB介绍 网址： openelb.io  OpenELB 是一个开源的云原生负载均衡器实现，可以在基于裸金属服务器、边缘以及虚拟化的 Kubernetes 环境中使用 LoadBalancer 类型的 Service 对外暴露服务。OpenELB 项目最初由 KubeSphere 社区发起，目前已作为 CNCF 沙箱项目加入 CNCF 基金会，由 OpenELB 开源社区维护与支持">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-19T03:06:36.000Z">
+<meta property="article:modified_time" content="2025-03-19T03:32:29.639Z">
+<meta property="article:author" content="T-AO">
+<meta property="article:tag" content="云原生OpenELB">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>OpenELB部署及应用(分配LoadBalancer地址请求) - T-AO&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"b.t-ao.cn","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>T-AO</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>常用站点</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="OpenELB部署及应用(分配LoadBalancer地址请求)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-03-19 11:06" pubdate>
+          2025年3月19日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">OpenELB部署及应用(分配LoadBalancer地址请求)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <hr>
+<h2 id="一、OpenELB介绍"><a href="#一、OpenELB介绍" class="headerlink" title="一、OpenELB介绍"></a>一、OpenELB介绍</h2><blockquote>
+<p>网址： openelb.io</p>
+</blockquote>
+<p>OpenELB 是一个开源的<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E4%BA%91%E5%8E%9F%E7%94%9F&spm=1001.2101.3001.7020">云原生</a>负载均衡器实现，可以在基于裸金属服务器、边缘以及虚拟化的 Kubernetes 环境中使用 LoadBalancer 类型的 Service 对外暴露服务。OpenELB 项目最初由 KubeSphere 社区发起，目前已作为 CNCF 沙箱项目加入 CNCF 基金会，由 OpenELB 开源社区维护与支持。</p>
+<p>与 MetalLB 类似，OpenELB 也拥有两种主要工作模式：Layer2 模式和 BGP 模式。OpenELB 的 BGP 模式目前暂不支持 IPv6。<br>无论是 Layer2 模式还是 BGP 模式，核心思路都是通过某种方式将特定 VIP 的流量引到 k8s 集群中，然后再通过 kube-proxy 将流量转发到后面的特定服务。</p>
+<h3 id="1-1-Layer2-模式"><a href="#1-1-Layer2-模式" class="headerlink" title="1.1 Layer2 模式"></a>1.1 Layer2 模式</h3><blockquote>
+<p>Layer2 模式需要我们的 k8s 集群基础环境支持发送 anonymous ARP&#x2F;NDP packets。因为 OpenELB 是针对裸金属服务器设计的，因此如果是在云环境中部署，需要注意是否满足条件。</p>
+</blockquote>
+<h3 id="1-2-BGP-模式"><a href="#1-2-BGP-模式" class="headerlink" title="1.2 BGP 模式"></a>1.2 BGP 模式</h3><p>OpenELB 的 BGP 模式使用的是gobgp实现的 BGP 协议，通过使用 BGP 协议和路由器建立 BGP 连接并实现 ECMP 负载均衡，从而实现高可用的 LoadBalancer。</p>
+<h3 id="1-3-注意事项"><a href="#1-3-注意事项" class="headerlink" title="1.3 注意事项"></a>1.3 注意事项</h3><blockquote>
+<p>配置 ARP 参数</p>
+</blockquote>
+<p>部署 Layer2 模式需要把 k8s 集群中的 ipvs 配置打开strictARP，<strong>开启之后 k8s 集群中的 <code>kube-proxy</code> 会停止响应 <code>kube-ipvs0</code> 网卡之外的其他网卡的 arp 请求，而由 OpenELB 接手处理（OpenELB和MetalLB处理方法类似）。</strong></p>
+<p><code>strict ARP</code> 开启之后相当于把 将 <code>arp_ignore</code> 设置为 1 并将 <code>arp_announce</code> 设置为 2 启用严格的 ARP，这个原理和 LVS 中的 DR 模式对 RS 的配置一样。</p>
+<h2 id="二、OpenELB安装及配置"><a href="#二、OpenELB安装及配置" class="headerlink" title="二、OpenELB安装及配置"></a>二、OpenELB安装及配置</h2><h3 id="2-1-需求"><a href="#2-1-需求" class="headerlink" title="2.1 需求"></a>2.1 需求</h3><ul>
+<li><p>You need to prepare a Kubernetes cluster, and ensure that the Kubernetes version is 1.15 or later. OpenELB requires CustomResourceDefinition (CRD) v1, which is only supported by Kubernetes 1.15 or later. You can use the following methods to deploy a Kubernetes cluster（1.15之后的k8s集群）:</p>
+</li>
+<li><p>Use <a target="_blank" rel="noopener" href="https://kubesphere.io/docs/installing-on-linux/">KubeKey</a> (recommended). You can use KubeKey to deploy a Kubernetes cluster with or without <a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=KubeSphere&spm=1001.2101.3001.7020">KubeSphere</a>（kubesphere部署的集群）.</p>
+</li>
+<li><p>Follow <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/home/">official Kubernetes guides</a>.</p>
+</li>
+</ul>
+<p>OpenELB is designed to be used in bare-metal Kubernetes environments. However, you can also use a cloud-based Kubernetes cluster for learning and testing（除了裸金属服务器之外还可以是云服务器搭建的k8s节点）.</p>
+<h3 id="2-2-Install-OpenELB-Using-kubectl"><a href="#2-2-Install-OpenELB-Using-kubectl" class="headerlink" title="2.2 Install OpenELB Using kubectl"></a>2.2 Install OpenELB Using kubectl</h3><p>可参照官网的安装方式来进行安装（选择不同的集群）：<a target="_blank" rel="noopener" href="https://openelb.io/docs/getting-started/installation/">https://openelb.io/docs/getting-started/installation/</a></p>
+<p>1.Log in to the Kubernetes cluster over SSH and run the following command:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">旧版本</span><br>kubectl apply -f https://raw.githubusercontent.com/openelb/openelb/master/deploy/openelb.yaml<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">新版本2024-08-27</span><br>wget https://raw.githubusercontent.com/openelb/openelb/release-0.6/deploy/openelb.yaml<br>kubectl apply -f openelb.yaml<br></code></pre></td></tr></table></figure>
+
+<p>2.Run the following command to check whether the status of <code>openelb-manager</code> is <strong>READY</strong>: <strong>1&#x2F;1</strong> and <strong>STATUS</strong>: <strong>Running</strong>. If yes, OpenELB has been installed successfully.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 打开https://raw.githubusercontent.com/openelb/openelb/release-0.6/deploy/openelb.yaml 可以看到创建的资源都在openelb-system名称空间内，所以通过下面的语句查看创建的资源</span><br><span class="hljs-comment"># kubectl get pods -n openelb-system</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-OpenELB配置"><a href="#2-2-OpenELB配置" class="headerlink" title="2.2 OpenELB配置"></a>2.2 OpenELB配置</h3><blockquote>
+<p>Use OpenELB in Layer 2 Mode（二层模式的使用）</p>
+</blockquote>
+<h4 id="2-2-1-需求"><a href="#2-2-1-需求" class="headerlink" title="2.2.1 需求"></a>2.2.1 需求</h4><ul>
+<li>You need to <a target="_blank" rel="noopener" href="https://openelb.io/docs/getting-started/installation/">prepare a Kubernetes cluster where OpenELB has been installed</a>. All Kubernetes cluster nodes must be on the same Layer 2 network (under the same router).</li>
+<li>You need to prepare a client machine, which is used to verify whether OpenELB functions properly in Layer 2 mode. The client machine needs to be on the same network as the Kubernetes cluster nodes.</li>
+<li>The Layer 2 mode requires your infrastructure environment to allow anonymous ARP&#x2F;NDP packets. If OpenELB is installed in a cloud-based Kubernetes cluster for testing, you need to confirm with your cloud vendor whether anonymous ARP&#x2F;NDP packets are allowed. If not, the Layer 2 mode cannot be used.</li>
+</ul>
+<h4 id="2-2-2-配置步骤"><a href="#2-2-2-配置步骤" class="headerlink" title="2.2.2 配置步骤"></a>2.2.2 配置步骤</h4><p><strong>Step 1: Enable strictARP for kube-proxy</strong></p>
+<p>In Layer 2 mode, you need to enable strictARP for kube-proxy so that all NICs in the Kubernetes cluster stop answering ARP requests from other NICs and OpenELB handles ARP requests instead.</p>
+<p>1.Log in to the Kubernetes cluster and run the following command to edit the kube-proxy ConfigMap:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># kubectl edit configmap kube-proxy -n kube-system</span><br></code></pre></td></tr></table></figure>
+
+<p>2.In the kube-proxy ConfigMap YAML configuration, set <code>data.config.conf.ipvs.strictARP</code> to <code>true</code>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">ipvs:<br>  strictARP: true<br></code></pre></td></tr></table></figure>
+
+<p>3.Run the following command to restart kube-proxy（重启kube-system名称空间当中的daemonset资源，让配置严格arp模式生效）:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># kubectl rollout restart daemonset kube-proxy -n kube-system</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>Step 2: Specify the NIC Used for OpenELB（如果是多网卡，那么可以指定出口）</strong></p>
+<p>If the node where OpenELB is installed has multiple NICs, you need to specify the NIC used for OpenELB in Layer 2 mode. You can skip this step if the node has only one NIC.</p>
+<p>In this example, the master1 node where OpenELB is installed has two NICs (eth0 192.168.0.2 and eth1 192.168.1.2), and eth0 192.168.0.2 will be used for OpenELB.</p>
+<p>Run the following command to annotate master1 to specify the NIC:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># kubectl annotate nodes k8s-master01 layer2.openelb.kubesphere.io/v1alpha1=&quot;192.168.10.141&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>Step 3: Create an Eip Object（创建EIP地址池，用于分配LoadBalancer请求时分配IP地址）</strong></p>
+<p>The Eip object functions as an IP address pool for OpenELB.</p>
+<p>1.Run the following command to create a YAML file for the Eip object:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># vim layer2-eip.yaml</span><br></code></pre></td></tr></table></figure>
+
+<p>2.Add the following information to the YAML file:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 旧版本</span><br>apiVersion: network.kubesphere.io/v1alpha2<br>kind: Eip<br>metadata:<br>  name: layer2<span class="hljs-literal">-eip</span><br>spec:<br>  address: <span class="hljs-number">192.168</span>.<span class="hljs-number">10.70</span><span class="hljs-literal">-192</span>.<span class="hljs-number">168.10</span>.<span class="hljs-number">99</span><br>  interface: ens33<br>  protocol: layer2<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">2024-08-27 基于官网最新的地址池配置，简要版本的往下拉一点就是</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">官方配置地址： https://openelb.io/docs/getting-started/configuration/configure-ip-address-pools-using-eip/</span><br>apiVersion: network.kubesphere.io/v1alpha2<br>kind: Eip<br>metadata:<br>    name: eip-sample-pool<br>    annotations:<br>      eip.openelb.kubesphere.io/is-default-eip: &quot;true&quot;<br>spec:<br>    address: 192.168.0.91-192.168.0.100<br>    # 地址池的优先级<br>    priority: 100<br>    # namespace 也可以看需求指定，这个地址池在什么名称空间当中使用<br>    namespaces:<br>      - test<br>      - default<br>    namespaceSelector:<br>      kubesphere.io/workspace: workspace<br>    disable: false<br>    protocol: layer2<br>    interface: eth0<br>    # interface: can_reach:192.168.0.1<br><span class="hljs-meta prompt_"># </span><span class="language-bash">下面这个不要，因为status是在创建资源后查看是否达到你要求的资源，所以在配置的时候可以不要</span><br>status:<br>    occupied: false<br>    usage: 1<br>    poolSize: 10<br>    used: <br>      &quot;192.168.0.91&quot;: &quot;default/test-svc&quot;<br>    firstIP: 192.168.0.91<br>    lastIP: 192.168.0.100<br>    ready: true<br>    v4: true<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">2024-08-27 简要版</span><br>apiVersion: network.kubesphere.io/v1alpha2<br>kind: Eip<br>metadata:<br>  name: layer2-eip<br>spec:<br>  address: 172.31.73.130-172.31.73.132<br>  namespaces: <br>  - project<br>  interface: eth0<br>  protocol: layer2<br><br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<ul>
+<li>The IP addresses specified in <code>spec:address</code> must be on the same network segment as the Kubernetes cluster nodes.</li>
+<li>For details about the fields in the Eip YAML configuration, see <a target="_blank" rel="noopener" href="https://openelb.io/docs/getting-started/configuration/configure-ip-address-pools-using-eip/">Configure IP Address Pools Using Eip</a>.</li>
+</ul>
+</blockquote>
+<p>3.Run the following command to create the Eip object:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># kubectl apply -f layer2-eip.yaml</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="三、OpenELB使用"><a href="#三、OpenELB使用" class="headerlink" title="三、OpenELB使用"></a>三、OpenELB使用</h2><h3 id="3-1-在k8s命令行中使用"><a href="#3-1-在k8s命令行中使用" class="headerlink" title="3.1 在k8s命令行中使用"></a>3.1 在k8s命令行中使用</h3><h4 id="3-1-1-Create-a-Deployment"><a href="#3-1-1-Create-a-Deployment" class="headerlink" title="3.1.1 Create a Deployment"></a>3.1.1 Create a Deployment</h4><p>The following creates a Deployment of two Pods using the luksa&#x2F;kubia image. Each Pod returns its own Pod name to external requests.</p>
+<p>1.Run the following command to create a YAML file for the Deployment:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># vim layer2-openelb.yaml</span><br></code></pre></td></tr></table></figure>
+
+<p>2.Add the following information to the YAML file:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 创建普通的dp资源，需要注意你上面创建的EIP在哪个名称空间当中。</span><br>apiVersion: apps/v1<br>kind: Deployment<br>metadata:<br>  name: layer2<span class="hljs-literal">-openelb</span><br>spec:<br>  replicas: <span class="hljs-number">2</span><br>  selector:<br>    matchLabels:<br>      app: layer2<span class="hljs-literal">-openelb</span><br>  template:<br>    metadata:<br>      labels:<br>        app: layer2<span class="hljs-literal">-openelb</span><br>    spec:<br>      containers:<br>        - image: luksa/kubia<br>          name: kubia<br>          ports:<br>            - containerPort: <span class="hljs-number">8080</span><br></code></pre></td></tr></table></figure>
+
+<p>3.Run the following command to create the Deployment:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># kubectl apply -f layer2-openelb.yaml</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="3-1-2-Create-a-Service"><a href="#3-1-2-Create-a-Service" class="headerlink" title="3.1.2 Create a Service"></a>3.1.2 Create a Service</h4><p>1.Run the following command to create a YAML file for the Service:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># vim layer2-svc.yaml</span><br></code></pre></td></tr></table></figure>
+
+<p>2.Add the following information to the YAML file:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs powershell">	kind: Service<br>apiVersion: v1<br>metadata:<br>  name: layer2<span class="hljs-literal">-svc</span><br>  annotations:<br>    lb.kubesphere.io/v1alpha1: openelb<br>    protocol.openelb.kubesphere.io/v1alpha1: layer2<br>    eip.openelb.kubesphere.io/v1alpha2: layer2<span class="hljs-literal">-eip</span><br>spec:<br>  selector:<br>    app: layer2<span class="hljs-literal">-openelb</span><br>  <span class="hljs-built_in">type</span>: LoadBalancer<br>  ports:<br>    - name: http<br>      port: <span class="hljs-number">80</span><br>      targetPort: <span class="hljs-number">8080</span><br>  externalTrafficPolicy: Cluster<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">2024-08-27  包含EIP地址池的使用方法</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">这里使用的是简要版的EIP地址池</span><br><br>kind: Service<br>apiVersion: v1<br>metadata:<br>  name: nginx<br>  namespace: project-test<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">EIP的使用主要是根据注解，如果是在其他的云平台上使用，也可以通过添加注解来达到使用openELB分配的IP地址</span><br>  annotations:<br>    lb.kubesphere.io/v1alpha1: openelb<br>    eip.openelb.kubesphere.io/v1alpha2: layer2-eip<br>spec:<br>  selector:<br>    app: nginx<br><span class="hljs-meta prompt_">  # </span><span class="language-bash">选择分配LoadBalancer</span><br>  type: LoadBalancer<br>  ports:<br>    - name: http<br>      port: 80<br>      targetPort: 80<br>  externalTrafficPolicy: Cluster<br></code></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<ul>
+<li>You must set <code>spec:type</code> to <code>LoadBalancer</code>.</li>
+<li>The <code>lb.kubesphere.io/v1alpha1: openelb</code> annotation specifies that the Service uses OpenELB.</li>
+<li>The <code>protocol.openelb.kubesphere.io/v1alpha1: layer2</code> annotation specifies that OpenELB is used in Layer 2 mode.</li>
+<li>The <code>eip.openelb.kubesphere.io/v1alpha2: layer2-eip</code> annotation specifies the Eip object used by OpenELB. If this annotation is not configured, OpenELB automatically uses the first available Eip object that matches the protocol. You can also delete this annotation and add the <code>spec:loadBalancerIP</code> field (for example, <code>spec:loadBalancerIP: 192.168.0.91</code>) to assign a specific IP address to the Service.</li>
+<li>If <code>spec:externalTrafficPolicy</code> is set to <code>Cluster</code> (default value), OpenELB randomly selects a node from all Kubernetes cluster nodes to handle Service requests. Pods on other nodes can also be reached over kube-proxy.</li>
+<li>If <code>spec:externalTrafficPolicy</code> is set to <code>Local</code>, OpenELB randomly selects a node that contains a Pod in the Kubernetes cluster to handle Service requests. Only Pods on the selected node can be reached.</li>
+</ul>
+</blockquote>
+<p>3.Run the following command to create the Service:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">kubectl apply <span class="hljs-operator">-f</span> layer2<span class="hljs-literal">-svc</span>.yaml<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-1-3-Verify-OpenELB-in-Layer-2-Mode"><a href="#3-1-3-Verify-OpenELB-in-Layer-2-Mode" class="headerlink" title="3.1.3 Verify OpenELB in Layer 2 Mode"></a>3.1.3 Verify OpenELB in Layer 2 Mode</h4><p>In the Kubernetes cluster, run the following command to obtain the external IP address of the Service:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># kubectl get svc</span><br></code></pre></td></tr></table></figure>
+
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="category-chain-item">云原生</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9FOpenELB/" class="print-no-link">#云原生OpenELB</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>OpenELB部署及应用(分配LoadBalancer地址请求)</div>
+      <div>https://b.t-ao.cn/2025/03/19/OpenELB部署及应用-分配LoadBalancer地址请求/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>T-AO</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年3月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/03/19/Kubernetes1-24_1-25%E9%9B%86%E7%BE%A4%E4%BD%BF%E7%94%A8docker%E4%BD%9C%E4%B8%BA%E5%AE%B9%E5%99%A8/" title="Kubernetes1.24/1.25集群使用docker作为容器">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Kubernetes1.24/1.25集群使用docker作为容器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/03/19/Prometheus%E5%9F%BA%E4%BA%8E%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8FConsul%E8%87%AA%E5%8A%A8%E5%8F%91%E7%8E%B0%EF%BC%88consul-sd-configs%EF%BC%89/" title="Prometheus基于集群模式Consul自动发现（consul_sd_configs）">
+                        <span class="hidden-mobile">Prometheus基于集群模式Consul自动发现（consul_sd_configs）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,944 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="T-AO">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、引入helm原因当今的软件开发，随着云原生技术的普及，我们的工程应用进行微服务化和容器化的现象也变得越来越普遍。而Kubernetes几乎已经成了云原生服务编排绕不开的标准和技术。  实际生产中，微服务项目可能有十几个模块，若还需要进行安全访问和控制，那么需要创建诸如Role、ServiceAccount等资源。部署和版本升级时也往往需要修改或添加配置文件中的一些参数（例如：服务占用的CPU、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes集群包管理解决方案-helm">
+<meta property="og:url" content="https://b.t-ao.cn/2025/03/19/Kubernetes%E9%9B%86%E7%BE%A4%E5%8C%85%E7%AE%A1%E7%90%86%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-helm/index.html">
+<meta property="og:site_name" content="T-AO&#39;s Blog">
+<meta property="og:description" content="一、引入helm原因当今的软件开发，随着云原生技术的普及，我们的工程应用进行微服务化和容器化的现象也变得越来越普遍。而Kubernetes几乎已经成了云原生服务编排绕不开的标准和技术。  实际生产中，微服务项目可能有十几个模块，若还需要进行安全访问和控制，那么需要创建诸如Role、ServiceAccount等资源。部署和版本升级时也往往需要修改或添加配置文件中的一些参数（例如：服务占用的CPU、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.t-ao.cn/usr/uploads/2024/06/754913602.png">
+<meta property="og:image" content="https://www.t-ao.cn/usr/uploads/2024/06/3728478168.png">
+<meta property="og:image" content="https://www.t-ao.cn/usr/uploads/2024/06/1773491326.png">
+<meta property="og:image" content="https://www.t-ao.cn/usr/uploads/2024/06/1791632736.png">
+<meta property="og:image" content="https://www.t-ao.cn/usr/uploads/2024/06/1791632736.png">
+<meta property="og:image" content="https://www.t-ao.cn/usr/uploads/2024/06/2878045302.png">
+<meta property="og:image" content="https://www.t-ao.cn/usr/uploads/2024/06/579956143.png">
+<meta property="article:published_time" content="2025-03-19T03:13:00.000Z">
+<meta property="article:modified_time" content="2025-03-19T03:32:42.386Z">
+<meta property="article:author" content="T-AO">
+<meta property="article:tag" content="Kubernetes-helm">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.t-ao.cn/usr/uploads/2024/06/754913602.png">
+  
+  
+  
+  <title>Kubernetes集群包管理解决方案-helm - T-AO&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"b.t-ao.cn","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>T-AO</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>常用站点</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Kubernetes集群包管理解决方案-helm"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-03-19 11:13" pubdate>
+          2025年3月19日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Kubernetes集群包管理解决方案-helm</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h5 id="一、引入helm原因"><a href="#一、引入helm原因" class="headerlink" title="一、引入helm原因"></a>一、引入helm原因</h5><pre><code class="hljs">当今的软件开发，随着云原生技术的普及，我们的工程应用进行微服务化和容器化的现象也变得越来越普遍。而Kubernetes几乎已经成了云原生服务编排绕不开的标准和技术。
+
+实际生产中，微服务项目可能有十几个模块，若还需要进行安全访问和控制，那么需要创建诸如Role、ServiceAccount等资源。部署和版本升级时也往往需要修改或添加配置文件中的一些参数（例如：服务占用的CPU、内存、副本数、端口等），维护大量的yaml文件极为不便，所以，我们需要将这些YAML文件作为一个**整体**管理，并高效复用。
+</code></pre>
+<ul>
+<li>在Linux操作系统软件部署中，我们可以使用批量管理工具完成软件的批量管理等，例如yum、dnf等；</li>
+<li>在容器应用中Docker使用Dockerfile文件解决了容器镜像制作难题；</li>
+<li>在kubernetes应用中，通过YAML格式文件解决容器编排部署难题，例如可以通过YAML格式的资源清单文件，非常方便部署不同控制器类型的应用;但是如何维护大量的，系统性的YAML文件，需要我们拥有更好的工具，不能简单使用YAML资源清单托管服务器就可以解决的。</li>
+</ul>
+<h5 id="二、helm是什么"><a href="#二、helm是什么" class="headerlink" title="二、helm是什么"></a>二、helm是什么</h5><ul>
+<li><p>官方: <a target="_blank" rel="noopener" href="https://helm.sh/">https://helm.sh/</a></p>
+</li>
+<li><p>作为CNCF的毕业项目。它的官方的定义是：Helm是一个为K8s进行包管理的工具</p>
+</li>
+</ul>
+<ul>
+<li>Helm(舵柄; 舵轮)是一个Kubernetes的包管理工具，就像Linux下的包管理器，如yum&#x2F;apt等。</li>
+<li>helm一个命令行客户端工具，主要用于Kubernetes应用chart的创建、打包、发布和管理。</li>
+<li>通过helm可以很方便的将之前打包好的yaml文件部署到kubernetes上。</li>
+<li>对于应用发布者而言，可以通过Helm打包应用，管理应用依赖关系，管理应用版本并发布应用到软件仓库。</li>
+<li>对于使用者而言，使用Helm后不用需要了解Kubernetes的Yaml语法并编写应用部署文件，可以通过Helm下载并在kubernetes上安装需要的应用。</li>
+<li>除此以外，Helm还提供了kubernetes上的软件部署，删除，升级，回滚应用的强大功能。</li>
+<li>Helm 社区已经维护了一个官方 Helm Hub，我们可以直接使用已经做好的 Helm Chart，部署和管理比较复杂的应用程序</li>
+<li>早期的hub.helm.dev转移到了<a target="_blank" rel="noopener" href="https://artifacthub.io/%E3%80%82">https://artifacthub.io/。</a></li>
+</ul>
+<h5 id="三、helm作用及核心概念"><a href="#三、helm作用及核心概念" class="headerlink" title="三、helm作用及核心概念"></a>三、helm作用及核心概念</h5><pre><code class="hljs">Helm基于go模板语言，用户只要提供规定的目录结构和模板文件。在真正部署时Helm模板引擎便可以将其渲染成真正的K8s资源配置文件，并按照正确的顺序将它们部署到节点上。
+</code></pre>
+<h6 id="Helm中有三个重要概念，分别为Chart、Repository和Release。"><a href="#Helm中有三个重要概念，分别为Chart、Repository和Release。" class="headerlink" title="Helm中有三个重要概念，分别为Chart、Repository和Release。"></a><strong>Helm中有三个重要概念，分别为Chart、Repository和Release。</strong></h6><ul>
+<li><p>Chart代表中Helm包。它包含在K8s集群内部运行应用程序，工具或服务所需的所有资源定义，为所有项目资源清单yaml文件的集合，采用TAR格式，可以类比成yum中的RPM。</p>
+</li>
+<li><p>Repository就是用来存放和共享Chart的地方，可以类比成YUM仓库。</p>
+</li>
+<li><p>Release是运行在K8s集群中的Chart的实例(<strong>部署时候起的名字)</strong>，一个Chart可以在同一个集群中安装多次。Chart就像流水线中初始化好的模板，Release就是这个“模板”所生产出来的各个产品。</p>
+</li>
+</ul>
+<h5 id="三、helm架构"><a href="#三、helm架构" class="headerlink" title="三、helm架构"></a>三、helm架构</h5><pre><code class="hljs">v2版本的时候需要在k8s集群当中安装一个Tiller服务，在v3版本当中，直接使用kubeconfig与apiserver进行对话。
+</code></pre>
+<p><img src="https://www.t-ao.cn/usr/uploads/2024/06/754913602.png" srcset="/img/loading.gif" lazyload alt="image-20220728135524226.png"></p>
+<p>Helm客户端使用<strong>REST+JSON</strong>的方式与K8s中的apiserver进行交互，进而管理deployment、service等资源，并且客户端本身并不需要数据库，它会把相关的信息储存在K8s集群内的Secrets中。</p>
+<p><img src="https://www.t-ao.cn/usr/uploads/2024/06/3728478168.png" srcset="/img/loading.gif" lazyload alt="image-20220728140109073.png"></p>
+<h5 id="四、helm部署"><a href="#四、helm部署" class="headerlink" title="四、helm部署"></a>四、helm部署</h5><p><img src="https://www.t-ao.cn/usr/uploads/2024/06/1773491326.png" srcset="/img/loading.gif" lazyload alt="image-20220728140501620.png"><br><img src="https://www.t-ao.cn/usr/uploads/2024/06/1791632736.png" srcset="/img/loading.gif" lazyload alt="image-20220728140538044.png"><br><img src="https://www.t-ao.cn/usr/uploads/2024/06/1791632736.png" srcset="/img/loading.gif" lazyload alt="image-20220728140538044.png"><br><img src="https://www.t-ao.cn/usr/uploads/2024/06/2878045302.png" srcset="/img/loading.gif" lazyload alt="image-20220728141000714.png"><br><img src="https://www.t-ao.cn/usr/uploads/2024/06/579956143.png" srcset="/img/loading.gif" lazyload alt="image-20220728141101419.png"></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># wget https://get.helm.sh/helm-v3.9.2-linux-amd64.tar.gz</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment">#  ls</span><br>helm<span class="hljs-literal">-v3</span>.<span class="hljs-number">9.2</span><span class="hljs-literal">-linux-amd64</span>.tar.gz<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># tar xf helm-v3.9.2-linux-amd64.tar.gz</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># ls</span><br>linux<span class="hljs-literal">-amd64</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># cd linux-amd64/</span><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">linux</span>-<span class="hljs-type">amd64</span>]<span class="hljs-comment"># ls</span><br>helm  LICENSE  README.md<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">linux</span>-<span class="hljs-type">amd64</span>]<span class="hljs-comment"># mv helm /usr/bin</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">linux</span>-<span class="hljs-type">amd64</span>]<span class="hljs-comment"># helm version</span><br>version.BuildInfo&#123;Version:<span class="hljs-string">&quot;v3.9.2&quot;</span>, GitCommit:<span class="hljs-string">&quot;1addefbfe665c350f4daf868a9adc5600cc064fd&quot;</span>, GitTreeState:<span class="hljs-string">&quot;clean&quot;</span>, GoVersion:<span class="hljs-string">&quot;go1.17.12&quot;</span>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h5 id="五、helm基础使用"><a href="#五、helm基础使用" class="headerlink" title="五、helm基础使用"></a>五、helm基础使用</h5><h6 id="5-1-添加及删除仓库"><a href="#5-1-添加及删除仓库" class="headerlink" title="5.1 添加及删除仓库"></a>5.1 添加及删除仓库</h6><h6 id="5-1-1-查看仓库"><a href="#5-1-1-查看仓库" class="headerlink" title="5.1.1 查看仓库"></a>5.1.1 查看仓库</h6><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">master1</span> ~]<span class="hljs-comment"># helm repo list</span><br>Error: no repositories to show<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-1-2-添加新的仓库地址"><a href="#5-1-2-添加新的仓库地址" class="headerlink" title="5.1.2 添加新的仓库地址"></a>5.1.2 添加新的仓库地址</h6><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs powershell">微软源<br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm repo add stable http://mirror.azure.cn/kubernetes/charts/</span><br><br>bitnami源  <br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm repo add bitnami https://charts.bitnami.com/bitnami</span><br><br>prometheus源<br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm repo add prometheus-community https://prometheus-community.github.io/helm-charts</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-1-3-查看已经添加的仓库"><a href="#5-1-3-查看已经添加的仓库" class="headerlink" title="5.1.3 查看已经添加的仓库"></a>5.1.3 查看已经添加的仓库</h6><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm repo list</span><br>NAME    URL<br>stable  http://mirror.azure.cn/kubernetes/charts/<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-1-4-更新仓库"><a href="#5-1-4-更新仓库" class="headerlink" title="5.1.4 更新仓库"></a>5.1.4 更新仓库</h6><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm repo update</span><br>Hang tight <span class="hljs-keyword">while</span> we grab the latest from your chart repositories...<br>...Successfully got an update from the <span class="hljs-string">&quot;stable&quot;</span> chart repository<br>Update Complete. ⎈Happy Helming!⎈<br></code></pre></td></tr></table></figure>
+
+<h6 id="5-2-查看charts"><a href="#5-2-查看charts" class="headerlink" title="5.2 查看charts"></a>5.2 查看charts</h6><p>使用<code>helm search repo 关键字</code>可以查看相关charts</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm search repo stable</span><br>NAME                                    CHART VERSION   APP VERSION             DESCRIPTION<br>stable/acs<span class="hljs-literal">-engine-autoscaler</span>            <span class="hljs-number">2.2</span>.<span class="hljs-number">2</span>           <span class="hljs-number">2.1</span>.<span class="hljs-number">1</span>                   DEPRECATED Scales worker nodes within agent pools<br>stable/aerospike                        <span class="hljs-number">0.3</span>.<span class="hljs-number">5</span>           v4.<span class="hljs-number">5.0</span>.<span class="hljs-number">5</span>                DEPRECATED A Helm chart <span class="hljs-keyword">for</span> Aerospike <span class="hljs-keyword">in</span> Kubern...<br>stable/airflow                          <span class="hljs-number">7.13</span>.<span class="hljs-number">3</span>          <span class="hljs-number">1.10</span>.<span class="hljs-number">12</span>                 DEPRECATED - please use: https://github.com/air...<br>stable/ambassador                       <span class="hljs-number">5.3</span>.<span class="hljs-number">2</span>           <span class="hljs-number">0.86</span>.<span class="hljs-number">1</span>                  DEPRECATED A Helm chart <span class="hljs-keyword">for</span> Datawire Ambassador<br>stable/anchore<span class="hljs-literal">-engine</span>                   <span class="hljs-number">1.7</span>.<span class="hljs-number">0</span>           <span class="hljs-number">0.7</span>.<span class="hljs-number">3</span>                   Anchore container analysis and policy evaluatio...<br>stable/apm<span class="hljs-literal">-server</span>                       <span class="hljs-number">2.1</span>.<span class="hljs-number">7</span>           <span class="hljs-number">7.0</span>.<span class="hljs-number">0</span>                   DEPRECATED The server receives <span class="hljs-keyword">data</span> from the El...<br>stable/ark                              <span class="hljs-number">4.2</span>.<span class="hljs-number">2</span>           <span class="hljs-number">0.10</span>.<span class="hljs-number">2</span>                  DEPRECATED A Helm chart <span class="hljs-keyword">for</span> ark<br>stable/artifactory                      <span class="hljs-number">7.3</span>.<span class="hljs-number">2</span>           <span class="hljs-number">6.1</span>.<span class="hljs-number">0</span>                   DEPRECATED Universal Repository Manager support...<br>stable/artifactory<span class="hljs-literal">-ha</span>                   <span class="hljs-number">0.4</span>.<span class="hljs-number">2</span>           <span class="hljs-number">6.2</span>.<span class="hljs-number">0</span>                   DEPRECATED Universal Repository Manager support...<br>stable/atlantis                         <span class="hljs-number">3.12</span>.<span class="hljs-number">4</span>          v0.<span class="hljs-number">14.0</span>                 DEPRECATED A Helm chart <span class="hljs-keyword">for</span> Atlantis https://ww...<br>stable/auditbeat                        <span class="hljs-number">1.1</span>.<span class="hljs-number">2</span>           <span class="hljs-number">6.7</span>.<span class="hljs-number">0</span>                   DEPRECATED A lightweight shipper to audit the a...<br>stable/aws<span class="hljs-literal">-cluster-autoscaler</span>           <span class="hljs-number">0.3</span>.<span class="hljs-number">4</span>                                   DEPRECATED Scales worker nodes within autoscali...<br>stable/aws<span class="hljs-literal">-iam-authenticator</span>            <span class="hljs-number">0.1</span>.<span class="hljs-number">5</span>           <span class="hljs-number">1.0</span>                     DEPRECATED A Helm chart <span class="hljs-keyword">for</span> aws<span class="hljs-literal">-iam-authenticator</span><br>stable/bitcoind                         <span class="hljs-number">1.0</span>.<span class="hljs-number">2</span>           <span class="hljs-number">0.17</span>.<span class="hljs-number">1</span>                  DEPRECATED Bitcoin is an innovative payment net...<br>stable/bookstack                        <span class="hljs-number">1.2</span>.<span class="hljs-number">4</span>           <span class="hljs-number">0.27</span>.<span class="hljs-number">5</span>                  DEPRECATED BookStack is a simple, self<span class="hljs-literal">-hosted</span>, ...<br>......<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm search repo nginx</span><br>NAME                            CHART VERSION   APP VERSION     DESCRIPTION<br>stable/nginx<span class="hljs-literal">-ingress</span>            <span class="hljs-number">1.41</span>.<span class="hljs-number">3</span>          v0.<span class="hljs-number">34.1</span>         DEPRECATED! An nginx Ingress controller that us...<br>stable/nginx<span class="hljs-literal">-ldapauth-proxy</span>     <span class="hljs-number">0.1</span>.<span class="hljs-number">6</span>           <span class="hljs-number">1.13</span>.<span class="hljs-number">5</span>          DEPRECATED - nginx proxy with ldapauth<br>stable/nginx<span class="hljs-literal">-lego</span>               <span class="hljs-number">0.3</span>.<span class="hljs-number">1</span>                           Chart <span class="hljs-keyword">for</span> nginx<span class="hljs-literal">-ingress-controller</span> and kube<span class="hljs-literal">-lego</span><br>stable/gcloud<span class="hljs-literal">-endpoints</span>         <span class="hljs-number">0.1</span>.<span class="hljs-number">2</span>           <span class="hljs-number">1</span>               DEPRECATED Develop, deploy, protect and monitor...<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm search repo tomcat</span><br>NAME            CHART VERSION   APP VERSION     DESCRIPTION<br>stable/tomcat   <span class="hljs-number">0.4</span>.<span class="hljs-number">3</span>           <span class="hljs-number">7.0</span>             DEPRECATED - Deploy a basic tomcat application ...<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-3-部署应用-MySQL"><a href="#5-3-部署应用-MySQL" class="headerlink" title="5.3 部署应用 MySQL"></a>5.3 部署应用 MySQL</h6><blockquote>
+<p>环境说明：k8s集群中存在storageclass:nfs-client</p>
+</blockquote>
+<p>我们现在安装一个 <code>mysql</code> 应用：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm search repo mysql</span><br>NAME                                    CHART VERSION   APP VERSION     DESCRIPTION<br>stable/mysql                            <span class="hljs-number">1.6</span>.<span class="hljs-number">9</span>           <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span>          DEPRECATED - Fast, reliable, scalable, and easy...<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># --generate-name 自动生成部署的release</span><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm install stable/mysql --generate-name  --set persistence.storageClass=nfs-client --set mysqlRootPassword=test123</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs powershell">部署过程输出的信息：<br>NAME: mysql<span class="hljs-literal">-1658996042</span><br>LAST DEPLOYED: Thu Jul <span class="hljs-number">28</span> <span class="hljs-number">16</span>:<span class="hljs-number">14</span>:<span class="hljs-number">03</span> <span class="hljs-number">2022</span><br>NAMESPACE: default<br>STATUS: deployed<br>REVISION: <span class="hljs-number">1</span><br>NOTES:<br>MySQL can be accessed via port <span class="hljs-number">3306</span> on the following DNS name from within your cluster:<br>mysql<span class="hljs-literal">-1658996042</span>.default.svc.cluster.local<br><br>To get your root password run:<br><br>    MYSQL_ROOT_PASSWORD=<span class="hljs-variable">$</span>(kubectl get secret <span class="hljs-literal">--namespace</span> default mysql<span class="hljs-literal">-1658996042</span> <span class="hljs-literal">-o</span> jsonpath=<span class="hljs-string">&quot;&#123;.data.mysql-root-password&#125;&quot;</span> | base64 <span class="hljs-literal">--decode</span>; <span class="hljs-built_in">echo</span>)<br><br>To connect to your database:<br><br><span class="hljs-number">1</span>. Run an Ubuntu pod that you can use as a client:<br><br>    kubectl run <span class="hljs-literal">-i</span> <span class="hljs-literal">--tty</span> ubuntu <span class="hljs-literal">--image</span>=ubuntu:<span class="hljs-number">16.04</span> <span class="hljs-literal">--restart</span>=Never <span class="hljs-literal">--</span> bash <span class="hljs-literal">-il</span><br><br><span class="hljs-number">2</span>. Install the mysql client:<br><br>    <span class="hljs-variable">$</span> apt<span class="hljs-literal">-get</span> update &amp;&amp; apt<span class="hljs-literal">-get</span> install mysql<span class="hljs-literal">-client</span> <span class="hljs-literal">-y</span><br><br><span class="hljs-number">3</span>. Connect <span class="hljs-keyword">using</span> the mysql cli, then provide your password:<br>    <span class="hljs-variable">$</span> mysql <span class="hljs-literal">-h</span> mysql<span class="hljs-literal">-1658996042</span> <span class="hljs-literal">-p</span><br><br>To connect to your database directly from outside the K8s cluster:<br>    MYSQL_HOST=<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span><br>    MYSQL_PORT=<span class="hljs-number">3306</span><br><br>    <span class="hljs-comment"># Execute the following command to route the connection:</span><br>    kubectl port<span class="hljs-literal">-forward</span> svc/mysql<span class="hljs-literal">-1658996042</span> <span class="hljs-number">3306</span><br><br>    mysql <span class="hljs-literal">-h</span> <span class="hljs-variable">$</span>&#123;MYSQL_HOST&#125; <span class="hljs-literal">-P</span><span class="hljs-variable">$</span>&#123;MYSQL_PORT&#125; <span class="hljs-literal">-u</span> root <span class="hljs-literal">-p</span><span class="hljs-variable">$</span>&#123;MYSQL_ROOT_PASSWORD&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 查看helm已经安装的release（这个release是部署时候的应用名称）</span><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm list</span><br>NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION<br><br>mysql<span class="hljs-literal">-1658996042</span>        default         <span class="hljs-number">1</span>               <span class="hljs-number">2022</span><span class="hljs-literal">-07-28</span> <span class="hljs-number">16</span>:<span class="hljs-number">14</span>:<span class="hljs-number">03.530489788</span> +<span class="hljs-number">0800</span> CST deployed        mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>     <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># kubectl get pods</span><br>NAME                                     READY   STATUS    RESTARTS   AGE<br>mysql<span class="hljs-literal">-1658996042-755f5f64f6-j5s67</span>        <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">82</span>s<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># kubectl get pvc</span><br>NAME               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE<br>mysql<span class="hljs-literal">-1658996042</span>   Bound    pvc<span class="hljs-literal">-7fcb894e-5b8c-4f3e-945d-21b60b9309e5</span>   <span class="hljs-number">8</span><span class="hljs-built_in">Gi</span>        RWO            nfs<span class="hljs-literal">-client</span>     <span class="hljs-number">93</span>s<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># kubectl get pv</span><br>NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                      STORAGECLASS   REASON   AGE<br>pvc<span class="hljs-literal">-7fcb894e-5b8c-4f3e-945d-21b60b9309e5</span>   <span class="hljs-number">8</span><span class="hljs-built_in">Gi</span>        RWO            Delete           Bound    default/mysql<span class="hljs-literal">-1658996042</span>   nfs<span class="hljs-literal">-client</span>              <span class="hljs-number">97</span>s<br></code></pre></td></tr></table></figure>
+
+
+
+<p><strong>一个 chart 包是可以多次安装到同一个集群中的，每次安装都会产生一个release, 每个release都可以独立管理和升级。</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm install stable/mysql --generate-name  --set persistence.storageClass=nfs-client --set mysqlRootPassword=root</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm ls</span><br>NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION<br>mysql<span class="hljs-literal">-1658996042</span>        default         <span class="hljs-number">1</span>               <span class="hljs-number">2022</span><span class="hljs-literal">-07-28</span> <span class="hljs-number">16</span>:<span class="hljs-number">14</span>:<span class="hljs-number">03.530489788</span> +<span class="hljs-number">0800</span> CST deployed        mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>     <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span><br>mysql<span class="hljs-literal">-1658996297</span>        default         <span class="hljs-number">1</span>               <span class="hljs-number">2022</span><span class="hljs-literal">-07-28</span> <span class="hljs-number">16</span>:<span class="hljs-number">18</span>:<span class="hljs-number">19.282074215</span> +<span class="hljs-number">0800</span> CST deployed        mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>     <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># kubectl get pods</span><br>NAME                                     READY   STATUS    RESTARTS   AGE<br>mysql<span class="hljs-literal">-1658996042-755f5f64f6-j5s67</span>        <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">45</span>m<br>mysql<span class="hljs-literal">-1658996297-75f6f86d84-5qd8r</span>        <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">41</span>m<br>nfs<span class="hljs-literal">-client-provisioner-9d46587b5-7n2vf</span>   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">123</span>m<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># kubectl exec -it mysql-1658996042-755f5f64f6-j5s67 -- bash</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs powershell">root@mysql<span class="hljs-literal">-1658996042-755f5f64f6-j5s67</span>:/<span class="hljs-comment"># mysql -uroot -ptest123</span><br>mysql: [<span class="hljs-type">Warning</span>] <span class="hljs-keyword">Using</span> a password on the <span class="hljs-keyword">command</span> line interface can be insecure.<br>Welcome to the MySQL monitor.  Commands <span class="hljs-keyword">end</span> with ; or \g.<br>Your MySQL connection id is <span class="hljs-number">547</span><br>Server version: <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span> MySQL Community Server (GPL)<br><br>Copyright (c) <span class="hljs-number">2000</span>, <span class="hljs-number">2020</span>, Oracle and/or its affiliates. All rights reserved.<br><br>Oracle is a registered trademark of Oracle Corporation and/or its<br>affiliates. Other names may be trademarks of their respective<br>owners.<br><br><span class="hljs-built_in">Type</span> <span class="hljs-string">&#x27;help;&#x27;</span> or <span class="hljs-string">&#x27;\h&#x27;</span> <span class="hljs-keyword">for</span> help. <span class="hljs-built_in">Type</span> <span class="hljs-string">&#x27;\c&#x27;</span> to <span class="hljs-built_in">clear</span> the current input statement.<br><br>mysql&gt; show databases;<br>+<span class="hljs-literal">--------------------</span>+<br>| Database           |<br>+<span class="hljs-literal">--------------------</span>+<br>| information_schema |<br>| mysql              |<br>| performance_schema |<br>| sys                |<br>+<span class="hljs-literal">--------------------</span>+<br><span class="hljs-number">4</span> rows <span class="hljs-keyword">in</span> <span class="hljs-built_in">set</span> (<span class="hljs-number">0.01</span> sec)<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-4-查看chart资源"><a href="#5-4-查看chart资源" class="headerlink" title="5.4 查看chart资源"></a>5.4 查看chart资源</h6><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># kubectl get all -l release=mysql-1658996042</span><br>NAME                                    READY   STATUS    RESTARTS   AGE<br>pod/mysql<span class="hljs-literal">-1658996042-755f5f64f6-j5s67</span>   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">72</span>m<br><br>NAME                       <span class="hljs-built_in">TYPE</span>        CLUSTER<span class="hljs-literal">-IP</span>    EXTERNAL<span class="hljs-literal">-IP</span>   PORT(S)    AGE<br>service/mysql<span class="hljs-literal">-1658996042</span>   ClusterIP   <span class="hljs-number">10.96</span>.<span class="hljs-number">2.136</span>   &lt;none&gt;        <span class="hljs-number">3306</span>/TCP   <span class="hljs-number">72</span>m<br><br>NAME                               READY   UP<span class="hljs-literal">-TO-DATE</span>   AVAILABLE   AGE<br>deployment.apps/mysql<span class="hljs-literal">-1658996042</span>   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     <span class="hljs-number">1</span>            <span class="hljs-number">1</span>           <span class="hljs-number">72</span>m<br><br>NAME                                          DESIRED   CURRENT   READY   AGE<br>replicaset.apps/mysql<span class="hljs-literal">-1658996042-755f5f64f6</span>   <span class="hljs-number">1</span>         <span class="hljs-number">1</span>         <span class="hljs-number">1</span>       <span class="hljs-number">72</span>m<br></code></pre></td></tr></table></figure>
+
+
+
+<p>我们也可以 <code>helm show chart</code> 命令来了解 MySQL 这个 chart 包的一些特性：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm show chart stable/mysql</span><br>apiVersion: v1<br>appVersion: <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span><br>deprecated: true<br>description: DEPRECATED - Fast, reliable, scalable, and easy to use <span class="hljs-built_in">open-source</span> relational<br>  database system.<br>home: https://www.mysql.com/<br>icon: https://www.mysql.com/common/logos/logo<span class="hljs-literal">-mysql-170x115</span>.png<br>keywords:<br>- mysql<br>- database<br>- sql<br>name: mysql<br>sources:<br>- https://github.com/kubernetes/charts<br>- https://github.com/docker<span class="hljs-literal">-library</span>/mysql<br>version: <span class="hljs-number">1.6</span>.<span class="hljs-number">9</span><br></code></pre></td></tr></table></figure>
+
+<p>如果想要了解更多信息，可以用 <code>helm show all</code> 命令：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm show all stable/mysql</span><br>......<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs shell">helm show chart 是 Helm 命令行工具中的一个命令，用于展示 Chart 的详细信息。Chart 是 Helm 用来打包 Kubernetes 资源的一个概念，它包含了部署一个应用到 Kubernetes 集群所需的所有必要配置文件和依赖。当你运行 helm show chart [chart-name] 命令时，Helm 会输出指定 Chart 包含的元数据和结构信息，这对于理解和验证 Chart 的内容以及其设计方式非常有帮助。下面是该命令显示内容的一些关键部分解析：<br><br>Chart.yaml: 这是 Chart 的主要元数据文件，helm show chart 会显示这个文件的内容。它包括但不限于以下信息：<br><br>name: Chart 的名称。<br>version: Chart 的版本。<br>description: Chart 的简短描述。<br>keywords: 与 Chart 相关的关键词列表。<br>home: Chart 的项目主页 URL。<br>sources: Chart 源代码的 URL 列表。<br>maintainers: 维护者的信息列表，包括名字、电子邮件和角色。<br>dependencies: 本 Chart 依赖的其他 Chart 列表。<br>values.yaml（部分显示或引用）: 这个文件定义了 Chart 的默认配置值。虽然 helm show chart 不会直接完整显示这个文件的内容，但它可能会提到或引用某些默认值，特别是在描述如何使用或自定义 Chart 时。values.yaml 包含了所有可配置项及其默认值，用户可以通过 Helm 的值覆盖功能来修改这些值。<br><br>Templates: 虽然 helm show chart 不会直接展示模板文件的全部内容，它通常会概述模板目录的存在及其重要性。模板目录包含了一系列的 YAML 文件，这些文件使用 Go 模板语言编写，用于生成最终部署到 Kubernetes 的资源配置文件。每个模板文件对应 Kubernetes 中的一种资源类型，如 Deployment、Service、ConfigMap 等，并可以根据 values.yaml 中的值动态生成。<br><br>Chart 的目录结构: 输出可能还会简要介绍 Chart 目录的基本结构，包括但不限于 templates、charts（存放依赖 Chart 的目录）、files（用于存放静态文件）等。<br><br>说明和提示: 在某些情况下，如果 Chart 开发者在 Chart.yaml 或 README 文件中包含了额外的说明或安装提示，helm show chart 输出也可能包含这些信息，帮助用户更好地理解如何使用或配置该 Chart。<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-5-删除Release"><a href="#5-5-删除Release" class="headerlink" title="5.5 删除Release"></a>5.5 删除Release</h6><p>如果需要删除这个 release，也很简单，只需要使用 <code>helm uninstall</code>或<code>helm delete</code> 命令即可：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm uninstall mysql-1605195227</span><br>release <span class="hljs-string">&quot;mysql-1605195227&quot;</span> uninstalled<br></code></pre></td></tr></table></figure>
+
+<p><code>uninstall</code> 命令会从 Kubernetes 中删除 release，也会删除与 release 相关的所有 Kubernetes 资源以及 release 历史记录。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm ls</span><br>NAME              NAMESPACE     REVISION     UPDATED    STATUS        CHART           APP VERSION<br>mysql<span class="hljs-literal">-1605192239</span>     default     <span class="hljs-number">1</span>        .........     deployed      mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>       <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span><br></code></pre></td></tr></table></figure>
+
+<p>在删除的时候使用 <code>--keep-history</code> 参数，则会保留 release 的历史记录，该 release 的状态就是 <code>UNINSTALLED</code>，</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm uninstall mysql-1605192239 --keep-history</span><br>release <span class="hljs-string">&quot;mysql-1605192239&quot;</span> uninstalled<br><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm ls -a</span><br>NAME                    NAMESPACE       REVISION        UPDATED     STATUS        CHART     APP VERSION<br>mysql<span class="hljs-literal">-1605192239</span>        default         <span class="hljs-number">1</span>              ........    uninstalled     mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>     <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span><br>状态为uninstalled<br></code></pre></td></tr></table></figure>
+
+
+
+<p>审查历史时甚至可以取消删除<code>release</code>。</p>
+<p><code>Usage:  helm rollback &lt;RELEASE&gt; [REVISION] [flags]</code></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm rollback mysql-1605192239 1</span><br>Rollback was a success! Happy Helming!<br><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm ls</span><br>NAME              NAMESPACE     REVISION     UPDATED    STATUS        CHART           APP VERSION<br>mysql<span class="hljs-literal">-1605192239</span>     default     <span class="hljs-number">2</span>        .........     deployed      mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>       <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span><br>rollback后，又回到deployed状态<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-6-定制参数部署应用"><a href="#5-6-定制参数部署应用" class="headerlink" title="5.6 定制参数部署应用"></a>5.6 定制参数部署应用</h6><p>上面我们都是直接使用的 <code>helm install</code> 命令安装的 chart 包，这种情况下只会使用 chart 的默认配置选项，但是更多的时候，是各种各样的需求，所以我们希望根据自己的需求来定制 chart 包的配置参数。</p>
+<p>我们可以使用 <code>helm show values</code> 命令来查看一个 chart 包的所有可配置的参数选项：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm show values stable/mysql</span><br>......<br>......<br></code></pre></td></tr></table></figure>
+
+<p>上面我们看到的所有参数都是可以用自己的数据来覆盖的，可以在安装的时候通过 YAML 格式的文件来传递这些参数</p>
+<p>1，准备参数文件</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># vim mysql-config.yml</span><br>mysqlDatabase: helm<br>persistence:<br>  enabled: true  <span class="hljs-comment"># 没有存储卷情况下，改为false</span><br>  storageClass: nfs<span class="hljs-literal">-client</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>2, 使用<code>-f mysql-config.yml</code>安装应用并覆盖参数</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm install mysql -f mysql-config.yml stable/mysql</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs powershell">输出内容：<br><br>NAME: mysql<br>LAST DEPLOYED: Fri Jul <span class="hljs-number">29</span> <span class="hljs-number">14</span>:<span class="hljs-number">07</span>:<span class="hljs-number">17</span> <span class="hljs-number">2022</span><br>NAMESPACE: default<br>STATUS: deployed<br>REVISION: <span class="hljs-number">1</span><br>NOTES:<br>MySQL can be accessed via port <span class="hljs-number">3306</span> on the following DNS name from within your cluster:<br>mysql.default.svc.cluster.local<br><br>To get your root password run:<br><br>    MYSQL_ROOT_PASSWORD=<span class="hljs-variable">$</span>(kubectl get secret <span class="hljs-literal">--namespace</span> default mysql <span class="hljs-literal">-o</span> jsonpath=<span class="hljs-string">&quot;&#123;.data.mysql-root-password&#125;&quot;</span> | base64 <span class="hljs-literal">--decode</span>; <span class="hljs-built_in">echo</span>)<br><br>To connect to your database:<br><br><span class="hljs-number">1</span>. Run an Ubuntu pod that you can use as a client:<br><br>    kubectl run <span class="hljs-literal">-i</span> <span class="hljs-literal">--tty</span> ubuntu <span class="hljs-literal">--image</span>=ubuntu:<span class="hljs-number">16.04</span> <span class="hljs-literal">--restart</span>=Never <span class="hljs-literal">--</span> bash <span class="hljs-literal">-il</span><br><br><span class="hljs-number">2</span>. Install the mysql client:<br><br>    <span class="hljs-variable">$</span> apt<span class="hljs-literal">-get</span> update &amp;&amp; apt<span class="hljs-literal">-get</span> install mysql<span class="hljs-literal">-client</span> <span class="hljs-literal">-y</span><br><br><span class="hljs-number">3</span>. Connect <span class="hljs-keyword">using</span> the mysql cli, then provide your password:<br>    <span class="hljs-variable">$</span> mysql <span class="hljs-literal">-h</span> mysql <span class="hljs-literal">-p</span><br><br>To connect to your database directly from outside the K8s cluster:<br>    MYSQL_HOST=<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span><br>    MYSQL_PORT=<span class="hljs-number">3306</span><br><br>    <span class="hljs-comment"># Execute the following command to route the connection:</span><br>    kubectl port<span class="hljs-literal">-forward</span> svc/mysql <span class="hljs-number">3306</span><br><br>    mysql <span class="hljs-literal">-h</span> <span class="hljs-variable">$</span>&#123;MYSQL_HOST&#125; <span class="hljs-literal">-P</span><span class="hljs-variable">$</span>&#123;MYSQL_PORT&#125; <span class="hljs-literal">-u</span> root <span class="hljs-literal">-p</span><span class="hljs-variable">$</span>&#123;MYSQL_ROOT_PASSWORD&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>3, 查看覆盖的参数</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 这是查看除了默认的配置之外自己配置的，但是部署mysql的时候是--set指定的，如果是直接部署，没有任何的指定，获取values的值为空</span><br>[<span class="hljs-type">root</span>@<span class="hljs-type">master</span> ~]<span class="hljs-comment"># helm get values mysql</span><br>USER<span class="hljs-literal">-SUPPLIED</span> VALUES:<br>mysqlDatabase: helm<br>persistence:<br>  enabled: true<br>  storageClass: nfs<span class="hljs-literal">-client</span><br></code></pre></td></tr></table></figure>
+
+<p>4, 查看部署的相关资源</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># kubectl get all -l release=mysql</span><br>NAME                         READY   STATUS    RESTARTS   AGE<br>pod/mysql<span class="hljs-literal">-855976764d-npvgm</span>   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">40</span>m<br><br>NAME            <span class="hljs-built_in">TYPE</span>        CLUSTER<span class="hljs-literal">-IP</span>   EXTERNAL<span class="hljs-literal">-IP</span>   PORT(S)    AGE<br>service/mysql   ClusterIP   <span class="hljs-number">10.96</span>.<span class="hljs-number">0.84</span>   &lt;none&gt;        <span class="hljs-number">3306</span>/TCP   <span class="hljs-number">40</span>m<br><br>NAME                    READY   UP<span class="hljs-literal">-TO-DATE</span>   AVAILABLE   AGE<br>deployment.apps/mysql   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     <span class="hljs-number">1</span>            <span class="hljs-number">1</span>           <span class="hljs-number">40</span>m<br><br>NAME                               DESIRED   CURRENT   READY   AGE<br>replicaset.apps/mysql<span class="hljs-literal">-855976764d</span>   <span class="hljs-number">1</span>         <span class="hljs-number">1</span>         <span class="hljs-number">1</span>       <span class="hljs-number">40</span>m<br></code></pre></td></tr></table></figure>
+
+<p>5, 查看pod的IP</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># kubectl get pods -o wide -l release=mysql</span><br>NAME                     READY   STATUS    RESTARTS   AGE   IP              NODE           NOMINATED NODE   READINESS GATES<br>mysql<span class="hljs-literal">-855976764d-npvgm</span>   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">41</span>m   <span class="hljs-number">100.119</span>.<span class="hljs-number">84.71</span>   k8s<span class="hljs-literal">-worker01</span>   &lt;none&gt;           &lt;none&gt;<br><br>得到pod的IP为<span class="hljs-number">100.119</span>.<span class="hljs-number">84.71</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>6, 安装mysql客户端并连接测试</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># yum install mariadb -y</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 获取helm部署的mysql的root密码</span><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># kubectl get secret --namespace default mysql -o jsonpath=&quot;&#123;.data.mysql-root-password&#125;&quot; | base64 --decode; echo</span><br>wL2SD0RCsT<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># kubectl get svc</span><br>NAME         <span class="hljs-built_in">TYPE</span>        CLUSTER<span class="hljs-literal">-IP</span>   EXTERNAL<span class="hljs-literal">-IP</span>   PORT(S)    AGE<br>kubernetes   ClusterIP   <span class="hljs-number">10.96</span>.<span class="hljs-number">0.1</span>    &lt;none&gt;        <span class="hljs-number">443</span>/TCP    <span class="hljs-number">27</span><span class="hljs-built_in">h</span><br>mysql        ClusterIP   <span class="hljs-number">10.96</span>.<span class="hljs-number">0.84</span>   &lt;none&gt;        <span class="hljs-number">3306</span>/TCP   <span class="hljs-number">5</span>m21s<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># mysql -h 10.96.0.84 -uroot -pwL2SD0RCsT -e &quot;show databases;&quot;</span><br>+<span class="hljs-literal">--------------------</span>+<br>| Database           |<br>+<span class="hljs-literal">--------------------</span>+<br>| information_schema |<br>| helm               |<br>| mysql              |<br>| performance_schema |<br>| sys                |<br>+<span class="hljs-literal">--------------------</span>+<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># kubectl get pods -o wide -l release=mysql</span><br>NAME                     READY   STATUS    RESTARTS   AGE   IP              NODE           NOMINATED NODE   READINESS GATES<br>mysql<span class="hljs-literal">-855976764d-npvgm</span>   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">41</span>m   <span class="hljs-number">100.119</span>.<span class="hljs-number">84.71</span>   k8s<span class="hljs-literal">-worker01</span>   &lt;none&gt;           &lt;none&gt;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># mysql -h 100.119.84.71 -uroot -pwL2SD0RCsT -e &quot;show databases;&quot;</span><br>+<span class="hljs-literal">--------------------</span>+<br>| Database           |<br>+<span class="hljs-literal">--------------------</span>+<br>| information_schema |<br>| helm               |<br>| mysql              |<br>| performance_schema |<br>| sys                |<br>+<span class="hljs-literal">--------------------</span>+<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-7-升级和回滚"><a href="#5-7-升级和回滚" class="headerlink" title="5.7 升级和回滚"></a>5.7 升级和回滚</h6><p>当新版本的 chart 包发布的时候，或者当你要更改 release 的配置的时候，你可以使用 <code>helm upgrade</code> 命令来操作。升级需要一个现有的 release，并根据提供的信息对其进行升级。因为 Kubernetes charts 可能很大而且很复杂，Helm 会尝试以最小的侵入性进行升级，它只会更新自上一版本以来发生的变化：</p>
+<p>1, 升级前查看版本</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># mysql -h 10.96.0.84 -uroot -pwL2SD0RCsT -e &quot;select version()&quot;</span><br>+<span class="hljs-literal">-----------</span>+<br>| version() |<br>+<span class="hljs-literal">-----------</span>+<br>| <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span>    |     版本为<span class="hljs-number">5.7</span>.<span class="hljs-number">30</span><br>+<span class="hljs-literal">-----------</span>+<br><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment">#  kubectl get deployment mysql -o wide</span><br>NAME    READY   UP<span class="hljs-literal">-TO-DATE</span>   AVAILABLE   AGE   CONTAINERS   IMAGES         SELECTOR<br>mysql   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     <span class="hljs-number">1</span>            <span class="hljs-number">1</span>           <span class="hljs-number">54</span>m   mysql        mysql:<span class="hljs-number">5.7</span>.<span class="hljs-number">30</span>   app=mysql,release=mysql<br>images版本为<span class="hljs-number">5.7</span>.<span class="hljs-number">30</span><br></code></pre></td></tr></table></figure>
+
+<p>2，修改配置并升级</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># vim mysql-config.yml</span><br>mysqlDatabase: kubemsb<br>persistence:<br>  enabled: true<br>  storageClass: nfs<span class="hljs-literal">-client</span><br></code></pre></td></tr></table></figure>
+
+<p>升级并且加一个<code>--set imageTag=5.7.31</code>参数设置为5.7.31版本</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> ~]<span class="hljs-comment"># helm upgrade mysql -f mysql-config.yml --set imageTag=5.7.31 stable/mysql</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs powershell">升级过程中的输出：<br><br>WARNING: This chart is deprecated<br>Release <span class="hljs-string">&quot;mysql&quot;</span> has been upgraded. Happy Helming!<br>NAME: mysql<br>LAST DEPLOYED: Fri Jul <span class="hljs-number">29</span> <span class="hljs-number">15</span>:<span class="hljs-number">04</span>:<span class="hljs-number">20</span> <span class="hljs-number">2022</span><br>NAMESPACE: default<br>STATUS: deployed<br>REVISION: <span class="hljs-number">2</span><br>NOTES:<br>MySQL can be accessed via port <span class="hljs-number">3306</span> on the following DNS name from within your cluster:<br>mysql.default.svc.cluster.local<br><br>To get your root password run:<br><br>    MYSQL_ROOT_PASSWORD=<span class="hljs-variable">$</span>(kubectl get secret <span class="hljs-literal">--namespace</span> default mysql <span class="hljs-literal">-o</span> jsonpath=<span class="hljs-string">&quot;&#123;.data.mysql-root-password&#125;&quot;</span> | base64 <span class="hljs-literal">--decode</span>; <span class="hljs-built_in">echo</span>)<br><br>To connect to your database:<br><br><span class="hljs-number">1</span>. Run an Ubuntu pod that you can use as a client:<br><br>    kubectl run <span class="hljs-literal">-i</span> <span class="hljs-literal">--tty</span> ubuntu <span class="hljs-literal">--image</span>=ubuntu:<span class="hljs-number">16.04</span> <span class="hljs-literal">--restart</span>=Never <span class="hljs-literal">--</span> bash <span class="hljs-literal">-il</span><br><br><span class="hljs-number">2</span>. Install the mysql client:<br><br>    <span class="hljs-variable">$</span> apt<span class="hljs-literal">-get</span> update &amp;&amp; apt<span class="hljs-literal">-get</span> install mysql<span class="hljs-literal">-client</span> <span class="hljs-literal">-y</span><br><br><span class="hljs-number">3</span>. Connect <span class="hljs-keyword">using</span> the mysql cli, then provide your password:<br>    <span class="hljs-variable">$</span> mysql <span class="hljs-literal">-h</span> mysql <span class="hljs-literal">-p</span><br><br>To connect to your database directly from outside the K8s cluster:<br>    MYSQL_HOST=<span class="hljs-number">127.0</span>.<span class="hljs-number">0.1</span><br>    MYSQL_PORT=<span class="hljs-number">3306</span><br><br>    <span class="hljs-comment"># Execute the following command to route the connection:</span><br>    kubectl port<span class="hljs-literal">-forward</span> svc/mysql <span class="hljs-number">3306</span><br><br>    mysql <span class="hljs-literal">-h</span> <span class="hljs-variable">$</span>&#123;MYSQL_HOST&#125; <span class="hljs-literal">-P</span><span class="hljs-variable">$</span>&#123;MYSQL_PORT&#125; <span class="hljs-literal">-u</span> root <span class="hljs-literal">-p</span><span class="hljs-variable">$</span>&#123;MYSQL_ROOT_PASSWORD&#125;<br>    <br> 注意：更新过程中，密码会被更新，但是实际使用中，密码并未更新。<br></code></pre></td></tr></table></figure>
+
+
+
+<p>3, 升级后确认版本</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># kubectl get deployment mysql -o wide</span><br>NAME    READY   UP<span class="hljs-literal">-TO-DATE</span>   AVAILABLE   AGE   CONTAINERS   IMAGES         SELECTOR<br>mysql   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     <span class="hljs-number">1</span>            <span class="hljs-number">1</span>           <span class="hljs-number">58</span>m   mysql        mysql:<span class="hljs-number">5.7</span>.<span class="hljs-number">31</span>   app=mysql,release=mysql<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># kubectl get pods -o wide</span><br>NAME                                     READY   STATUS    RESTARTS       AGE     IP              NODE           NOMINATED NODE   READINESS GATES<br>mysql<span class="hljs-literal">-6f57f64c9d-sc72v</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>              <span class="hljs-number">2</span>m20s   <span class="hljs-number">100.119</span>.<span class="hljs-number">84.72</span>   k8s<span class="hljs-literal">-worker01</span>   &lt;none&gt;           &lt;none&gt;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># mysql -h 100.119.84.72 -uroot -pwL2SD0RCsT -e &quot;select version()&quot;</span><br>+<span class="hljs-literal">-----------</span>+<br>| version() |<br>+<span class="hljs-literal">-----------</span>+<br>| <span class="hljs-number">5.7</span>.<span class="hljs-number">31</span>    |   	版本升级为<span class="hljs-number">5.7</span>.<span class="hljs-number">31</span><br>+<span class="hljs-literal">-----------</span>+<br></code></pre></td></tr></table></figure>
+
+
+
+<p>4, 回滚</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># helm history mysql</span><br>REVISION        UPDATED                         STATUS          CHART           APP VERSION     DESCRIPTION<br><span class="hljs-number">1</span>               Fri Jul <span class="hljs-number">29</span> <span class="hljs-number">14</span>:<span class="hljs-number">07</span>:<span class="hljs-number">17</span> <span class="hljs-number">2022</span>        superseded      mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>     <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span>          Install complete<br><span class="hljs-number">2</span>               Fri Jul <span class="hljs-number">29</span> <span class="hljs-number">15</span>:<span class="hljs-number">04</span>:<span class="hljs-number">20</span> <span class="hljs-number">2022</span>        deployed        mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>     <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span>          Upgrade complete<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># helm rollback mysql 1</span><br>Rollback was a success! Happy Helming!<br></code></pre></td></tr></table></figure>
+
+<p>5, 验证</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># kubectl get deployment mysql -o wide</span><br>NAME    READY   UP<span class="hljs-literal">-TO-DATE</span>   AVAILABLE   AGE   CONTAINERS   IMAGES         SELECTOR<br>mysql   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     <span class="hljs-number">1</span>            <span class="hljs-number">1</span>           <span class="hljs-number">65</span>m   mysql        mysql:<span class="hljs-number">5.7</span>.<span class="hljs-number">30</span>   app=mysql,release=mysql<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs powershell">[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># helm history mysql</span><br>REVISION        UPDATED                         STATUS          CHART           APP VERSION     DESCRIPTION<br><span class="hljs-number">1</span>               Fri Jul <span class="hljs-number">29</span> <span class="hljs-number">14</span>:<span class="hljs-number">07</span>:<span class="hljs-number">17</span> <span class="hljs-number">2022</span>        superseded      mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>     <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span>          Install complete<br><span class="hljs-number">2</span>               Fri Jul <span class="hljs-number">29</span> <span class="hljs-number">15</span>:<span class="hljs-number">04</span>:<span class="hljs-number">20</span> <span class="hljs-number">2022</span>        superseded      mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>     <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span>          Upgrade complete<br><span class="hljs-number">3</span>               Fri Jul <span class="hljs-number">29</span> <span class="hljs-number">15</span>:<span class="hljs-number">12</span>:<span class="hljs-number">24</span> <span class="hljs-number">2022</span>        deployed        mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>     <span class="hljs-number">5.7</span>.<span class="hljs-number">30</span>          Rollback to <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="5-8-更多安装方式"><a href="#5-8-更多安装方式" class="headerlink" title="5.8 更多安装方式"></a>5.8 更多安装方式</h6><p>和yum命令类似</p>
+<ul>
+<li>chart 仓库</li>
+<li>本地 chart 压缩包</li>
+</ul>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs powershell">persistence.storageClass<br><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># helm pull stable/mysql</span><br><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># ls mysql-1.6.9.tgz</span><br>mysql<span class="hljs-literal">-1</span>.<span class="hljs-number">6.9</span>.tgz<br><br>[<span class="hljs-type">root</span>@<span class="hljs-type">k8s</span>-<span class="hljs-type">master01</span> <span class="hljs-type">helmdir</span>]<span class="hljs-comment"># helm install mysql2 mysql-1.6.9.tgz</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>在线的 URL（helm install fool <a target="_blank" rel="noopener" href="https://example.com/charts/foo-1.2.3.tgz%EF%BC%89">https://example.com/charts/foo-1.2.3.tgz）</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="category-chain-item">云原生</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Kubernetes-helm/" class="print-no-link">#Kubernetes-helm</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Kubernetes集群包管理解决方案-helm</div>
+      <div>https://b.t-ao.cn/2025/03/19/Kubernetes集群包管理解决方案-helm/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>T-AO</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年3月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/03/19/%E4%BD%BF%E7%94%A8kubeadm1-23-x%E7%89%88%E6%9C%AC%E9%83%A8%E7%BD%B2kubernetes%EF%BC%88%E4%B8%80%E4%B8%BB%E4%B8%A4%E4%BB%8E%EF%BC%89/" title="使用kubeadm1.23.x版本部署kubernetes（一主两从）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用kubeadm1.23.x版本部署kubernetes（一主两从）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/03/19/containerd%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%A4%87%E4%BB%BD/" title="containerd配置文件备份">
+                        <span class="hidden-mobile">containerd配置文件备份</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
