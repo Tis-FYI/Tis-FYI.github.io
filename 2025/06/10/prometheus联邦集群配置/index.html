@@ -21,22 +21,29 @@
   <meta name="author" content="TAO">
   <meta name="keywords" content="">
   
-    <meta name="description" content="报错提示：agent: startup error: error&#x3D;”refusing to rejoin cluster because server has been offline for more than the configured server_rejoin_age_max (168h0m0s) - consider wiping your data dir”  Consu">
+    <meta name="description" content="一、简介对于大部分监控规模而言，我们只需要在每一个数据中心安装一个Prometheus Server实例，就可以在各个数据中心处理上千规模的集群。同时将Prometheus Server部署到不同的数据中心可以避免网络配置的复杂性。 在每个数据中心部署单独的Prometheus Server，用于采集当前数据中心监控数据。并由一个中心的Prometheus Server负责聚合多个数据中心的监控数">
 <meta property="og:type" content="article">
-<meta property="og:title" content="consul报错离线集群">
-<meta property="og:url" content="https://blog.t-ao.cn/2025/05/26/consul%E6%8A%A5%E9%94%99%E7%A6%BB%E7%BA%BF%E9%9B%86%E7%BE%A4/index.html">
+<meta property="og:title" content="prometheus联邦集群配置">
+<meta property="og:url" content="https://blog.t-ao.cn/2025/06/10/prometheus%E8%81%94%E9%82%A6%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="TAO&#39;s Blog">
-<meta property="og:description" content="报错提示：agent: startup error: error&#x3D;”refusing to rejoin cluster because server has been offline for more than the configured server_rejoin_age_max (168h0m0s) - consider wiping your data dir”  Consu">
+<meta property="og:description" content="一、简介对于大部分监控规模而言，我们只需要在每一个数据中心安装一个Prometheus Server实例，就可以在各个数据中心处理上千规模的集群。同时将Prometheus Server部署到不同的数据中心可以避免网络配置的复杂性。 在每个数据中心部署单独的Prometheus Server，用于采集当前数据中心监控数据。并由一个中心的Prometheus Server负责聚合多个数据中心的监控数">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-05-26T08:07:40.000Z">
-<meta property="article:modified_time" content="2025-05-26T08:09:57.078Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Tis-FYI/img@main/911490-20240924144456377-1208190196.png">
+<meta property="og:image" content="https://img2024.cnblogs.com/blog/911490/202409/911490-20240924153302339-1297263141.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Tis-FYI/img@main/911490-20240924153314462-2046999070.png">
+<meta property="og:image" content="https://img2024.cnblogs.com/blog/911490/202409/911490-20240924154408692-1271488005.png">
+<meta property="og:image" content="https://img2024.cnblogs.com/blog/911490/202409/911490-20240924154934172-2143060460.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/Tis-FYI/img@main/911490-20240924155321767-653618831.png">
+<meta property="article:published_time" content="2025-06-10T12:20:58.000Z">
+<meta property="article:modified_time" content="2025-06-10T12:23:21.639Z">
 <meta property="article:author" content="TAO">
-<meta property="article:tag" content="consul">
+<meta property="article:tag" content="prometheus">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/Tis-FYI/img@main/911490-20240924144456377-1208190196.png">
   
   
   
-  <title>consul报错离线集群 - TAO&#39;s Blog</title>
+  <title>prometheus联邦集群配置 - TAO&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +209,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="consul报错离线集群"></span>
+            <span id="subtitle" data-typed-text="prometheus联邦集群配置"></span>
           
         </div>
 
@@ -213,8 +220,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-05-26 16:07" pubdate>
-          2025年5月26日 下午
+        <time datetime="2025-06-10 20:20" pubdate>
+          2025年6月10日 晚上
         </time>
       </span>
     
@@ -225,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          313 字
+          620 字
         
       </span>
     
@@ -236,7 +243,7 @@
         
         
         
-          3 分钟
+          6 分钟
         
       </span>
     
@@ -273,49 +280,32 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">consul报错离线集群</h1>
+            <h1 id="seo-header">prometheus联邦集群配置</h1>
             
             
               <div class="markdown-body">
                 
-                <blockquote>
-<p>报错提示：agent: startup error: error&#x3D;”refusing to rejoin cluster because server has been offline for more than the configured server_rejoin_age_max (168h0m0s) - consider wiping your data dir”</p>
-<p> Consul 服务器因为离线时间超过了配置的 <code>server_rejoin_age_max</code>（默认为168小时&#x2F;7天）而拒绝重新加入集群。</p>
-<h4 id="错误原因"><a href="#错误原因" class="headerlink" title="错误原因"></a>错误原因</h4><p>Consul 出于数据一致性和安全考虑，会阻止长时间离线的服务器重新加入集群，以防止潜在的数据不一致问题。</p>
-</blockquote>
-<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><h5 id="方法1：清除数据目录（推荐用于测试环境）"><a href="#方法1：清除数据目录（推荐用于测试环境）" class="headerlink" title="方法1：清除数据目录（推荐用于测试环境）"></a>方法1：清除数据目录（推荐用于测试环境）</h5><ol>
-<li>停止 Consul 服务</li>
-<li>删除 Consul 的数据目录（默认位于 <code>/var/lib/consul</code> 或 <code>./consul/data</code>）</li>
-<li>重新启动 Consul 服务</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl stop consul<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">rm</span> -rf /var/lib/consul/*<br><span class="hljs-built_in">sudo</span> systemctl start consul<br></code></pre></td></tr></table></figure>
+                <h3 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h3><p>对于大部分监控规模而言，我们只需要在每一个数据中心安装一个Prometheus Server实例，就可以在各个数据中心处理上千规模的集群。同时将Prometheus Server部署到不同的数据中心可以避免网络配置的复杂性。</p>
+<p>在每个数据中心部署单独的Prometheus Server，用于采集当前数据中心监控数据。并由一个中心的Prometheus Server负责聚合多个数据中心的监控数据。这一特性在Promthues中称为联邦集群。</p>
+<p>联邦集群的核心在于每一个Prometheus Server都包含一个用于获取当前实例中监控样本的接口&#x2F;federate。对于中心Prometheus Server而言，无论是从其他的Prometheus实例还是Exporter实例中获取数据实际上并没有任何差异。</p>
+<h4 id="集群部署架构"><a href="#集群部署架构" class="headerlink" title="集群部署架构"></a>集群部署架构</h4><p><img src="https://cdn.jsdelivr.net/gh/Tis-FYI/img@main/911490-20240924144456377-1208190196.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="三、部署prometheus联邦集群并抓取对应节点数据"><a href="#三、部署prometheus联邦集群并抓取对应节点数据" class="headerlink" title="三、部署prometheus联邦集群并抓取对应节点数据"></a>三、部署prometheus联邦集群并抓取对应节点数据</h3><h4 id="1-中心及联邦prometheus节点部署prometheus"><a href="#1-中心及联邦prometheus节点部署prometheus" class="headerlink" title="1.中心及联邦prometheus节点部署prometheus"></a>1.中心及联邦prometheus节点部署prometheus</h4><p>在 100.131 100.132 100.133三台服务器上安装prometheus,二进制部署，部署步骤略，可参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/panwenbin-logs/p/18370049">https://www.cnblogs.com/panwenbin-logs/p/18370049</a>  ，各节点版本保持一致</p>
+<h4 id="2-被采集节点安装node-exporter"><a href="#2-被采集节点安装node-exporter" class="headerlink" title="2.被采集节点安装node-exporter"></a>2.被采集节点安装node-exporter</h4><p>在 10.134 100.135 2台服务器上二进制部署node-exporter，部署步骤略，参考:参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/panwenbin-logs/p/18370049">https://www.cnblogs.com/panwenbin-logs/p/18370049</a></p>
+<h4 id="3-配置prometheus联邦节点采集数据"><a href="#3-配置prometheus联邦节点采集数据" class="headerlink" title="3.配置prometheus联邦节点采集数据"></a>3.配置prometheus联邦节点采集数据</h4><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs nix"><span class="hljs-comment">#联邦节点1</span><br><span class="hljs-params">scrape_configs:</span><br>  <span class="hljs-operator">-</span> <span class="hljs-params">job_name:</span> <span class="hljs-string">&quot;prod-app01&quot;</span><br>    <span class="hljs-params">static_configs:</span><br>      <span class="hljs-operator">-</span> <span class="hljs-params">targets:</span> [<span class="hljs-string">&quot;192.168.100.134:9100&quot;</span>]<br><br><br><span class="hljs-comment">#联邦节点2</span><br><span class="hljs-params">scrape_configs:</span><br>  <span class="hljs-operator">-</span> <span class="hljs-params">job_name:</span> <span class="hljs-string">&quot;prod-app02&quot;</span><br>    <span class="hljs-params">static_configs:</span><br>      <span class="hljs-operator">-</span> <span class="hljs-params">targets:</span> [<span class="hljs-string">&quot;192.168.100.135:9100&quot;</span>]<br></code></pre></td></tr></table></figure>
 
-<h5 id="方法2：临时调整配置（适用于生产环境）"><a href="#方法2：临时调整配置（适用于生产环境）" class="headerlink" title="方法2：临时调整配置（适用于生产环境）"></a>方法2：临时调整配置（适用于生产环境）</h5><ol>
-<li>修改 Consul 配置文件，增加或修改以下参数：</li>
-</ol>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;server_rejoin_age_max&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;720h&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;rejoin_after_leave&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<p>是否抓取数据正常</p>
+<p><img src="https://img2024.cnblogs.com/blog/911490/202409/911490-20240924153302339-1297263141.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://cdn.jsdelivr.net/gh/Tis-FYI/img@main/911490-20240924153314462-2046999070.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="4-配置中心prometheus-server-抓取联邦节点prometheus"><a href="#4-配置中心prometheus-server-抓取联邦节点prometheus" class="headerlink" title="4.配置中心prometheus server 抓取联邦节点prometheus"></a>4.配置中心prometheus server 抓取联邦节点prometheus</h4><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs nix"><span class="hljs-comment">#在100.131上操作</span><br>vim prometheus.yml<br> <span class="hljs-operator">-</span> <span class="hljs-params">job_name:</span> &#x27;prometheus-federate-<span class="hljs-number">100.132</span>&#x27;<br>   <span class="hljs-params">scrape_interval:</span> <span class="hljs-number">10</span>s<br>   <span class="hljs-params">honor_labels:</span> <span class="hljs-literal">true</span><br>   <span class="hljs-params">metrics_path:</span> &#x27;<span class="hljs-operator">/</span>federate&#x27;<br>   <span class="hljs-params">params:</span><br>    &#x27;match[]&#x27;:<br>      <span class="hljs-operator">-</span> &#x27;&#123;<span class="hljs-attr">job</span><span class="hljs-operator">=</span><span class="hljs-string">&quot;prometheus&quot;</span>&#125;&#x27;  <span class="hljs-comment"># &#123;job=&quot;prometheus&quot;&#125; → 匹配 up（因为它的 job 标签是 &quot;prometheus&quot;）</span><br>      <span class="hljs-operator">-</span> &#x27;&#123;<span class="hljs-attr">__name__</span><span class="hljs-operator">=</span>~<span class="hljs-string">&quot;job:.*&quot;</span>&#125;&#x27;   <span class="hljs-comment"># &#123;__name__=\~&quot;job:.*&quot;&#125; → 匹配 job:api_requests</span><br>      <span class="hljs-operator">-</span> &#x27;&#123;<span class="hljs-attr">__name__</span><span class="hljs-operator">=</span>~<span class="hljs-string">&quot;node.*&quot;</span>&#125;&#x27;   <span class="hljs-comment"># &#123;__name__=\~&quot;node.*&quot;&#125; → 匹配 node_cpu_seconds_total</span><br>   <span class="hljs-params">static_configs:</span><br>     <span class="hljs-operator">-</span> <span class="hljs-params">targets:</span><br>       <span class="hljs-operator">-</span> &#x27;<span class="hljs-number">192.168</span>.<span class="hljs-number">100.132</span>:<span class="hljs-number">9090</span>&#x27;  <span class="hljs-comment">#下面的也可以不写，把133写在此处也是可以的</span><br><br> <span class="hljs-operator">-</span> <span class="hljs-params">job_name:</span> &#x27;prometheus-federate-<span class="hljs-number">100.133</span>&#x27;<br>   <span class="hljs-params">scrape_interval:</span> <span class="hljs-number">10</span>s<br>   <span class="hljs-params">honor_labels:</span> <span class="hljs-literal">true</span><br>   <span class="hljs-params">metrics_path:</span> &#x27;<span class="hljs-operator">/</span>federate&#x27;<br>   <span class="hljs-params">params:</span><br>    &#x27;match[]&#x27;:<br>      <span class="hljs-operator">-</span> &#x27;&#123;<span class="hljs-attr">job</span><span class="hljs-operator">=</span><span class="hljs-string">&quot;prometheus&quot;</span>&#125;&#x27;<br>      <span class="hljs-operator">-</span> &#x27;&#123;<span class="hljs-attr">__name__</span><span class="hljs-operator">=</span>~<span class="hljs-string">&quot;job:.*&quot;</span>&#125;&#x27;<br>      <span class="hljs-operator">-</span> &#x27;&#123;<span class="hljs-attr">__name__</span><span class="hljs-operator">=</span>~<span class="hljs-string">&quot;node.*&quot;</span>&#125;&#x27;<br>   <span class="hljs-params">static_configs:</span><br>     <span class="hljs-operator">-</span> <span class="hljs-params">targets:</span><br>       <span class="hljs-operator">-</span> &#x27;<span class="hljs-number">192.168</span>.<span class="hljs-number">100.133</span>:<span class="hljs-number">9090</span>&#x27;<br><br><span class="hljs-comment"># 重启Prometheus</span><br>systemctl restart prometheus<br></code></pre></td></tr></table></figure>
 
-<ol>
-<li>重新启动 Consul 服务</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart consul<br></code></pre></td></tr></table></figure>
-
-<h5 id="方法3：强制重新加入（不推荐）"><a href="#方法3：强制重新加入（不推荐）" class="headerlink" title="方法3：强制重新加入（不推荐）"></a>方法3：强制重新加入（不推荐）</h5><p>如果必须保留原有数据，可以尝试强制重新加入：</p>
-<figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nsis">consul <span class="hljs-literal">force</span>-<span class="hljs-literal">leave</span> &lt;节点名称&gt;<br></code></pre></td></tr></table></figure>
-
-<h5 id="预防措施"><a href="#预防措施" class="headerlink" title="预防措施"></a>预防措施</h5><ol>
-<li>对于生产环境，建议：<ul>
-<li>设置监控，及时发现节点离线情况</li>
-<li>定期备份 Consul 数据</li>
-<li>考虑使用 Consul 的自动修复功能</li>
-</ul>
-</li>
-<li>对于长时间维护计划：<ul>
-<li>提前使用 <code>consul leave</code> 命令优雅退出</li>
-<li>维护完成后使用 <code>consul join</code> 重新加入</li>
-</ul>
-</li>
-</ol>
+<p>web端验证</p>
+<p><img src="https://img2024.cnblogs.com/blog/911490/202409/911490-20240924154408692-1271488005.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://img2024.cnblogs.com/blog/911490/202409/911490-20240924154934172-2143060460.png" srcset="/img/loading.gif" lazyload></p>
+<p>grafana图标验证</p>
+<p><img src="https://cdn.jsdelivr.net/gh/Tis-FYI/img@main/911490-20240924155321767-653618831.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到数据可以正常抓取及展示 </p>
+<p>参考文档：<a target="_blank" rel="noopener" href="https://prometheus.io/docs/prometheus/latest/federation/">https://prometheus.io/docs/prometheus/latest/federation/</a></p>
+<p>本文转自 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/panwenbin-logs/p/18429140">https://www.cnblogs.com/panwenbin-logs/p/18429140</a>，如有侵权，请联系删除。</p>
 
                 
               </div>
@@ -334,7 +324,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  <a href="/categories/service/" class="category-chain-item">service</a>
   
   
 
@@ -349,7 +339,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/consul/" class="print-no-link">#consul</a>
+        <a href="/tags/prometheus/" class="print-no-link">#prometheus</a>
       
     </div>
   
@@ -361,8 +351,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>consul报错离线集群</div>
-      <div>https://blog.t-ao.cn/2025/05/26/consul报错离线集群/</div>
+      <div>prometheus联邦集群配置</div>
+      <div>https://blog.t-ao.cn/2025/06/10/prometheus联邦集群配置/</div>
     </div>
     <div class="license-meta">
       
@@ -374,7 +364,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年5月26日</div>
+          <div>2025年6月10日</div>
         </div>
       
       
@@ -406,18 +396,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/06/10/prometheus%E8%81%94%E9%82%A6%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE/" title="prometheus联邦集群配置">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">prometheus联邦集群配置</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/05/14/consul-1-21%E5%8D%95%E8%8A%82%E7%82%B9%E5%AE%89%E8%A3%85/" title="consul1.21安装">
-                        <span class="hidden-mobile">consul1.21安装</span>
+                      <a href="/2025/05/26/consul%E6%8A%A5%E9%94%99%E7%A6%BB%E7%BA%BF%E9%9B%86%E7%BE%A4/" title="consul报错离线集群">
+                        <span class="hidden-mobile">consul报错离线集群</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
