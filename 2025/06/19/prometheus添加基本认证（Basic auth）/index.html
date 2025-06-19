@@ -28,7 +28,7 @@
 <meta property="og:site_name" content="TAO&#39;s Blog">
 <meta property="og:description" content="官方配置说明： Basic auth | Prometheus 一、生成密码加密串Prometheus于2.24版本（包括2.24）之后提供Basic Auth功能进行加密访问，在浏览器登录UI的时候需要输入用户密码，访问Prometheus api的时候也需要加上用户密码。 使用python脚本，生成加密密码串 1import getpassimport bcrypt password &#x3D; ge">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://i-blog.csdnimg.cn/blog_migrate/9da3a765b9bff25867a255fbc607bf25.png">
+<meta property="og:image" content="http://cdn.882227.xyz/9da3a765b9bff25867a255fbc607bf25.png">
 <meta property="og:image" content="http://cdn.882227.xyz/d33347f22ab682ec17b78737cb6eae45.png">
 <meta property="og:image" content="http://cdn.882227.xyz/b53fc10d2f0ccbe546317b3346b30c62.png">
 <meta property="og:image" content="https://i-blog.csdnimg.cn/blog_migrate/0a6621366e2069dfec7505ccd094e636.png">
@@ -37,11 +37,11 @@
 <meta property="og:image" content="http://cdn.882227.xyz/da5f0305e15ed11769d994f4b0923460.png">
 <meta property="og:image" content="http://cdn.882227.xyz/ded3201d4cfd6d50c28710b05855b6f6.png">
 <meta property="article:published_time" content="2025-06-19T08:10:49.000Z">
-<meta property="article:modified_time" content="2025-06-19T08:11:44.168Z">
+<meta property="article:modified_time" content="2025-06-19T08:14:07.935Z">
 <meta property="article:author" content="TAO">
 <meta property="article:tag" content="prometheus">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://i-blog.csdnimg.cn/blog_migrate/9da3a765b9bff25867a255fbc607bf25.png">
+<meta name="twitter:image" content="http://cdn.882227.xyz/9da3a765b9bff25867a255fbc607bf25.png">
   
   
   
@@ -296,7 +296,7 @@
 <p>将以上脚本复制保存为 getpass.py</p>
 <p>然后通过cmd命令行<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E6%89%A7%E8%A1%8C%E8%84%9A%E6%9C%AC&spm=1001.2101.3001.7020">执行脚本</a></p>
 <p>python.exe getpass.py</p>
-<p><img src="https://i-blog.csdnimg.cn/blog_migrate/9da3a765b9bff25867a255fbc607bf25.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="http://cdn.882227.xyz/9da3a765b9bff25867a255fbc607bf25.png" srcset="/img/loading.gif" lazyload></p>
 <p>执行脚本后，在password：后面输入你要设置的密码，然后就会生成一串加密的密码串，记录下该密码串，后面配置会使用到。</p>
 <h4 id="二、服务端配置"><a href="#二、服务端配置" class="headerlink" title="二、服务端配置"></a>二、服务端配置</h4><p>以我配置习惯为例，Prometheus服务端我默认将配置存放在 &#x2F;etc&#x2F;prometheus目录下</p>
 <p>在该目录下新建文件 web.yml，然后添加步骤一生成的密码加密串</p>
