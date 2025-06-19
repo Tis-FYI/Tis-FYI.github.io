@@ -588,7 +588,7 @@
     
     <categories>
       
-      <category>云原生jenkins使用kubernetes插件可以实现，动态创建流水线相关的任务Pod在流水线执行结束后会删除相应的任务Pod以达到资源的释放。</category>
+      <category>云原生</category>
       
     </categories>
     
