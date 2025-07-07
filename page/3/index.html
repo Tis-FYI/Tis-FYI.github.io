@@ -229,6 +229,67 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/03/19/CephOSD%E7%A3%81%E7%9B%98%E6%9B%B4%E6%8D%A2%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B0%E6%8D%AE%E5%8F%91%E7%94%9F%E8%BF%81%E7%A7%BB%E7%9A%84%E6%97%B6%E9%97%B4%E4%B8%8D%E5%90%8C%EF%BC%89/" target="_self">
+          CephOSD磁盘更换的三种方法（数据发生迁移的时间不同）
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/19/CephOSD%E7%A3%81%E7%9B%98%E6%9B%B4%E6%8D%A2%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B0%E6%8D%AE%E5%8F%91%E7%94%9F%E8%BF%81%E7%A7%BB%E7%9A%84%E6%97%B6%E9%97%B4%E4%B8%8D%E5%90%8C%EF%BC%89/" target="_self">
+        <div>
+          12345678910111213141516171819更换方式1：    1到指定节点上，停止指定的osd进程 systemctl stop ceph-osd@id    2 将移除OSD节点状态标记为  ceph osd out ceph-osd@id    3从crush中移除OsD节点，该节点不作为数据的载体 ceph osd crush remove id    4 删除OSD节点和对
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-03-19 11:14" pubdate>
+              2025-03-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="category-chain-item">云原生</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/ceph/">#ceph</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/03/19/%E4%BD%BF%E7%94%A8kubeadm1-23-x%E7%89%88%E6%9C%AC%E9%83%A8%E7%BD%B2kubernetes%EF%BC%88%E4%B8%80%E4%B8%BB%E4%B8%A4%E4%BB%8E%EF%BC%89/" target="_self">
           使用kubeadm1.23.x版本部署kubernetes（一主两从）
         </a>
@@ -734,67 +795,6 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
             <time datetime="2025-03-19 11:05" pubdate>
-              2025-03-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="category-chain-item">云原生</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9FPrometheus/">#云原生Prometheus</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/03/19/Prometheus%E5%9F%BA%E4%BA%8E%E6%96%87%E4%BB%B6%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E9%85%8D%E7%BD%AE%EF%BC%88file-sd-configs%EF%BC%89/" target="_self">
-          Prometheus基于文件的服务发现配置（file_sd_configs）
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/19/Prometheus%E5%9F%BA%E4%BA%8E%E6%96%87%E4%BB%B6%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0%E9%85%8D%E7%BD%AE%EF%BC%88file-sd-configs%EF%BC%89/" target="_self">
-        <div>
-          解决的问题 之前手动配置了很多个traget redis mysql blackbox pushgateway   手动配置维护成本高，还容易出错  基于文件的服务发现配置 文档地址 将配置写在yaml&#x2F;json的文件当中，通过Prometheus的主配置文件引入，实现在Prometheus主配置文件之外的文件当中动态的添加或删除对应的监控项  特点 基于文件的服务发现提供了一种配置静态
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-03-19 11:04" pubdate>
               2025-03-19
             </time>
           </div>
