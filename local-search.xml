@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>Mysql日志格式</title>
+    <link href="/2025/07/07/Mysql%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F/"/>
+    <url>/2025/07/07/Mysql%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F/</url>
+    
+    <content type="html"><![CDATA[<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>MySQL 的日志主要包括<strong>二进制日志（Binary Log）</strong>、<strong>错误日志</strong>、<strong>慢查询日志</strong>、<strong>一般查询日志</strong>和<strong>中继日志</strong>。其中，二进制日志的格式直接影响主从复制和数据恢复。本文重点介绍二进制日志的三种格式：<strong>Statement (SBR)</strong>、<strong>Row (RBR)</strong> 和 <strong>Mixed</strong>，并简述其他日志类型。</p><h2 id="二进制日志格式"><a href="#二进制日志格式" class="headerlink" title="二进制日志格式"></a>二进制日志格式</h2><h3 id="1-Statement（基于语句的复制，SBR）"><a href="#1-Statement（基于语句的复制，SBR）" class="headerlink" title="1. Statement（基于语句的复制，SBR）"></a>1. Statement（基于语句的复制，SBR）</h3><ul><li><strong>描述</strong>：记录执行的 SQL 语句，如 INSERT INTO table VALUES (…);。</li><li><strong>特点</strong>：<ul><li>日志文件较小，仅记录 SQL 语句。</li><li>非确定性操作（如 NOW()、RAND()）可能导致主从复制不一致。</li><li>触发器、存储过程等可能无法正确复制。</li><li>日志可读性高，适合人工分析。</li></ul></li><li><strong>适用场景</strong>：<ul><li>存储空间有限。</li><li>数据一致性要求不高，或操作多为确定性。</li><li>需要审计 SQL 执行历史。</li></ul></li><li><strong>配置</strong>：binlog_format &#x3D; STATEMENT</li></ul><h3 id="2-Row（基于行的复制，RBR）"><a href="#2-Row（基于行的复制，RBR）" class="headerlink" title="2. Row（基于行的复制，RBR）"></a>2. Row（基于行的复制，RBR）</h3><ul><li><strong>描述</strong>：记录每行数据的实际变化（插入、更新、删除），而非 SQL 语句。</li><li><strong>特点</strong>：<ul><li>日志文件较大，记录具体数据变化。</li><li>保证数据一致性，适合非确定性操作。</li><li>对复杂查询（如多表联接）效率较高。</li><li>日志可读性低，不便于人工分析。</li></ul></li><li><strong>适用场景</strong>：<ul><li>高一致性的主从复制。</li><li>涉及非确定性操作（如 UUID()、RAND()）。</li><li>数据更新频繁，复杂查询较多。</li></ul></li><li><strong>配置</strong>：binlog_format &#x3D; ROW</li></ul><h3 id="3-Mixed（混合模式）"><a href="#3-Mixed（混合模式）" class="headerlink" title="3. Mixed（混合模式）"></a>3. Mixed（混合模式）</h3><ul><li><strong>描述</strong>：结合 Statement 和 Row 格式，MySQL 根据操作类型自动选择。</li><li><strong>特点</strong>：<ul><li>默认使用 Statement 格式，记录 SQL 语句。</li><li>非确定性操作或特定场景（如 INSERT … SELECT）切换为 Row 格式。</li><li>兼顾日志大小和一致性，但行为可能不够明确。</li><li>可读性取决于记录格式。</li></ul></li><li><strong>适用场景</strong>：<ul><li>需要平衡一致性和存储空间。</li><li>不确定操作类型，依赖 MySQL 自动优化。</li></ul></li><li><strong>配置</strong>：binlog_format &#x3D; MIXED</li></ul><h2 id="其他日志类型"><a href="#其他日志类型" class="headerlink" title="其他日志类型"></a>其他日志类型</h2><ul><li><strong>错误日志（Error Log）</strong>：<ul><li>记录 MySQL 启动、停止及运行错误，格式为纯文本。</li></ul></li><li><strong>慢查询日志（Slow Query Log）</strong>：<ul><li>记录执行时间超阈值的查询，格式为文本，包含 SQL 和执行时间。</li></ul></li><li><strong>一般查询日志（General Query Log）</strong>：<ul><li>记录所有客户端连接和 SQL 语句，格式为文本，适合调试但开销大。</li></ul></li><li><strong>中继日志（Relay Log）</strong>：<ul><li>用于主从复制，存储从主库接收的二进制日志，格式与二进制日志一致。</li></ul></li></ul><h2 id="格式对比"><a href="#格式对比" class="headerlink" title="格式对比"></a>格式对比</h2><table><thead><tr><th>特性</th><th>Statement (SBR)</th><th>Row (RBR)</th><th>Mixed</th></tr></thead><tbody><tr><td><strong>记录内容</strong></td><td>SQL 语句</td><td>每行数据变化</td><td>自动选择 Statement 或 Row</td></tr><tr><td><strong>日志大小</strong></td><td>较小</td><td>较大</td><td>中等</td></tr><tr><td><strong>一致性</strong></td><td>可能不一致（非确定性操作）</td><td>高一致性</td><td>较高（视情况切换）</td></tr><tr><td><strong>可读性</strong></td><td>高（SQL 语句易读）</td><td>低（数据变化难读）</td><td>视记录格式而定</td></tr><tr><td><strong>适用场景</strong></td><td>审计、简单操作、空间受限</td><td>高一致性、复杂查询</td><td>折中场景</td></tr><tr><td><strong>性能影响</strong></td><td>主库执行快，日志小</td><td>主库记录开销大，复制可靠</td><td>平衡性能与一致性</td></tr></tbody></table><h2 id="配置与查看"><a href="#配置与查看" class="headerlink" title="配置与查看"></a>配置与查看</h2><ul><li><p><strong>查看当前日志格式</strong>：</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SHOW</span> VARIABLES <span class="hljs-keyword">LIKE</span> <span class="hljs-string">&#x27;binlog_format&#x27;</span>;<br></code></pre></td></tr></table></figure></li><li><p><strong>设置日志格式</strong>（需 SUPER 权限）：</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SET</span> <span class="hljs-keyword">GLOBAL</span> binlog_format <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;STATEMENT&#x27;</span>; <span class="hljs-comment">-- 或 ROW, MIXED</span><br></code></pre></td></tr></table></figure><p>或在 my.cnf 中配置：</p><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[mysqld]</span><br><span class="hljs-attr">binlog_format</span> = ROW<br></code></pre></td></tr></table></figure></li></ul><h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul><li><strong>版本差异</strong>：MySQL 5.7 起推荐 Row 格式，因其复制一致性更高。</li><li><strong>复制环境</strong>：Row 格式适合高可用、高一致性场景。</li><li><strong>存储空间</strong>：Row 格式日志文件较大，需确保足够磁盘空间。</li><li><strong>非确定性操作</strong>：如 LIMIT 无 ORDER BY、触发器等，推荐 Row 或 Mixed 模式。</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>数据库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Mysql</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>使用Redis或Memcached优化Grafana 热点查询缓存</title>
     <link href="/2025/07/07/%E7%83%AD%E7%82%B9%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98/"/>
     <url>/2025/07/07/%E7%83%AD%E7%82%B9%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98/</url>
