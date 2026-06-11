@@ -21,22 +21,21 @@
   <meta name="author" content="TAO">
   <meta name="keywords" content="">
   
-    <meta name="description" content="1. 使用 Redis 作为缓存1.1 安装和配置 Redis 安装 Redis：在服务器上安装 Redis（如 sudo apt-get install redis-server）或使用 Docker：1docker run -d --name redis -p 6379:6379 redis 验证连接：确保 Grafana 服务器可以连接到 Redis（检查 IP、端口和防火墙）。  1.2">
+    <meta name="description" content="什么是ZooKeeper 事务日志磁盘延迟 ZooKeeper 事务日志磁盘延迟（Disk Write Latency &#x2F; Fsync Latency），是指 ZooKeeper 服务器在处理写请求时，将事务日志（Txn Log）真正刷写到磁盘（Flush &amp; Fsync）所消耗的时间。 在 ZooKeeper 的性能调优和故障排查中，这是一个极其关键的底层指标。 1. 为什么会">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用 Redis 或 Memcached 优化 Grafana 热点查询缓存">
-<meta property="og:url" content="https://blog.t-ao.cn/2026/01/11/%E4%BD%BF%E7%94%A8%20Redis%20%E6%88%96%20Memcached%20%E4%BC%98%E5%8C%96%20Grafana%20%E7%83%AD%E7%82%B9%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98/index.html">
+<meta property="og:title" content="TAO&#39;s Blog">
+<meta property="og:url" content="https://blog.t-ao.cn/2026/06/11/%E4%BB%80%E4%B9%88%E6%98%AFZooKeeper%20%E4%BA%8B%E5%8A%A1%E6%97%A5%E5%BF%97%E7%A3%81%E7%9B%98%E5%BB%B6%E8%BF%9F/index.html">
 <meta property="og:site_name" content="TAO&#39;s Blog">
-<meta property="og:description" content="1. 使用 Redis 作为缓存1.1 安装和配置 Redis 安装 Redis：在服务器上安装 Redis（如 sudo apt-get install redis-server）或使用 Docker：1docker run -d --name redis -p 6379:6379 redis 验证连接：确保 Grafana 服务器可以连接到 Redis（检查 IP、端口和防火墙）。  1.2">
+<meta property="og:description" content="什么是ZooKeeper 事务日志磁盘延迟 ZooKeeper 事务日志磁盘延迟（Disk Write Latency &#x2F; Fsync Latency），是指 ZooKeeper 服务器在处理写请求时，将事务日志（Txn Log）真正刷写到磁盘（Flush &amp; Fsync）所消耗的时间。 在 ZooKeeper 的性能调优和故障排查中，这是一个极其关键的底层指标。 1. 为什么会">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2026-01-11T03:14:58.000Z">
-<meta property="article:modified_time" content="2026-01-11T07:40:39.362Z">
+<meta property="article:published_time" content="2026-06-11T03:51:45.569Z">
+<meta property="article:modified_time" content="2026-06-09T15:04:18.669Z">
 <meta property="article:author" content="TAO">
-<meta property="article:tag" content="Prometheus">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>使用 Redis 或 Memcached 优化 Grafana 热点查询缓存 - TAO&#39;s Blog</title>
+  <title>TAO&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +201,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="使用 Redis 或 Memcached 优化 Grafana 热点查询缓存"></span>
+            <span id="subtitle" data-typed-text=""></span>
           
         </div>
 
@@ -213,8 +212,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-01-11 11:14" pubdate>
-          2026年1月11日 上午
+        <time datetime="2026-06-11 11:51" pubdate>
+          2026年6月11日 中午
         </time>
       </span>
     
@@ -225,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          770 字
+          1.1k 字
         
       </span>
     
@@ -236,7 +235,7 @@
         
         
         
-          7 分钟
+          10 分钟
         
       </span>
     
@@ -273,104 +272,47 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">使用 Redis 或 Memcached 优化 Grafana 热点查询缓存</h1>
+            <h1 id="seo-header"></h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="1-使用-Redis-作为缓存"><a href="#1-使用-Redis-作为缓存" class="headerlink" title="1. 使用 Redis 作为缓存"></a>1. 使用 Redis 作为缓存</h2><h3 id="1-1-安装和配置-Redis"><a href="#1-1-安装和配置-Redis" class="headerlink" title="1.1 安装和配置 Redis"></a>1.1 安装和配置 Redis</h3><ul>
-<li><strong>安装 Redis</strong>：在服务器上安装 Redis（如 <code>sudo apt-get install redis-server</code>）或使用 Docker：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -d --name redis -p 6379:6379 redis<br></code></pre></td></tr></table></figure></li>
-<li><strong>验证连接</strong>：确保 Grafana 服务器可以连接到 Redis（检查 IP、端口和防火墙）。</li>
-</ul>
-<h3 id="1-2-修改-Grafana-配置文件"><a href="#1-2-修改-Grafana-配置文件" class="headerlink" title="1.2 修改 Grafana 配置文件"></a>1.2 修改 Grafana 配置文件</h3><ol>
-<li>编辑 <code>/etc/grafana/grafana.ini</code>，配置 <code>[caching]</code> 部分：<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[caching]</span><br><span class="hljs-attr">enabled</span> = <span class="hljs-literal">true</span><br><span class="hljs-attr">type</span> = redis<br><span class="hljs-attr">connection_string</span> = redis://&lt;redis-host&gt;:<span class="hljs-number">6379</span><br></code></pre></td></tr></table></figure>
-<ul>
-<li>如果 Redis 有密码或特定数据库：<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">connection_string</span> = redis://:&lt;password&gt;@&lt;redis-host&gt;:<span class="hljs-number">6379</span>/&lt;db-number&gt;<br></code></pre></td></tr></table></figure>
-示例：<code>redis://:mypassword@192.168.1.100:6379/0</code></li>
-</ul>
-</li>
-<li>可选配置：<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">cache_ttl</span> = <span class="hljs-number">3600</span> <span class="hljs-comment">; 缓存 1 小时</span><br><span class="hljs-attr">max_size</span> = <span class="hljs-number">100</span> <span class="hljs-comment">; 限制缓存为 100MB</span><br></code></pre></td></tr></table></figure></li>
+                <h1 id="什么是ZooKeeper-事务日志磁盘延迟"><a href="#什么是ZooKeeper-事务日志磁盘延迟" class="headerlink" title="什么是ZooKeeper 事务日志磁盘延迟"></a>什么是ZooKeeper 事务日志磁盘延迟</h1><hr>
+<p><strong>ZooKeeper 事务日志磁盘延迟（Disk Write Latency &#x2F; Fsync Latency）</strong>，是指 ZooKeeper 服务器在处理写请求时，将事务日志（Txn Log）<strong>真正刷写到磁盘（Flush &amp; Fsync）所消耗的时间</strong>。</p>
+<p>在 ZooKeeper 的性能调优和故障排查中，这是一个极其关键的底层指标。</p>
+<h3 id="1-为什么会有这个延迟？（底层原理）"><a href="#1-为什么会有这个延迟？（底层原理）" class="headerlink" title="1. 为什么会有这个延迟？（底层原理）"></a>1. 为什么会有这个延迟？（底层原理）</h3><p>ZooKeeper 是一个<strong>强一致性</strong>的分布式协调系统，为了保证在极端情况（如突然断电、服务器宕机）下数据不丢失，它采用了 <strong>WAL（Write-Ahead Logging，预写日志）</strong> 机制。</p>
+<p>当客户端发起一个写操作（如创建节点、更新数据、释放锁）时，ZooKeeper 的处理流程如下：</p>
+<ol>
+<li><strong>接收请求</strong>：Leader 节点收到写请求。</li>
+<li><strong>写入内存与磁盘</strong>：ZooKeeper 必须先将这个事务操作写入内存，并<strong>同步写入磁盘的事务日志文件（Txn Log）</strong>。</li>
+<li><strong>强制刷盘（Fsync）</strong>：调用操作系统的 <code>fsync()</code> 系统调用，强制将操作系统的页缓存（Page Cache）中的数据真正写入物理磁盘介质。</li>
+<li><strong>集群广播</strong>：只有当半数以上的 Follower 节点都确认“已经成功把该事务写入磁盘”后，这个写操作才算成功，最后才会返回给客户端。</li>
 </ol>
-<h3 id="1-3-重启-Grafana"><a href="#1-3-重启-Grafana" class="headerlink" title="1.3 重启 Grafana"></a>1.3 重启 Grafana</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart grafana-server<br></code></pre></td></tr></table></figure>
-<p>或 Docker：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker restart &lt;grafana-container-name&gt;<br></code></pre></td></tr></table></figure>
-
-<h3 id="1-4-验证缓存"><a href="#1-4-验证缓存" class="headerlink" title="1.4 验证缓存"></a>1.4 验证缓存</h3><ul>
-<li>检查 Grafana 日志（<code>/var/log/grafana/grafana.log</code>）确认 Redis 连接。</li>
-<li>监控缓存命中率：使用 Grafana 指标（如 <code>grafana_cache_hits_total</code>）。</li>
-</ul>
-<h3 id="1-5-注意事项"><a href="#1-5-注意事项" class="headerlink" title="1.5 注意事项"></a>1.5 注意事项</h3><ul>
-<li><strong>缓存范围</strong>：适用于查询结果、仪表板元数据等。</li>
-<li><strong>性能</strong>：确保 Redis 有足够内存和高可用性。</li>
-<li><strong>安全性</strong>：建议启用 TLS 或密码保护。</li>
-</ul>
-<h2 id="2-使用-Memcached-作为缓存"><a href="#2-使用-Memcached-作为缓存" class="headerlink" title="2. 使用 Memcached 作为缓存"></a>2. 使用 Memcached 作为缓存</h2><h3 id="2-1-安装和配置-Memcached"><a href="#2-1-安装和配置-Memcached" class="headerlink" title="2.1 安装和配置 Memcached"></a>2.1 安装和配置 Memcached</h3><ul>
-<li><strong>安装 Memcached</strong>：在服务器上安装（如 <code>sudo apt-get install memcached</code>）或使用 Docker：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -d --name memcached -p 11211:11211 memcached<br></code></pre></td></tr></table></figure></li>
-<li><strong>验证连接</strong>：确保 Grafana 可访问 Memcached（默认端口 11211）。</li>
-</ul>
-<h3 id="2-2-修改-Grafana-配置文件"><a href="#2-2-修改-Grafana-配置文件" class="headerlink" title="2.2 修改 Grafana 配置文件"></a>2.2 修改 Grafana 配置文件</h3><ol>
-<li>编辑 <code>grafana.ini</code>，配置 <code>[caching]</code> 部分：<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[caching]</span><br><span class="hljs-attr">enabled</span> = <span class="hljs-literal">true</span><br><span class="hljs-attr">type</span> = memcached<br><span class="hljs-attr">connection_string</span> = &lt;memcached-host&gt;:<span class="hljs-number">11211</span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>核心矛盾</strong>：内存操作是纳秒&#x2F;微秒级的，而磁盘 I&#x2F;O（尤其是传统的机械硬盘，或者受到网络限制的云盘）是毫秒级的。<strong><code>fsync()</code> 这个把数据硬写进磁盘的过程，就是“磁盘延迟”的来源。</strong></p>
+</blockquote>
+<h3 id="2-磁盘延迟高会带来什么后果？"><a href="#2-磁盘延迟高会带来什么后果？" class="headerlink" title="2. 磁盘延迟高会带来什么后果？"></a>2. 磁盘延迟高会带来什么后果？</h3><p>一旦 ZooKeeper 存储事务日志的磁盘出现性能瓶颈或延迟飙升，会引发整个 Kafka &#x2F; ZooKeeper 集群的连锁反应：</p>
 <ul>
-<li>多实例用逗号分隔：<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">connection_string</span> = <span class="hljs-number">192.168</span>.<span class="hljs-number">1.100</span>:<span class="hljs-number">11211</span>,<span class="hljs-number">192.168</span>.<span class="hljs-number">1.101</span>:<span class="hljs-number">11211</span><br></code></pre></td></tr></table></figure></li>
+<li><strong>ZooKeeper 响应变慢（吞吐量暴跌）</strong>： 因为每次写操作都要等磁盘 <code>fsync</code> 结束，磁盘慢了，整个 ZooKeeper 的写请求排队就会变长。</li>
+<li><strong>Kafka 集群抖动与脑裂风险</strong>： Kafka 强依赖 ZooKeeper 来维持心跳和元数据。如果 ZooKeeper 忙于等待磁盘写入而无法及时响应 Kafka Broker 的心跳请求，ZooKeeper 可能会误认为该 Broker 已经挂掉，从而触发不必要的 Partition Leader 重新选举，导致 Kafka 频繁抖动。</li>
+<li><strong>ZooKeeper 集群崩溃（选主失败）</strong>： 如果延迟高到触发了集群内部的超时时间（如 <code>tickTime</code> * <code>initLimit</code>），ZooKeeper 节点之间会互相认为对方失联，导致集群进入频繁的重新选主状态，整个集群在选主期间完全不可用。</li>
 </ul>
-</li>
-<li>可选配置：<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">cache_ttl</span> = <span class="hljs-number">3600</span> <span class="hljs-comment">; 缓存 1 小时</span><br><span class="hljs-attr">max_size</span> = <span class="hljs-number">100</span> <span class="hljs-comment">; 限制缓存为 100MB</span><br></code></pre></td></tr></table></figure></li>
+<h3 id="3-为什么会出现严重的磁盘延迟？"><a href="#3-为什么会出现严重的磁盘延迟？" class="headerlink" title="3. 为什么会出现严重的磁盘延迟？"></a>3. 为什么会出现严重的磁盘延迟？</h3><p>在生产环境中，导致该延迟飙升的常见原因通常有以下几点：</p>
+<ul>
+<li><strong>混部导致资源争抢（最常见）</strong>： <strong>将 ZooKeeper 的事务日志（<code>dataLogDir</code>）和 Kafka 的消息日志（<code>log.dirs</code>）放在了同一块物理磁盘上</strong>。Kafka 在高并发下会有海量的磁盘吞吐，直接把磁盘的 I&#x2F;O 队列占满，导致 ZooKeeper 的 <code>fsync</code> 极度缓慢。</li>
+<li><strong>使用了性能较差的存储介质</strong>： 使用了机械硬盘（HDD），或者在云服务器上使用了普通云盘，未开启 SSD 高性能云盘。</li>
+<li><strong>快照与日志未分离</strong>： ZooKeeper 的数据目录包含 <code>dataDir</code>（存放内存快照 Snapshot）和 <code>dataLogDir</code>（存放事务日志）。生成快照时是一次性大文件写入，如果它们在同一块磁盘，写快照会严重阻塞写日志。</li>
+</ul>
+<h3 id="4-生产环境如何监控与调优？"><a href="#4-生产环境如何监控与调优？" class="headerlink" title="4. 生产环境如何监控与调优？"></a>4. 生产环境如何监控与调优？</h3><h4 id="📊-监控指标"><a href="#📊-监控指标" class="headerlink" title="📊 监控指标"></a>📊 监控指标</h4><p>可以通过 ZooKeeper 的 <code>mntr</code> 四字命令查看以下指标：</p>
+<ul>
+<li><code>zk_fsync_threshold_exceed_count</code>：<strong>Fsync 超过阈值（默认 100 毫秒）的次数</strong>。这个值如果一直在增加，说明磁盘压力极大，必须立刻处理。</li>
+<li><code>zk_avg_latency</code> &#x2F; <code>zk_max_latency</code>：客户端请求的平均&#x2F;最大延迟。</li>
+</ul>
+<h4 id="🛠-黄金优化法则"><a href="#🛠-黄金优化法则" class="headerlink" title="🛠 黄金优化法则"></a>🛠 黄金优化法则</h4><ol>
+<li><strong>独立挂载 SSD（强烈推荐）</strong>：将 ZooKeeper 的事务日志目录（<code>dataLogDir</code>）单独挂载到一块专用的、高性能的固态硬盘（SSD）上，不与任何其他应用（包括 Kafka 自身）共享。</li>
+<li><strong>日志与快照分离</strong>：在 <code>zoo.cfg</code> 中，确保 <code>dataDir</code>（快照）和 <code>dataLogDir</code>（事务日志）指向不同的物理磁盘。</li>
+<li><strong>预分配磁盘空间</strong>：ZooKeeper 默认会预分配 64MB 的文件空间以减少磁盘碎片，可以通过 <code>zookeeper.preAllocSize</code> 进行微调，避免频繁创建新文件带来的分配延迟。</li>
 </ol>
-<h3 id="2-3-重启-Grafana"><a href="#2-3-重启-Grafana" class="headerlink" title="2.3 重启 Grafana"></a>2.3 重启 Grafana</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart grafana-server<br></code></pre></td></tr></table></figure>
-<p>或 Docker：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker restart &lt;grafana-container-name&gt;<br></code></pre></td></tr></table></figure>
-
-<h3 id="2-4-验证缓存"><a href="#2-4-验证缓存" class="headerlink" title="2.4 验证缓存"></a>2.4 验证缓存</h3><ul>
-<li>检查 Grafana 日志确认 Memcached 连接。</li>
-<li>监控缓存命中率（<code>grafana_cache_hits_total</code>）。</li>
-</ul>
-<h3 id="2-5-注意事项"><a href="#2-5-注意事项" class="headerlink" title="2.5 注意事项"></a>2.5 注意事项</h3><ul>
-<li><strong>限制</strong>：Memcached 无持久化，重启丢失数据。</li>
-<li><strong>性能</strong>：适合轻量级缓存，内存效率高。</li>
-<li><strong>安全性</strong>：通过防火墙限制访问。</li>
-</ul>
-<h2 id="3-优化热点查询缓存"><a href="#3-优化热点查询缓存" class="headerlink" title="3. 优化热点查询缓存"></a>3. 优化热点查询缓存</h2><ul>
-<li><strong>识别热点查询</strong>：通过 Grafana 日志或 Prometheus 指标（如 <code>prometheus_engine_query_duration_seconds</code>）识别高频查询。</li>
-<li><strong>调整 TTL</strong>：根据查询更新频率设置 TTL（如 24 小时）。</li>
-<li><strong>预计算查询</strong>：结合 Prometheus Recording Rules 预计算复杂查询（如 <code>max_over_time</code>）。</li>
-<li><strong>分层缓存</strong>：结合数据源缓存（如 Thanos Querier）形成多级缓存。</li>
-</ul>
-<h2 id="4-Redis-vs-Memcached"><a href="#4-Redis-vs-Memcached" class="headerlink" title="4. Redis vs. Memcached"></a>4. Redis vs. Memcached</h2><ul>
-<li><strong>Redis</strong>：<ul>
-<li>优点：支持持久化、丰富数据结构、支持集群。</li>
-<li>缺点：配置复杂，资源占用较高。</li>
-<li>推荐场景：复杂查询、长期缓存。</li>
-</ul>
-</li>
-<li><strong>Memcached</strong>：<ul>
-<li>优点：简单轻量，内存效率高。</li>
-<li>缺点：无持久化，功能单一。</li>
-<li>推荐场景：临时热点查询缓存。</li>
-</ul>
-</li>
-</ul>
-<h2 id="5-验证和监控"><a href="#5-验证和监控" class="headerlink" title="5. 验证和监控"></a>5. 验证和监控</h2><ul>
-<li><strong>验证缓存</strong>：<ul>
-<li>使用 Grafana “Inspect” 检查查询响应时间。</li>
-<li>检查 Redis（<code>INFO STATS</code>）或 Memcached（<code>stats</code>）命中率。</li>
-</ul>
-</li>
-<li><strong>监控性能</strong>：<ul>
-<li>使用 <code>redis_exporter</code> 或 <code>memcached_exporter</code> 监控。</li>
-<li>在 Grafana 创建仪表板，监控命中率、内存和延迟。</li>
-</ul>
-</li>
-</ul>
-<h2 id="6-示例：缓存-30-天-CPU-峰值查询"><a href="#6-示例：缓存-30-天-CPU-峰值查询" class="headerlink" title="6. 示例：缓存 30 天 CPU 峰值查询"></a>6. 示例：缓存 30 天 CPU 峰值查询</h2><p>查询：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">max_over_time</span><span class="hljs-params">(rate(node_cpu_seconds_total[<span class="hljs-number">5</span>m])</span></span><span class="hljs-selector-attr">[30d:1h]</span>)<br></code></pre></td></tr></table></figure>
-<p>配置 Redis：</p>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[caching]</span><br><span class="hljs-attr">enabled</span> = <span class="hljs-literal">true</span><br><span class="hljs-attr">type</span> = redis<br><span class="hljs-attr">connection_string</span> = redis://<span class="hljs-number">192.168</span>.<span class="hljs-number">1.100</span>:<span class="hljs-number">6379</span><br><span class="hljs-attr">cache_ttl</span> = <span class="hljs-number">86400</span> <span class="hljs-comment">; 缓存 24 小时</span><br></code></pre></td></tr></table></figure>
-<p>验证：检查 Redis 缓存键（<code>KEYS *</code>）或 Grafana 日志。</p>
-<h2 id="7-注意事项"><a href="#7-注意事项" class="headerlink" title="7. 注意事项"></a>7. 注意事项</h2><ul>
-<li><strong>缓存失效</strong>：定期清理过期键，Redis 支持自动过期，Memcached 依赖 LRU。</li>
-<li><strong>数据一致性</strong>：热点查询适合较长 TTL，实时查询需降低 TTL。</li>
-<li><strong>资源规划</strong>：分配足够内存（建议从 1GB 开始）。</li>
-</ul>
 
                 
               </div>
@@ -379,34 +321,6 @@
             <div>
               <div class="post-metas my-3">
   
-    <div class="post-meta mr-3 d-flex align-items-center">
-      <i class="iconfont icon-category"></i>
-      
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-    </div>
-  
-  
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/Prometheus/" class="print-no-link">#Prometheus</a>
-      
-    </div>
   
 </div>
 
@@ -416,8 +330,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>使用 Redis 或 Memcached 优化 Grafana 热点查询缓存</div>
-      <div>https://blog.t-ao.cn/2026/01/11/使用 Redis 或 Memcached 优化 Grafana 热点查询缓存/</div>
+      <div></div>
+      <div>https://blog.t-ao.cn/2026/06/11/什么是ZooKeeper 事务日志磁盘延迟/</div>
     </div>
     <div class="license-meta">
       
@@ -429,7 +343,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年1月11日</div>
+          <div>2026年6月11日</div>
         </div>
       
       
@@ -461,7 +375,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/06/11/%E4%BB%80%E4%B9%88%E6%98%AFZooKeeper%20%E4%BA%8B%E5%8A%A1%E6%97%A5%E5%BF%97%E7%A3%81%E7%9B%98%E5%BB%B6%E8%BF%9F/" title="">
+                      <a href="/2026/06/11/Kafka%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%89%8B%E5%86%8C%EF%BC%88%E5%8C%85%E5%90%ABzk%EF%BC%89/" title="">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile"></span>
                         <span class="visible-mobile">上一篇</span>
@@ -471,8 +385,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/01/10/Containerd-Runc%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" title="Containerd-Runc常用命令">
-                        <span class="hidden-mobile">Containerd-Runc常用命令</span>
+                      <a href="/2026/01/11/%E4%BD%BF%E7%94%A8%20Redis%20%E6%88%96%20Memcached%20%E4%BC%98%E5%8C%96%20Grafana%20%E7%83%AD%E7%82%B9%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98/" title="使用 Redis 或 Memcached 优化 Grafana 热点查询缓存">
+                        <span class="hidden-mobile">使用 Redis 或 Memcached 优化 Grafana 热点查询缓存</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
