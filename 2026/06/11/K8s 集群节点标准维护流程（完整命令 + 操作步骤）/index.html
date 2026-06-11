@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="TAO">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="K8s 集群节点标准维护流程（完整命令 + 操作步骤）适用于 Kubeadm 部署标准集群，包含日常节点维护、节点重启 &#x2F; 升级、故障节点下线、节点恢复全流程，生产环境直接可用。 一、前置检查（维护前必做）12345678# 1. 查看集群所有节点状态kubectl get nodes -o wide# 2. 查看目标节点上的所有 Podkubectl get pods -o wide">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s 集群节点标准维护流程（完整命令 + 操作步骤）">
+<meta property="og:url" content="https://blog.t-ao.cn/2026/06/11/K8s%20%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9%E6%A0%87%E5%87%86%E7%BB%B4%E6%8A%A4%E6%B5%81%E7%A8%8B%EF%BC%88%E5%AE%8C%E6%95%B4%E5%91%BD%E4%BB%A4%20+%20%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4%EF%BC%89/index.html">
+<meta property="og:site_name" content="TAO&#39;s Blog">
+<meta property="og:description" content="K8s 集群节点标准维护流程（完整命令 + 操作步骤）适用于 Kubeadm 部署标准集群，包含日常节点维护、节点重启 &#x2F; 升级、故障节点下线、节点恢复全流程，生产环境直接可用。 一、前置检查（维护前必做）12345678# 1. 查看集群所有节点状态kubectl get nodes -o wide# 2. 查看目标节点上的所有 Podkubectl get pods -o wide">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-11T03:18:34.000Z">
+<meta property="article:modified_time" content="2026-06-11T07:28:57.536Z">
+<meta property="article:author" content="TAO">
+<meta property="article:tag" content="云原生">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>K8s 集群节点标准维护流程（完整命令 + 操作步骤） - TAO&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.t-ao.cn","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>T-AO</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>常用站点</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="K8s 集群节点标准维护流程（完整命令 + 操作步骤）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-06-11 11:18" pubdate>
+          2026年6月11日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          985 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">K8s 集群节点标准维护流程（完整命令 + 操作步骤）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="K8s-集群节点标准维护流程（完整命令-操作步骤）"><a href="#K8s-集群节点标准维护流程（完整命令-操作步骤）" class="headerlink" title="K8s 集群节点标准维护流程（完整命令 + 操作步骤）"></a>K8s 集群节点标准维护流程（完整命令 + 操作步骤）</h1><p>适用于 Kubeadm 部署标准集群，包含<strong>日常节点维护、节点重启 &#x2F; 升级、故障节点下线、节点恢复</strong>全流程，生产环境直接可用。</p>
+<h2 id="一、前置检查（维护前必做）"><a href="#一、前置检查（维护前必做）" class="headerlink" title="一、前置检查（维护前必做）"></a>一、前置检查（维护前必做）</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 1. 查看集群所有节点状态</span><br>kubectl <span class="hljs-built_in">get</span> nodes -o wide<br><br><span class="hljs-comment"># 2. 查看目标节点上的所有 Pod</span><br>kubectl <span class="hljs-built_in">get</span> pods -o wide --field-selector spec.<span class="hljs-attribute">nodeName</span>=节点名称<br><br><span class="hljs-comment"># 3. 查看节点污点、调度状态</span><br>kubectl describe node 节点名称 | grep -E <span class="hljs-string">&quot;Unschedulable|Taints&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、节点维护核心流程（正常维护：升级-补丁-硬件操作）"><a href="#二、节点维护核心流程（正常维护：升级-补丁-硬件操作）" class="headerlink" title="二、节点维护核心流程（正常维护：升级 &#x2F; 补丁 &#x2F; 硬件操作）"></a>二、节点维护核心流程（正常维护：升级 &#x2F; 补丁 &#x2F; 硬件操作）</h2><h3 id="步骤-1：设置节点不可调度（新-Pod-不再调度至该节点）"><a href="#步骤-1：设置节点不可调度（新-Pod-不再调度至该节点）" class="headerlink" title="步骤 1：设置节点不可调度（新 Pod 不再调度至该节点）"></a>步骤 1：设置节点<strong>不可调度</strong>（新 Pod 不再调度至该节点）</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">kubectl</span> cordon 节点名称<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>作用：仅禁止新 Pod 调度，<strong>不驱逐现有 Pod</strong></li>
+<li>验证：<code>kubectl get nodes</code> 节点状态标记 <code>SchedulingDisabled</code></li>
+</ul>
+<h3 id="步骤-2：驱逐节点上所有业务-Pod（平滑迁移至其他节点）"><a href="#步骤-2：驱逐节点上所有业务-Pod（平滑迁移至其他节点）" class="headerlink" title="步骤 2：驱逐节点上所有业务 Pod（平滑迁移至其他节点）"></a>步骤 2：驱逐节点上所有业务 Pod（平滑迁移至其他节点）</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># 标准生产驱逐命令（忽略DaemonSet、删除本地临时数据、安全驱逐）</span><br><span class="hljs-attribute">kubectl</span> drain 节点名称 <span class="hljs-punctuation">\</span><br><span class="hljs-punctuation"></span>  --ignore-daemonsets <span class="hljs-punctuation">\</span><br><span class="hljs-punctuation"></span>  --delete-local-data <span class="hljs-punctuation">\</span><br><span class="hljs-punctuation"></span>  --timeout=<span class="hljs-number">300</span>s<br></code></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li><code>--ignore-daemonsets</code>：忽略守护进程集（如 kube-proxy、calico，无需驱逐）</li>
+<li><code>--delete-local-data</code>：删除 emptyDir 等本地临时存储数据</li>
+<li><code>--timeout</code>：驱逐超时时间</li>
+</ul>
+<h3 id="步骤-3：登录节点执行维护操作"><a href="#步骤-3：登录节点执行维护操作" class="headerlink" title="步骤 3：登录节点执行维护操作"></a>步骤 3：登录节点执行维护操作</h3><figure class="highlight nsis"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs nsis"><span class="hljs-comment"># 登录目标节点</span><br>ssh 节点IP<br><br><span class="hljs-comment"># 常用维护操作举例</span><br><span class="hljs-params">system</span>ctl restart docker containerd  <span class="hljs-comment"># 容器时重启</span><br>apt update &amp;&amp; apt upgrade -y         <span class="hljs-comment"># Debian 系统补丁升级</span><br><span class="hljs-keyword">reboot</span>                               <span class="hljs-comment"># 节点重启</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="步骤-4：维护完成，解除节点锁定（恢复调度）"><a href="#步骤-4：维护完成，解除节点锁定（恢复调度）" class="headerlink" title="步骤 4：维护完成，解除节点锁定（恢复调度）"></a>步骤 4：维护完成，解除节点锁定（恢复调度）</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 退出节点回到管理节点，恢复调度</span><br>kubectl uncordon 节点名称<br><br><span class="hljs-comment"># 验证：节点恢复 Ready 可调度状态</span><br>kubectl <span class="hljs-built_in">get</span> nodes<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、特殊场景命令"><a href="#三、特殊场景命令" class="headerlink" title="三、特殊场景命令"></a>三、特殊场景命令</h2><h3 id="场景-1：强制驱逐（Pod-无法正常迁移、卡死）"><a href="#场景-1：强制驱逐（Pod-无法正常迁移、卡死）" class="headerlink" title="场景 1：强制驱逐（Pod 无法正常迁移、卡死）"></a>场景 1：强制驱逐（Pod 无法正常迁移、卡死）</h3><figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs brainfuck"><span class="hljs-comment">kubectl drain 节点名称</span> <span class="hljs-literal">--</span><span class="hljs-comment">ignore</span><span class="hljs-literal">-</span><span class="hljs-comment">daemonsets</span> <span class="hljs-literal">--</span><span class="hljs-comment">delete</span><span class="hljs-literal">-</span><span class="hljs-comment">local</span><span class="hljs-literal">-</span><span class="hljs-comment">data</span> <span class="hljs-literal">--</span><span class="hljs-comment">force</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="场景-2：临时维护，不想驱逐-Pod（仅禁止新调度）"><a href="#场景-2：临时维护，不想驱逐-Pod（仅禁止新调度）" class="headerlink" title="场景 2：临时维护，不想驱逐 Pod（仅禁止新调度）"></a>场景 2：临时维护，不想驱逐 Pod（仅禁止新调度）</h3><p>只执行锁定，不执行 <code>drain</code> 驱逐：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 锁定</span><br><span class="hljs-attribute">kubectl</span> cordon 节点名称<br><br><span class="hljs-comment"># 维护完解锁</span><br>kubectl uncordon 节点名称<br></code></pre></td></tr></table></figure>
+
+<h3 id="场景-3：故障节点永久下线（节点彻底报废）"><a href="#场景-3：故障节点永久下线（节点彻底报废）" class="headerlink" title="场景 3：故障节点永久下线（节点彻底报废）"></a>场景 3：故障节点永久下线（节点彻底报废）</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs crmsh"><span class="hljs-comment"># 1. 先锁定节点</span><br>kubectl cordon 故障节点<br><br><span class="hljs-comment"># 2. 强制驱逐残留Pod</span><br>kubectl drain 故障节点 --ignore-daemonsets --force<br><br><span class="hljs-comment"># 3. 集群中删除该节点</span><br>kubectl delete <span class="hljs-keyword">node</span> <span class="hljs-title">故障节点</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="场景-4：节点重启后-Pod-无法启动，排查调度"><a href="#场景-4：节点重启后-Pod-无法启动，排查调度" class="headerlink" title="场景 4：节点重启后 Pod 无法启动，排查调度"></a>场景 4：节点重启后 Pod 无法启动，排查调度</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 查看节点事件</span><br>kubectl describe node 节点名称<br><br><span class="hljs-comment"># 查看Pod驱逐/调度失败事件</span><br>kubectl <span class="hljs-built_in">get</span> events <span class="hljs-attribute">--sort-by</span>=.lastTimestamp<br></code></pre></td></tr></table></figure>
+
+<h3 id="场景-5：手动驱逐单个指定-Pod"><a href="#场景-5：手动驱逐单个指定-Pod" class="headerlink" title="场景 5：手动驱逐单个指定 Pod"></a>场景 5：手动驱逐单个指定 Pod</h3><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs actionscript">kubectl <span class="hljs-keyword">delete</span> pod pod名称 -n 命名空间<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、关键注意事项"><a href="#四、关键注意事项" class="headerlink" title="四、关键注意事项"></a>四、关键注意事项</h2><ol>
+<li>维护<strong>禁止同时操作多个控制面节点</strong>，单节点滚动维护；</li>
+<li>有<strong>StatefulSet &#x2F; 本地 PV</strong>业务，提前做好数据备份；</li>
+<li>集群资源不足时，<code>drain</code> 会驱逐失败，需先扩容或临时压缩资源；</li>
+<li>控制面节点（master）维护同样使用 <code>cordon/drain/uncordon</code> 一套命令。</li>
+</ol>
+<h1 id="K8s-扩缩容-Pod-常用命令"><a href="#K8s-扩缩容-Pod-常用命令" class="headerlink" title="K8s 扩缩容 Pod 常用命令"></a>K8s 扩缩容 Pod 常用命令</h1><blockquote>
+<p>说明：<strong>单独裸 Pod 无法直接 scale</strong>，只能对控制器（<code>Deployment/StatefulSet/ReplicaSet</code>）扩缩容，控制器自动增减 Pod 数量。</p>
+</blockquote>
+<h2 id="一、伸缩-Deployment（最常用）"><a href="#一、伸缩-Deployment（最常用）" class="headerlink" title="一、伸缩 Deployment（最常用）"></a>一、伸缩 Deployment（最常用）</h2><h3 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h3><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gherkin"><span class="hljs-comment"># 扩容/缩容指定 Deployment</span><br>kubectl scale deployment <span class="hljs-variable">&lt;部署名称&gt;</span> -n <span class="hljs-variable">&lt;命名空间&gt;</span> --replicas=<span class="hljs-variable">&lt;目标副本数&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="实操示例"><a href="#实操示例" class="headerlink" title="实操示例"></a>实操示例</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 扩容到 5 个 Pod</span><br>kubectl scale deployment web-demo -n<span class="hljs-built_in"> default </span><span class="hljs-attribute">--replicas</span>=5<br><br><span class="hljs-comment"># 缩容到 2 个 Pod</span><br>kubectl scale deployment web-demo -n<span class="hljs-built_in"> default </span><span class="hljs-attribute">--replicas</span>=2<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、伸缩-StatefulSet（有状态服务）"><a href="#二、伸缩-StatefulSet（有状态服务）" class="headerlink" title="二、伸缩 StatefulSet（有状态服务）"></a>二、伸缩 StatefulSet（有状态服务）</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">kubectl scale statefulset <span class="hljs-tag">&lt;<span class="hljs-name">sts名称</span>&gt;</span> -n <span class="hljs-tag">&lt;<span class="hljs-name">命名空间</span>&gt;</span> --replicas=<span class="hljs-tag">&lt;<span class="hljs-name">数量</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="三、伸缩-ReplicaSet"><a href="#三、伸缩-ReplicaSet" class="headerlink" title="三、伸缩 ReplicaSet"></a>三、伸缩 ReplicaSet</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">kubectl scale rs <span class="hljs-tag">&lt;<span class="hljs-name">rs名称</span>&gt;</span> -n <span class="hljs-tag">&lt;<span class="hljs-name">命名空间</span>&gt;</span> --replicas=<span class="hljs-tag">&lt;<span class="hljs-name">数量</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="四、快速查看副本状态"><a href="#四、快速查看副本状态" class="headerlink" title="四、快速查看副本状态"></a>四、快速查看副本状态</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 查看当前副本数、Pod数</span><br>kubectl <span class="hljs-built_in">get</span> deploy -n &lt;命名空间&gt;<br><br><span class="hljs-comment"># 实时查看Pod变化</span><br>kubectl <span class="hljs-built_in">get</span> pods -n &lt;命名空间&gt; -w<br></code></pre></td></tr></table></figure>
+
+<h2 id="五、HPA-自动扩缩容（长期自动）"><a href="#五、HPA-自动扩缩容（长期自动）" class="headerlink" title="五、HPA 自动扩缩容（长期自动）"></a>五、HPA 自动扩缩容（长期自动）</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 基于CPU自动伸缩，最小2副本、最大10副本</span><br>kubectl autoscale deployment web-demo -n<span class="hljs-built_in"> default </span><span class="hljs-attribute">--min</span>=2 <span class="hljs-attribute">--max</span>=10 <span class="hljs-attribute">--cpu-percent</span>=70<br></code></pre></td></tr></table></figure>
+
+<h2 id="六、常用简写"><a href="#六、常用简写" class="headerlink" title="六、常用简写"></a>六、常用简写</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># deploy 为 deployment 简写</span><br>kubectl scale deploy web-demo -n<span class="hljs-built_in"> default </span><span class="hljs-attribute">--replicas</span>=3<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><ul>
+<li>缩容会<strong>优雅删除多余 Pod</strong>，扩容会调度新建 Pod；</li>
+<li>集群资源不足、污点、亲和性策略会导致扩容失败，可通过 <code>kubectl describe pod &lt;pod名&gt;</code> 排查。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/k8s/" class="category-chain-item">k8s</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="print-no-link">#云原生</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>K8s 集群节点标准维护流程（完整命令 + 操作步骤）</div>
+      <div>https://blog.t-ao.cn/2026/06/11/K8s 集群节点标准维护流程（完整命令 + 操作步骤）/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>TAO</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年6月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/06/11/%E4%BB%80%E4%B9%88%E6%98%AFZooKeeper%20%E4%BA%8B%E5%8A%A1%E6%97%A5%E5%BF%97%E7%A3%81%E7%9B%98%E5%BB%B6%E8%BF%9F/" title="什么是ZooKeeper 事务日志磁盘延迟">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">什么是ZooKeeper 事务日志磁盘延迟</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/06/10/Kafka%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%89%8B%E5%86%8C%EF%BC%88%E5%8C%85%E5%90%ABzk%EF%BC%89/" title="Kafka 高可用集群安装手册（ZooKeeper 模式）">
+                        <span class="hidden-mobile">Kafka 高可用集群安装手册（ZooKeeper 模式）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://www.biibll.com" target="_blank" rel="nofollow noopener"><span>Blog Power by</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
