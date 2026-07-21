@@ -229,6 +229,128 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/07/21/k8s%201.36%20%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/" target="_self">
+          k8s 1.36 安装完整步骤
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/21/k8s%201.36%20%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/" target="_self">
+        <div>
+          适用环境  Ubuntu Server 22.04 &#x2F; 24.04 1 台 Control Plane，若干 Worker containerd 作为容器运行时 Calico v3.32.1 作为 CNI IPv4 单栈 所有操作使用 root，普通用户请在命令前加 sudo   以下为单控制平面方案。生产环境建议至少部署 3 个控制平面节点，并在 API Server 前配置负载均衡器
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-21 11:16" pubdate>
+              2026-07-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="category-chain-item">云原生</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/k8s/">#k8s</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/21/zookeeper%E5%AE%89%E8%A3%85%E5%8F%8A%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4/" target="_self">
+          zookeeper安装及常见的操作命令
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/07/21/zookeeper%E5%AE%89%E8%A3%85%E5%8F%8A%E5%B8%B8%E8%A7%81%E7%9A%84%E6%93%8D%E4%BD%9C%E5%91%BD%E4%BB%A4/" target="_self">
+        <div>
+          Zookeeper安装及常见的操作命令一、安装前准备 推荐 Java：JDK 8/11/17，ZooKeeper 3.8+ 推荐 JDK 11+ 单机模式适合测试；生产建议至少 3 台组成集群 集群节点数量建议为奇数：3、5、7 默认端口： 2181：客户端连接端口 2888：Follower 与 Leader 通信端口 3888：Leader 选举端口 8080：AdminServer 端口，部
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-21 11:16" pubdate>
+              2026-07-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/linux/">#linux</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/06/11/%E4%BB%80%E4%B9%88%E6%98%AFZooKeeper%20%E4%BA%8B%E5%8A%A1%E6%97%A5%E5%BF%97%E7%A3%81%E7%9B%98%E5%BB%B6%E8%BF%9F/" target="_self">
           什么是ZooKeeper 事务日志磁盘延迟
         </a>
@@ -704,128 +826,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/shell/">#shell</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/07/Mysql%E4%B8%BB%E4%BB%8E/" target="_self">
-          Mysql主从
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/07/Mysql%E4%B8%BB%E4%BB%8E/" target="_self">
-        <div>
-          1. MySQL 主从1.1 什么是 MySQL 主从 ?所谓 MySQL 主从，就是建立两个完全一样的数据库，一个是主库，一个是从库，主库对外提供读写的操作，从库对外提供读的操作。  1.2 为什么使用 MySQL 主从 ?对于数据库单机部署，在 4 核 8G 的机器上运行 MySQL 5.7 时，大概可以支撑 500 的 TPS 和 10000 的 QPS，当遇到一些活动时，查询流量骤然，就需
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-07 23:10" pubdate>
-              2025-07-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Mysql/">#Mysql</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/07/Mysql%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F/" target="_self">
-          Mysql日志格式
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/07/Mysql%E6%97%A5%E5%BF%97%E6%A0%BC%E5%BC%8F/" target="_self">
-        <div>
-          概述MySQL 的日志主要包括二进制日志（Binary Log）、错误日志、慢查询日志、一般查询日志和中继日志。其中，二进制日志的格式直接影响主从复制和数据恢复。本文重点介绍二进制日志的三种格式：Statement (SBR)、Row (RBR) 和 Mixed，并简述其他日志类型。 二进制日志格式1. Statement（基于语句的复制，SBR） 描述：记录执行的 SQL 语句，如 INSERT
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-07 22:56" pubdate>
-              2025-07-07
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Mysql/">#Mysql</a>
             
           </div>
         
