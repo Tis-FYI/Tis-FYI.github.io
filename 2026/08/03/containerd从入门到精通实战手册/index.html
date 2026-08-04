@@ -1,0 +1,1752 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="TAO">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="containerd 从入门到精通实战手册 版本基线：containerd 1.7.x（LTS）与 2.x、CRI（Kubernetes 运行时）、nerdctl、crictl   目录 第 1 章 containerd 是什么 第 2 章 安装与基础配置 第 3 章 命令行工具：ctr &#x2F; crictl &#x2F; nerdctl 第 4 章 镜像管理 第 5 章 容器与任务 第 6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="containerd 从入门到精通实战手册">
+<meta property="og:url" content="https://blog.t-ao.cn/2026/08/03/containerd%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E5%AE%9E%E6%88%98%E6%89%8B%E5%86%8C/index.html">
+<meta property="og:site_name" content="TAO&#39;s Blog">
+<meta property="og:description" content="containerd 从入门到精通实战手册 版本基线：containerd 1.7.x（LTS）与 2.x、CRI（Kubernetes 运行时）、nerdctl、crictl   目录 第 1 章 containerd 是什么 第 2 章 安装与基础配置 第 3 章 命令行工具：ctr &#x2F; crictl &#x2F; nerdctl 第 4 章 镜像管理 第 5 章 容器与任务 第 6">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-03T03:16:22.000Z">
+<meta property="article:modified_time" content="2026-08-04T06:08:19.300Z">
+<meta property="article:author" content="TAO">
+<meta property="article:tag" content="containerd">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>containerd 从入门到精通实战手册 - TAO&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.t-ao.cn","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>T-AO</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>常用站点</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="containerd 从入门到精通实战手册"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-03 11:16" pubdate>
+          2026年8月3日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          80 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">containerd 从入门到精通实战手册</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="containerd-从入门到精通实战手册"><a href="#containerd-从入门到精通实战手册" class="headerlink" title="containerd 从入门到精通实战手册"></a>containerd 从入门到精通实战手册</h1><blockquote>
+<p>版本基线：containerd 1.7.x（LTS）与 2.x、CRI（Kubernetes 运行时）、nerdctl、crictl</p>
+</blockquote>
+<hr>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E7%AC%AC-1-%E7%AB%A0-containerd-%E6%98%AF%E4%BB%80%E4%B9%88">第 1 章 containerd 是什么</a></li>
+<li><a href="#%E7%AC%AC-2-%E7%AB%A0-%E5%AE%89%E8%A3%85%E4%B8%8E%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE">第 2 章 安装与基础配置</a></li>
+<li><a href="#%E7%AC%AC-3-%E7%AB%A0-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7ctr--crictl--nerdctl">第 3 章 命令行工具：ctr &#x2F; crictl &#x2F; nerdctl</a></li>
+<li><a href="#%E7%AC%AC-4-%E7%AB%A0-%E9%95%9C%E5%83%8F%E7%AE%A1%E7%90%86">第 4 章 镜像管理</a></li>
+<li><a href="#%E7%AC%AC-5-%E7%AB%A0-%E5%AE%B9%E5%99%A8%E4%B8%8E%E4%BB%BB%E5%8A%A1">第 5 章 容器与任务</a></li>
+<li><a href="#%E7%AC%AC-6-%E7%AB%A0-cri-%E9%9B%86%E6%88%90%E4%B8%8E-kubernetes">第 6 章 CRI 集成与 Kubernetes</a></li>
+<li><a href="#%E7%AC%AC-7-%E7%AB%A0-%E7%BD%91%E7%BB%9C%E4%B8%8E%E5%AD%98%E5%82%A8">第 7 章 网络与存储</a></li>
+<li><a href="#%E7%AC%AC-8-%E7%AB%A0-%E5%AE%89%E5%85%A8%E5%8A%A0%E5%9B%BA">第 8 章 安全加固</a></li>
+<li><a href="#%E7%AC%AC-9-%E7%AB%A0-%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5">第 9 章 运维与故障排查</a></li>
+<li><a href="#%E7%AC%AC-10-%E7%AB%A0-%E8%BF%9B%E9%98%B6%E4%B8%8E%E7%94%9F%E6%80%81">第 10 章 进阶与生态</a></li>
+<li><a href="#%E7%AC%AC-11-%E7%AB%A0-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5%E8%A1%A8">第 11 章 常用命令速查表</a></li>
+<li><a href="#%E9%99%84%E5%BD%95">附录</a></li>
+</ul>
+<hr>
+<h2 id="第-1-章-containerd-是什么"><a href="#第-1-章-containerd-是什么" class="headerlink" title="第 1 章 containerd 是什么"></a>第 1 章 containerd 是什么</h2><h3 id="1-1-背景：为什么需要-containerd"><a href="#1-1-背景：为什么需要-containerd" class="headerlink" title="1.1 背景：为什么需要 containerd"></a>1.1 背景：为什么需要 containerd</h3><p>containerd（读作 “container-dee”）是一个<strong>工业级容器运行时</strong>，由 Docker 公司在 2017 年捐献给 CNCF，2019 年 2 月成为 CNCF <strong>毕业项目</strong>，与 Kubernetes、Prometheus 同级。</p>
+<p>它是目前云原生生态的<strong>事实标准底层运行时</strong>：</p>
+<ul>
+<li>Docker Engine 的容器执行底层就是 containerd。</li>
+<li>Kubernetes 通过 CRI 接口对接 containerd（自 K8s 1.24 移除 dockershim 后，containerd 是主流默认运行时）。</li>
+<li>它只做”运行容器”这一件事，把镜像构建（Build）、编排（Orchestration）等留给上层。</li>
+</ul>
+<h3 id="1-2-containerd-在整个技术栈中的位置"><a href="#1-2-containerd-在整个技术栈中的位置" class="headerlink" title="1.2 containerd 在整个技术栈中的位置"></a>1.2 containerd 在整个技术栈中的位置</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs text">+-------------------------------------------------------------+<br>|  Docker CLI / Docker Compose   |   kubectl / kubelet        |<br>+------------------+-------------+--------------+--------------+<br>|  Docker Engine   |              |  CRI (K8s)   |              |<br>|  (docker daemon) |              |              |              |<br>+------------------+              +--------------+              |<br>|                     containerd（统一底座）                    |<br>|  +------------+  +-----------+  +----------+  +------------+ |<br>|  | 镜像管理    |  | 容器生命周期 |  | 快照存储 |  | 命名空间   | |<br>|  +------------+  +-----------+  +----------+  +------------+ |<br>|  containerd-shim（每个容器一个）                                |<br>|  runc / runsc / kata（OCI 运行时）                             |<br>+--------------------------------------------------------------+<br>|                    Linux 内核（namespace/cgroup/overlayfs）   |<br>+--------------------------------------------------------------+<br></code></pre></td></tr></table></figure>
+
+<p><strong>一句话总结</strong>：containerd 是”操作系统的容器子系统”，上层无论是 Docker 还是 Kubernetes，最终都通过它来拉镜像、建容器、跑进程。</p>
+<h3 id="1-3-核心组件与进程"><a href="#1-3-核心组件与进程" class="headerlink" title="1.3 核心组件与进程"></a>1.3 核心组件与进程</h3><p>安装 containerd 后，主要二进制与进程：</p>
+<table>
+<thead>
+<tr>
+<th>进程&#x2F;二进制</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>containerd</code></td>
+<td>守护进程，暴露 gRPC API，管理镜像、容器、快照、元数据</td>
+</tr>
+<tr>
+<td><code>containerd-shim-runc-v2</code></td>
+<td><strong>每个容器一个</strong>的垫片进程，隔离 containerd 与容器进程</td>
+</tr>
+<tr>
+<td><code>runc</code></td>
+<td>OCI 运行时，真正创建&#x2F;运行容器进程</td>
+</tr>
+<tr>
+<td><code>ctr</code></td>
+<td>containerd 自带 CLI（调试&#x2F;运维用）</td>
+</tr>
+<tr>
+<td><code>crictl</code></td>
+<td>CRI 客户端（K8s 视角的运维工具）</td>
+</tr>
+<tr>
+<td><code>nerdctl</code></td>
+<td>Docker 兼容 CLI（社区推荐）</td>
+</tr>
+</tbody></table>
+<p><strong>shim 的作用（重要）：</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">containerd 重启/升级 -&gt; 容器不受影响（shim 还在）<br>containerd 崩溃     -&gt; 运行中的容器继续跑<br>容器退出           -&gt; shim 回收资源并上报状态<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>shim 让”containerd 重启不杀容器”成为可能，这是它相比”单守护进程架构”的核心优势（对应 Docker 的 <code>live-restore</code> 是更上层的近似实现）。</p>
+</blockquote>
+<h3 id="1-4-containerd-与-Docker-的对比"><a href="#1-4-containerd-与-Docker-的对比" class="headerlink" title="1.4 containerd 与 Docker 的对比"></a>1.4 containerd 与 Docker 的对比</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Docker Engine</th>
+<th>containerd</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定位</td>
+<td>完整容器平台（build+run+compose）</td>
+<td>纯运行时（run only）</td>
+</tr>
+<tr>
+<td>镜像构建</td>
+<td>内置（buildkit）</td>
+<td>不支持（需 buildkit&#x2F;nerdctl build）</td>
+</tr>
+<tr>
+<td>编排</td>
+<td>Compose &#x2F; Swarm</td>
+<td>无（对接 K8s）</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>内置 bridge&#x2F;host&#x2F;overlay</td>
+<td>不管理网络（CRI 场景靠 CNI）</td>
+</tr>
+<tr>
+<td>端口映射</td>
+<td>内置</td>
+<td>无（nerdctl 通过 CNI 实现）</td>
+</tr>
+<tr>
+<td>CLI</td>
+<td>docker</td>
+<td>ctr（原始）&#x2F; crictl（CRI）&#x2F; nerdctl（类 docker）</td>
+</tr>
+<tr>
+<td>重启策略</td>
+<td>restart 参数</td>
+<td>无（上层负责，如 K8s&#x2F;kubelet）</td>
+</tr>
+<tr>
+<td>数据卷</td>
+<td>volume&#x2F;bind</td>
+<td>无内置（nerdctl 支持）</td>
+</tr>
+<tr>
+<td>使用场景</td>
+<td>单机开发&#x2F;小规模</td>
+<td>K8s 节点运行时、嵌入式&#x2F;裁剪场景</td>
+</tr>
+<tr>
+<td>资源占用</td>
+<td>较大（多一层 daemon）</td>
+<td>更小、更稳</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>结论</strong>：Docker 适合单机开发与交付；生产 K8s 节点直接用 containerd，去掉多余组件，减少攻击面与资源占用。</p>
+</blockquote>
+<h3 id="1-5-版本与演进"><a href="#1-5-版本与演进" class="headerlink" title="1.5 版本与演进"></a>1.5 版本与演进</h3><table>
+<thead>
+<tr>
+<th>版本</th>
+<th>状态</th>
+<th>关键变化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.6.x</td>
+<td>EOL</td>
+<td>大量 K8s 版本默认搭载</td>
+</tr>
+<tr>
+<td><strong>1.7.x</strong></td>
+<td><strong>LTS（长期支持）</strong></td>
+<td>支持镜像签名验证、改进快照器、Windows 容器增强</td>
+</tr>
+<tr>
+<td>2.0.x</td>
+<td>当前主线</td>
+<td>默认启用镜像存储（image store）、配置语法更新、runc 升级、移除旧兼容层</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看版本</span><br>containerd --version<br>ctr version<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>生产选择：K8s 节点用 <strong>containerd 1.7 LTS</strong>（稳定、文档多），新集群可评估 2.x；升级前先看官方”升级到 2.x”的兼容性说明（配置、插件、API 变化）。</p>
+</blockquote>
+<hr>
+<h2 id="第-2-章-安装与基础配置"><a href="#第-2-章-安装与基础配置" class="headerlink" title="第 2 章 安装与基础配置"></a>第 2 章 安装与基础配置</h2><h3 id="2-1-系统要求"><a href="#2-1-系统要求" class="headerlink" title="2.1 系统要求"></a>2.1 系统要求</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>要求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>内核</td>
+<td>Linux ≥ 4.x（推荐 5.x+），需支持 overlayfs、cgroup v2（推荐）</td>
+</tr>
+<tr>
+<td>架构</td>
+<td>x86_64 &#x2F; arm64 &#x2F; ppc64le &#x2F; s390x 等</td>
+</tr>
+<tr>
+<td>磁盘</td>
+<td>视镜像量而定，建议 ≥ 20GB 给 &#x2F;var&#x2F;lib&#x2F;containerd</td>
+</tr>
+<tr>
+<td>K8s 节点</td>
+<td>与 kubelet&#x2F;kubeadm 版本匹配（见官方兼容矩阵）</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">uname</span> -r<br><span class="hljs-built_in">cat</span> /etc/os-release<br>grep -c cgroup /proc/filesystems          <span class="hljs-comment"># 确认 cgroup 支持</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-通过发行版包安装（推荐）"><a href="#2-2-通过发行版包安装（推荐）" class="headerlink" title="2.2 通过发行版包安装（推荐）"></a>2.2 通过发行版包安装（推荐）</h3><p><strong>Ubuntu &#x2F; Debian：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 方法A：docker-ce 源里带 containerd.io（与 Docker 共用）</span><br><span class="hljs-built_in">sudo</span> apt-get update<br><span class="hljs-built_in">sudo</span> apt-get install -y containerd.io<br><br><span class="hljs-comment"># 方法B：官方 containerd 仓库</span><br>curl -fsSL https://download.docker.com/linux/ubuntu/gpg | <span class="hljs-built_in">sudo</span> gpg --dearmor -o /usr/share/keyrings/docker.gpg<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;deb [arch=<span class="hljs-subst">$(dpkg --print-architecture)</span> signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu <span class="hljs-subst">$(. /etc/os-release &amp;&amp; echo $VERSION_CODENAME)</span> stable&quot;</span> \<br>  | <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/apt/sources.list.d/containerd.list<br><span class="hljs-built_in">sudo</span> apt-get update<br><span class="hljs-built_in">sudo</span> apt-get install -y containerd.io<br></code></pre></td></tr></table></figure>
+
+<p><strong>CentOS &#x2F; Rocky &#x2F; AlmaLinux：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> yum install -y yum-utils<br><span class="hljs-built_in">sudo</span> yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo<br><span class="hljs-built_in">sudo</span> yum install -y containerd.io<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>发行版包会：创建 <code>containerd</code> 用户与组、安装 systemd unit、默认配置 <code>/etc/containerd/config.toml</code>、自动启动。</p>
+</blockquote>
+<h3 id="2-3-官方二进制安装（手动，可控性最强）"><a href="#2-3-官方二进制安装（手动，可控性最强）" class="headerlink" title="2.3 官方二进制安装（手动，可控性最强）"></a>2.3 官方二进制安装（手动，可控性最强）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 以 containerd 1.7.22 为例（去 GitHub releases 查最新版）</span><br>wget https://github.com/containerd/containerd/releases/download/v1.7.22/containerd-1.7.22-linux-amd64.tar.gz<br>tar -C /usr/local -xzf containerd-1.7.22-linux-amd64.tar.gz<br><br><span class="hljs-comment"># 安装 runc（OCI 运行时）</span><br>wget https://github.com/opencontainers/runc/releases/download/v1.1.14/runc.amd64<br>install -m 755 runc.amd64 /usr/local/sbin/runc<br><br><span class="hljs-comment"># 安装 CNI 插件（CRI 网络，见第 7 章）</span><br>wget https://github.com/containernetworking/plugins/releases/download/v1.5.0/cni-plugins-linux-amd64-v1.5.0.tgz<br><span class="hljs-built_in">mkdir</span> -p /opt/cni/bin<br>tar -C /opt/cni/bin -xzf cni-plugins-linux-amd64-v1.5.0.tgz<br><br><span class="hljs-comment"># 生成默认配置并放置</span><br><span class="hljs-built_in">mkdir</span> -p /etc/containerd<br>containerd config default | <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/containerd/config.toml<br><br><span class="hljs-comment"># systemd unit（手动安装时通常自己写）</span><br><span class="hljs-built_in">cat</span> &gt; /etc/systemd/system/containerd.service &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br>[Unit]<br>Description=containerd container runtime<br>Documentation=https://containerd.io<br>After=network.target local-fs.target<br><br>[Service]<br>ExecStartPre=-/sbin/modprobe overlay<br>ExecStart=/usr/local/bin/containerd<br>Restart=always<br>RestartSec=5<br>Delegate=<span class="hljs-built_in">yes</span><br>KillMode=process<br>LimitNOFILE=1048576<br>TasksMax=infinity<br><br>[Install]<br>WantedBy=multi-user.target<br>EOF<br><br><span class="hljs-built_in">sudo</span> systemctl daemon-reload<br><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">enable</span> --now containerd<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4-验证安装"><a href="#2-4-验证安装" class="headerlink" title="2.4 验证安装"></a>2.4 验证安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl status containerd<br>containerd --version<br>ctr version<br><br><span class="hljs-comment"># 查看 socket 与目录</span><br><span class="hljs-built_in">ls</span> -l /run/containerd/containerd.sock<br><span class="hljs-built_in">ls</span> /var/lib/containerd/<br><br><span class="hljs-comment"># 拉一个镜像并运行测试容器（需要 root）</span><br>ctr image pull docker.io/library/hello-world:latest<br>ctr run --<span class="hljs-built_in">rm</span> docker.io/library/hello-world:latest hello<br></code></pre></td></tr></table></figure>
+
+<p><strong>安装检查清单：</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> <code>containerd --version</code> 正常输出</li>
+<li><input disabled="" type="checkbox"> systemd 服务 active (running)</li>
+<li><input disabled="" type="checkbox"> socket <code>/run/containerd/containerd.sock</code> 存在</li>
+<li><input disabled="" type="checkbox"> <code>ctr image pull</code> + <code>ctr run</code> 成功</li>
+<li><input disabled="" type="checkbox"> 生产节点已配置镜像加速（见 4.4）</li>
+<li><input disabled="" type="checkbox"> cgroup v2 正常（<code>stat -fc %T /sys/fs/cgroup</code> 输出 <code>cgroup2fs</code>）</li>
+</ul>
+<h3 id="2-5-目录与文件布局"><a href="#2-5-目录与文件布局" class="headerlink" title="2.5 目录与文件布局"></a>2.5 目录与文件布局</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs text">/var/lib/containerd/           # 数据根目录（重要数据，需备份/监控）<br>├── io.containerd.content.v1.content/   # 内容存储（镜像 blob）<br>├── io.containerd.metadata.v1.bolt/     # 元数据（bolt 数据库）<br>├── io.containerd.snapshotter.v1.overlayfs/  # 快照（镜像层/容器层）<br>├── io.containerd.image.v1.containerd/  # 镜像存储（2.x 默认）<br>└── tmp/<br><br>/run/containerd/               # 运行时状态（socket、shim 目录）<br>├── containerd.sock<br>└── containerd.sock.ttrpc<br><br>/etc/containerd/config.toml    # 配置文件<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>磁盘规划</strong>：<code>/var/lib/containerd</code> 与系统盘分离（独立分区&#x2F;数据盘），并设置容量监控告警。</p>
+</blockquote>
+<h3 id="2-6-配置文件-config-toml"><a href="#2-6-配置文件-config-toml" class="headerlink" title="2.6 配置文件 config.toml"></a>2.6 配置文件 config.toml</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 生成默认配置（首次安装必做）</span><br>containerd config default &gt; /etc/containerd/config.toml<br><br><span class="hljs-comment"># 校验配置</span><br>containerd config check<br></code></pre></td></tr></table></figure>
+
+<p><strong>核心配置块解读（1.7 风格）：</strong></p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-comment"># 根目录与状态目录</span><br><span class="hljs-attr">root</span> = <span class="hljs-string">&quot;/var/lib/containerd&quot;</span><br><span class="hljs-attr">state</span> = <span class="hljs-string">&quot;/run/containerd&quot;</span><br><br><span class="hljs-comment"># gRPC 监听地址</span><br><span class="hljs-attr">grpc.address</span> = <span class="hljs-string">&quot;/run/containerd/containerd.sock&quot;</span><br><span class="hljs-attr">grpc.uid</span> = <span class="hljs-number">0</span><br><span class="hljs-attr">grpc.gid</span> = <span class="hljs-number">0</span><br><br><span class="hljs-comment"># 命名空间</span><br><span class="hljs-attr">disabled_plugins</span> = []<br><span class="hljs-comment"># 常用内置插件：</span><br><span class="hljs-comment">#   io.containerd.grpc.v1.cri        # CRI（K8s 用，必须启用）</span><br><span class="hljs-comment">#   io.containerd.snapshotter.v1.overlayfs</span><br><span class="hljs-comment">#   io.containerd.content.v1.content</span><br><span class="hljs-comment">#   io.containerd.metrics.v1.metrics # metrics</span><br><span class="hljs-comment">#   io.containerd.runtime.v2.task     # shim v2 运行时</span><br><br><span class="hljs-comment"># 快照器（存储驱动）</span><br><span class="hljs-attr">snapshotter</span> = <span class="hljs-string">&quot;overlayfs&quot;</span><br><br><span class="hljs-comment"># 运行时（OCI）</span><br><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc]</span><br>  <span class="hljs-attr">runtime_type</span> = <span class="hljs-string">&quot;io.containerd.runc.v2&quot;</span><br>  <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]</span><br>    <span class="hljs-attr">SystemdCgroup</span> = <span class="hljs-literal">true</span>          <span class="hljs-comment"># K8s 节点必须 true（cgroup 驱动 systemd）</span><br><br><span class="hljs-comment"># 镜像加速（见 4.4）</span><br><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors.&quot;docker.io&quot;]</span><br>  <span class="hljs-attr">endpoint</span> = [<span class="hljs-string">&quot;https://docker.m.daocloud.io&quot;</span>]<br><br><span class="hljs-comment"># metrics 端口</span><br><span class="hljs-section">[metrics]</span><br>  <span class="hljs-attr">address</span> = <span class="hljs-string">&quot;127.0.0.1:1338&quot;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 修改后重启</span><br><span class="hljs-built_in">sudo</span> systemctl restart containerd<br><span class="hljs-built_in">sudo</span> containerd config check<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-7-Windows-上的-containerd（简述）"><a href="#2-7-Windows-上的-containerd（简述）" class="headerlink" title="2.7 Windows 上的 containerd（简述）"></a>2.7 Windows 上的 containerd（简述）</h3><ul>
+<li>官方提供 <code>containerd-windows-amd64</code> 压缩包与 MSI（2.x 提供 MSI）。</li>
+<li>服务：<code>sc.exe create containerd ...</code> 或用 MSI 一键安装。</li>
+<li>运行容器依赖 Windows 容器特性（Hyper-V 隔离&#x2F;进程隔离），与 Linux 容器机制不同。</li>
+<li>K8s Windows 节点同样用 containerd 作为运行时。</li>
+</ul>
+<hr>
+<h2 id="第-3-章-命令行工具：ctr-crictl-nerdctl"><a href="#第-3-章-命令行工具：ctr-crictl-nerdctl" class="headerlink" title="第 3 章 命令行工具：ctr &#x2F; crictl &#x2F; nerdctl"></a>第 3 章 命令行工具：ctr &#x2F; crictl &#x2F; nerdctl</h2><h3 id="3-1-三个-CLI-的定位"><a href="#3-1-三个-CLI-的定位" class="headerlink" title="3.1 三个 CLI 的定位"></a>3.1 三个 CLI 的定位</h3><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>接口</th>
+<th>面向</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctr</code></td>
+<td>containerd 原生 gRPC API</td>
+<td>运维调试 containerd 本身</td>
+<td>原始、命令少、需理解命名空间</td>
+</tr>
+<tr>
+<td><code>crictl</code></td>
+<td>CRI（Kubernetes 运行时接口）</td>
+<td>K8s 节点排障</td>
+<td>看 Pod&#x2F;Sandbox 视角，K8s 标配</td>
+</tr>
+<tr>
+<td><code>nerdctl</code></td>
+<td>containerd 原生 API（模拟 docker）</td>
+<td>日常开发&#x2F;单机</td>
+<td>命令与 docker 几乎一致，含 build&#x2F;网络&#x2F;卷</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>生产经验：<strong>K8s 节点优先用 <code>crictl</code></strong>（与 kubelet 视角一致）；单机测试&#x2F;开发用 <code>nerdctl</code>；<code>ctr</code> 用来做底层诊断。</p>
+</blockquote>
+<h3 id="3-2-命名空间（Namespace）"><a href="#3-2-命名空间（Namespace）" class="headerlink" title="3.2 命名空间（Namespace）"></a>3.2 命名空间（Namespace）</h3><p>containerd 用命名空间逻辑隔离数据（镜像&#x2F;容器&#x2F;快照互不可见）：</p>
+<table>
+<thead>
+<tr>
+<th>命名空间</th>
+<th>使用者</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>default</code></td>
+<td>ctr 默认</td>
+</tr>
+<tr>
+<td><code>moby</code></td>
+<td>Docker Engine</td>
+</tr>
+<tr>
+<td><code>k8s.io</code></td>
+<td>Kubernetes（kubelet&#x2F;CRI）</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看命名空间</span><br>ctr namespace <span class="hljs-built_in">ls</span><br>ctr ns <span class="hljs-built_in">ls</span><br><br><span class="hljs-comment"># 创建/删除</span><br>ctr ns create staging<br>ctr ns remove staging<br><br><span class="hljs-comment"># 指定命名空间操作（未指定时默认 default）</span><br>ctr -n k8s.io images <span class="hljs-built_in">ls</span><br>ctr -n moby images <span class="hljs-built_in">ls</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>运维提示：排查”镜像看不到&#x2F;容器找不到”，先确认命名空间对不对。K8s 的一切都在 <code>k8s.io</code> 下。</p>
+</blockquote>
+<h3 id="3-3-ctr-常用命令（原生视图）"><a href="#3-3-ctr-常用命令（原生视图）" class="headerlink" title="3.3 ctr 常用命令（原生视图）"></a>3.3 ctr 常用命令（原生视图）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 镜像</span><br>ctr images <span class="hljs-built_in">ls</span>                       <span class="hljs-comment"># 列出镜像（default 命名空间）</span><br>ctr -n k8s.io images <span class="hljs-built_in">ls</span>             <span class="hljs-comment"># 查看 K8s 使用的镜像</span><br>ctr images pull docker.io/library/nginx:alpine<br>ctr images push registry.example.com/app:v1<br>ctr images <span class="hljs-built_in">rm</span> docker.io/library/nginx:alpine<br>ctr images import app.tar           <span class="hljs-comment"># 导入镜像归档</span><br>ctr images <span class="hljs-built_in">export</span> app.tar app:v1<br>ctr images check                    <span class="hljs-comment"># 检查本地镜像是否存在（含内容校验）</span><br>ctr image <span class="hljs-built_in">ls</span>                        <span class="hljs-comment"># 等价命令</span><br>ctr image pull --platform linux/amd64 nginx:alpine   <span class="hljs-comment"># 指定平台</span><br><br><span class="hljs-comment"># 容器与任务</span><br>ctr containers <span class="hljs-built_in">ls</span>                   <span class="hljs-comment"># 列出容器（仅元数据，不一定在运行）</span><br>ctr run --<span class="hljs-built_in">rm</span> -t docker.io/library/alpine:latest shell /bin/sh   <span class="hljs-comment"># 运行容器并进 shell</span><br>ctr run -d --<span class="hljs-built_in">env</span> TZ=Asia/Shanghai docker.io/library/redis:7-alpine redis<br>ctr tasks <span class="hljs-built_in">ls</span>                        <span class="hljs-comment"># 列出运行中的任务</span><br>ctr tasks <span class="hljs-built_in">kill</span> -s SIGTERM redis     <span class="hljs-comment"># 向容器主进程发信号</span><br>ctr tasks <span class="hljs-built_in">exec</span> -t --exec-id sh1 redis /bin/sh   <span class="hljs-comment"># 进入运行中容器</span><br>ctr containers <span class="hljs-built_in">rm</span> redis             <span class="hljs-comment"># 删除容器</span><br>ctr tasks <span class="hljs-built_in">rm</span> redis                  <span class="hljs-comment"># 删除任务（强制先 kill）</span><br><br><span class="hljs-comment"># 快照</span><br>ctr snapshots <span class="hljs-built_in">ls</span>                    <span class="hljs-comment"># 查看快照（镜像层/容器层）</span><br><br><span class="hljs-comment"># 内容（blob）</span><br>ctr content <span class="hljs-built_in">ls</span>                      <span class="hljs-comment"># 查看内容存储中的 blob</span><br>ctr content <span class="hljs-built_in">rm</span> sha256:xxxx          <span class="hljs-comment"># 删除 blob</span><br><br><span class="hljs-comment"># 事件与插件</span><br>ctr events                          <span class="hljs-comment"># 实时事件流（创建/删除容器等）</span><br>ctr plugins <span class="hljs-built_in">ls</span>                      <span class="hljs-comment"># 列出已加载插件</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>ctr run 语法：</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs text">ctr run [options] &lt;image-ref&gt; &lt;container-name&gt; &lt;command&gt; [args...]<br><br># 常用参数<br>ctr run -d                        # 后台运行（detach）<br>ctr run --rm                      # 退出即删容器<br>ctr run -t                        # 分配 TTY<br>ctr run --env KEY=VAL             # 环境变量<br>ctr run --cwd /app                # 工作目录<br>ctr run --snapshotter overlayfs   # 指定快照器<br>ctr run --runtime io.containerd.runc.v2   # 指定运行时<br>ctr run --mount type=bind,src=/data,dst=/data,options=rbind:ro   # 挂载<br>ctr run --net-host                # 使用宿主机网络（不依赖 CNI）<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>ctr</code> 不管理网络（除非 <code>--net-host</code>），不提供端口映射&#x2F;重启策略，这些由上层（CRI&#x2F;CNI&#x2F;nerdctl）负责。</p>
+</blockquote>
+<h3 id="3-4-crictl（CRI-视角，K8s-运维首选）"><a href="#3-4-crictl（CRI-视角，K8s-运维首选）" class="headerlink" title="3.4 crictl（CRI 视角，K8s 运维首选）"></a>3.4 crictl（CRI 视角，K8s 运维首选）</h3><p><strong>配置（&#x2F;etc&#x2F;crictl.yaml）：</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">runtime-endpoint:</span> <span class="hljs-string">unix:///run/containerd/containerd.sock</span><br><span class="hljs-attr">image-endpoint:</span> <span class="hljs-string">unix:///run/containerd/containerd.sock</span><br><span class="hljs-attr">timeout:</span> <span class="hljs-number">10</span><br><span class="hljs-attr">debug:</span> <span class="hljs-literal">false</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装</span><br><span class="hljs-comment"># Ubuntu：apt install cri-tools</span><br><span class="hljs-comment"># 手动：</span><br>wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.30.0/crictl-v1.30.0-linux-amd64.tar.gz<br>tar -C /usr/local/bin -xzf crictl-v1.30.0-linux-amd64.tar.gz<br><br>crictl version<br></code></pre></td></tr></table></figure>
+
+<p><strong>常用命令：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash">crictl ps                          <span class="hljs-comment"># 查看 Pod 内容器（含运行状态）</span><br>crictl ps -a                       <span class="hljs-comment"># 全部（含已退出）</span><br>crictl pods                        <span class="hljs-comment"># 查看 sandbox（Pod 沙箱）</span><br>crictl pods -q | xargs -I&#123;&#125; crictl inspectp &#123;&#125;<br><br>crictl images                      <span class="hljs-comment"># 节点上镜像</span><br>crictl pull nginx:alpine<br>crictl rmi nginx:alpine<br><br>crictl <span class="hljs-built_in">exec</span> -it &lt;container-id&gt; sh  <span class="hljs-comment"># 进入容器</span><br>crictl logs -f &lt;container-id&gt;      <span class="hljs-comment"># 查看日志</span><br>crictl stats                       <span class="hljs-comment"># 资源占用（类似 docker stats）</span><br>crictl top &lt;container-id&gt;          <span class="hljs-comment"># 容器内进程</span><br><br>crictl inspect &lt;container-id&gt;      <span class="hljs-comment"># 详情</span><br>crictl inspectp &lt;pod-id&gt;           <span class="hljs-comment"># Pod 详情</span><br>crictl start/stop/rm &lt;<span class="hljs-built_in">id</span>&gt;          <span class="hljs-comment"># 生命周期</span><br>crictl events                      <span class="hljs-comment"># 事件流</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>crictl vs kubelet 注意事项：</strong></p>
+<ul>
+<li><code>crictl ps</code> 的字段是 CRI 语义（<code>CONTAINER</code> &#x2F; <code>SANDBOX</code>）。</li>
+<li><strong><code>crictl rmi</code> 只删镜像引用，不回收层</strong>；磁盘回收主要靠 kubelet 的镜像 GC（<code>--image-gc-high-threshold=85</code>）。</li>
+<li>不要用 crictl 乱删 K8s 的 Pod 容器——kubelet 会自动重建，除非你在排障。</li>
+<li>端口转发：<code>crictl portforward &lt;pod-id&gt; 8080:80</code>（调试用）。</li>
+</ul>
+<h3 id="3-5-nerdctl（docker-兼容-CLI，强烈推荐）"><a href="#3-5-nerdctl（docker-兼容-CLI，强烈推荐）" class="headerlink" title="3.5 nerdctl（docker 兼容 CLI，强烈推荐）"></a>3.5 nerdctl（docker 兼容 CLI，强烈推荐）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装 nerdctl</span><br>wget https://github.com/containerd/nerdctl/releases/download/v1.7.6/nerdctl-1.7.6-linux-amd64.tar.gz<br>tar -C /usr/local/bin -xzf nerdctl-1.7.6-linux-amd64.tar.gz<br><br><span class="hljs-comment"># 基本使用（命令与 docker 对齐）</span><br>nerdctl ps<br>nerdctl images<br>nerdctl run -d -p 8080:80 --name web nginx:alpine<br>nerdctl <span class="hljs-built_in">exec</span> -it web sh<br>nerdctl logs -f web<br>nerdctl stop web &amp;&amp; nerdctl <span class="hljs-built_in">rm</span> web<br><br><span class="hljs-comment"># 构建镜像（默认用 buildkit，需先启动 buildkitd）</span><br>nerdctl build -t myapp:v1 .<br>nerdctl compose up -d              <span class="hljs-comment"># 支持 docker-compose 文件（需 CNI 网络）</span><br><br><span class="hljs-comment"># 网络与卷</span><br>nerdctl network create app-net<br>nerdctl volume create data-vol<br></code></pre></td></tr></table></figure>
+
+<p><strong>前提条件：</strong></p>
+<ul>
+<li>网络功能依赖 CNI 插件（<code>/opt/cni/bin</code>）与 <code>nerdctl</code> 的 CNI 配置。</li>
+<li>端口映射需要 <code>rootlesskit</code>（rootless 模式）或 root 权限。</li>
+<li>build 功能需要 buildkit：<code>containerd</code> + <code>buildkitd</code> 两个 daemon。</li>
+</ul>
+<h3 id="3-6-三工具对照表（docker-习惯迁移）"><a href="#3-6-三工具对照表（docker-习惯迁移）" class="headerlink" title="3.6 三工具对照表（docker 习惯迁移）"></a>3.6 三工具对照表（docker 习惯迁移）</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>docker</th>
+<th>crictl</th>
+<th>nerdctl</th>
+<th>ctr</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>列容器</td>
+<td><code>docker ps</code></td>
+<td><code>crictl ps</code></td>
+<td><code>nerdctl ps</code></td>
+<td><code>ctr containers ls</code></td>
+</tr>
+<tr>
+<td>运行容器</td>
+<td><code>docker run -d nginx</code></td>
+<td>（由 K8s 管理）</td>
+<td><code>nerdctl run -d nginx</code></td>
+<td><code>ctr run -d nginx n1</code></td>
+</tr>
+<tr>
+<td>进容器</td>
+<td><code>docker exec -it c sh</code></td>
+<td><code>crictl exec -it c sh</code></td>
+<td><code>nerdctl exec -it c sh</code></td>
+<td><code>ctr tasks exec -t --exec-id e c sh</code></td>
+</tr>
+<tr>
+<td>看日志</td>
+<td><code>docker logs -f c</code></td>
+<td><code>crictl logs -f c</code></td>
+<td><code>nerdctl logs -f c</code></td>
+<td>无（需日志驱动&#x2F;文件）</td>
+</tr>
+<tr>
+<td>列镜像</td>
+<td><code>docker images</code></td>
+<td><code>crictl images</code></td>
+<td><code>nerdctl images</code></td>
+<td><code>ctr images ls</code></td>
+</tr>
+<tr>
+<td>拉镜像</td>
+<td><code>docker pull</code></td>
+<td><code>crictl pull</code></td>
+<td><code>nerdctl pull</code></td>
+<td><code>ctr images pull</code></td>
+</tr>
+<tr>
+<td>资源占用</td>
+<td><code>docker stats</code></td>
+<td><code>crictl stats</code></td>
+<td><code>nerdctl stats</code></td>
+<td>无</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>内置</td>
+<td>CNI（kubelet 配置）</td>
+<td>CNI（自带配置）</td>
+<td>无（–net-host）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第-4-章-镜像管理"><a href="#第-4-章-镜像管理" class="headerlink" title="第 4 章 镜像管理"></a>第 4 章 镜像管理</h2><h3 id="4-1-containerd-镜像模型"><a href="#4-1-containerd-镜像模型" class="headerlink" title="4.1 containerd 镜像模型"></a>4.1 containerd 镜像模型</h3><p>containerd 对镜像的处理与 Docker 一致（OCI 标准），但存储更”原始”：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">镜像 = 配置(manifest/config) + 层列表(blobs)<br><br>/var/lib/containerd<br>├── io.containerd.content.v1.content/   # blob 二进制（压缩/未压缩层）<br>└── io.containerd.snapshotter.v1.overlayfs/<br>    └── snapshots/                      # 解压后的只读快照（按需解压）<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>content store</strong>：保存所有 blob（镜像层、配置、清单），以 digest（sha256）寻址，天然去重。</li>
+<li><strong>snapshotter</strong>：把 blob 解压成挂载可用的快照链，容器可写层基于此。</li>
+<li><strong>元数据</strong>：bolt 数据库记录镜像名 → digest 的映射（1.7 之前）；2.x 引入独立的 image store（<code>io.containerd.image.v1.containerd</code>），镜像按名&#x2F;摘要管理，删除更彻底、支持多引用。</li>
+</ul>
+<blockquote>
+<p>2.x 默认启用 image store 后，<code>ctr images ls</code>&#x2F;<code>crictl images</code> 的语义更接近 Docker：镜像删除会真正回收未引用内容。</p>
+</blockquote>
+<h3 id="4-2-镜像拉取与列出"><a href="#4-2-镜像拉取与列出" class="headerlink" title="4.2 镜像拉取与列出"></a>4.2 镜像拉取与列出</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ctr</span><br>ctr images pull docker.io/library/nginx:1.27-alpine<br>ctr images pull --platform linux/arm64 nginx:alpine     <span class="hljs-comment"># 指定架构</span><br>ctr images <span class="hljs-built_in">ls</span> --quiet<br>ctr -n k8s.io images <span class="hljs-built_in">ls</span> -q<br><br><span class="hljs-comment"># crictl（K8s 节点）</span><br>crictl pull nginx:1.27-alpine<br>crictl images<br>crictl images --digests<br><br><span class="hljs-comment"># nerdctl</span><br>nerdctl pull nginx:1.27-alpine<br>nerdctl images<br></code></pre></td></tr></table></figure>
+
+<p><strong>镜像全名格式（containerd 需要完整 repo 名）：</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">docker.io/library/nginx:1.27-alpine<br>registry.example.com/team/app:v1.2.3<br>docker.io/library/nginx@sha256:xxxx...   # 按 digest 引用（最安全）<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：ctr 里 <code>nginx</code> 简写可能解析失败，建议始终写全 <code>docker.io/library/nginx</code>。CRI&#x2F;crictl 支持简写（内部会补全）。</p>
+</blockquote>
+<h3 id="4-3-镜像导入导出（离线分发）"><a href="#4-3-镜像导入导出（离线分发）" class="headerlink" title="4.3 镜像导入导出（离线分发）"></a>4.3 镜像导入导出（离线分发）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ctr</span><br>ctr images <span class="hljs-built_in">export</span> nginx.tar docker.io/library/nginx:1.27-alpine<br>ctr images import nginx.tar<br><br><span class="hljs-comment"># 支持 OCI 归档与 Docker 归档</span><br>ctr images <span class="hljs-built_in">export</span> --platform linux/amd64 out.tar app:v1<br>ctr images import --no-unpack app.tar      <span class="hljs-comment"># 只导入元数据，不预解压</span><br><br><span class="hljs-comment"># nerdctl（与 docker save/load 完全一致）</span><br>nerdctl save -o nginx.tar nginx:1.27-alpine<br>nerdctl load -i nginx.tar<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>断网机房&#x2F;离线交付：<code>nerdctl save</code> → 拷贝 → <code>nerdctl load</code>，或直接走私有 Registry。</p>
+</blockquote>
+<h3 id="4-4-镜像加速与私有仓库配置"><a href="#4-4-镜像加速与私有仓库配置" class="headerlink" title="4.4 镜像加速与私有仓库配置"></a>4.4 镜像加速与私有仓库配置</h3><p>containerd 的镜像加速配置在 CRI 插件的 <code>registry.mirrors</code> 下（<strong>不是</strong> <code>registry-mirrors</code> 那种 Docker 顶层键）。</p>
+<p><strong>1.7 风格（config.toml）：</strong></p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry]</span><br>  <span class="hljs-attr">config_path</span> = <span class="hljs-string">&quot;/etc/containerd/certs.d&quot;</span>   <span class="hljs-comment"># 2.x 推荐用 certs.d 目录</span><br><br><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors]</span><br>  <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors.&quot;docker.io&quot;]</span><br>    <span class="hljs-attr">endpoint</span> = [<br>      <span class="hljs-string">&quot;https://docker.m.daocloud.io&quot;</span>,<br>      <span class="hljs-string">&quot;https://dockerproxy.com&quot;</span><br>    ]<br>  <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry.mirrors.&quot;registry.example.com&quot;]</span><br>    <span class="hljs-attr">endpoint</span> = [<span class="hljs-string">&quot;https://registry.example.com&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<p><strong>2.x &#x2F; 推荐做法（certs.d 目录，声明式）：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p /etc/containerd/certs.d/docker.io<br><span class="hljs-built_in">cat</span> &gt; /etc/containerd/certs.d/docker.io/hosts.toml &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br>server = <span class="hljs-string">&quot;https://docker.io&quot;</span><br><br>[host.<span class="hljs-string">&quot;https://docker.m.daocloud.io&quot;</span>]<br>  capabilities = [<span class="hljs-string">&quot;pull&quot;</span>, <span class="hljs-string">&quot;resolve&quot;</span>]<br><br>[host.<span class="hljs-string">&quot;https://registry.example.com&quot;</span>]<br>  capabilities = [<span class="hljs-string">&quot;pull&quot;</span>, <span class="hljs-string">&quot;push&quot;</span>, <span class="hljs-string">&quot;resolve&quot;</span>]<br>  ca = <span class="hljs-string">&quot;/etc/containerd/certs.d/registry.example.com/ca.crt&quot;</span><br>EOF<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 私有仓库认证</span><br><span class="hljs-built_in">mkdir</span> -p /etc/containerd/certs.d/registry.example.com<br><span class="hljs-built_in">cat</span> &gt; /etc/containerd/certs.d/registry.example.com/hosts.toml &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br>server = <span class="hljs-string">&quot;https://registry.example.com&quot;</span><br><br>[host.<span class="hljs-string">&quot;https://registry.example.com&quot;</span>]<br>  ca = <span class="hljs-string">&quot;/etc/containerd/certs.d/registry.example.com/ca.crt&quot;</span><br>  [host.<span class="hljs-string">&quot;https://registry.example.com&quot;</span>.header]<br>    authorization = <span class="hljs-string">&quot;Basic BASE64(user:password)&quot;</span><br>EOF<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>更推荐的认证方式：K8s 用 <code>imagePullSecrets</code>；containerd 侧也可用 <code>crictl pull --creds user:pass</code> &#x2F; <code>nerdctl login</code>（登录凭据存入 containerd auth 文件，由 <code>config_path</code> 指定）。</p>
+</blockquote>
+<h3 id="4-5-镜像校验与安全"><a href="#4-5-镜像校验与安全" class="headerlink" title="4.5 镜像校验与安全"></a>4.5 镜像校验与安全</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看 digest 与元数据</span><br>ctr images <span class="hljs-built_in">ls</span> --digests<br>ctr images check --ref docker.io/library/nginx:1.27-alpine   <span class="hljs-comment"># 校验内容是否完整</span><br>ctr content <span class="hljs-built_in">ls</span> | grep sha256<br><br><span class="hljs-comment"># CRI 侧</span><br>crictl images --digests<br><br><span class="hljs-comment"># 按 digest 拉取（不可变引用，防篡改）</span><br>crictl pull docker.io/library/nginx@sha256:2f23b580b8ba9d2b4f0...<br>ctr images pull docker.io/library/nginx@sha256:2f23b580b8ba9d2b4f0...<br></code></pre></td></tr></table></figure>
+
+<p><strong>镜像签名（Notation，containerd 1.7+ 实验、2.x 可用）：</strong></p>
+<ul>
+<li>用 Notation 对镜像签名，containerd 在拉取时可校验签名（需启用 <code>verify_image_signatures</code> 相关配置&#x2F;插件）。</li>
+<li>Harbor 2.x 原生支持 Notation&#x2F;Cosign 签名与验证，是生产首选路径。</li>
+</ul>
+<h3 id="4-6-镜像-GC-与磁盘回收"><a href="#4-6-镜像-GC-与磁盘回收" class="headerlink" title="4.6 镜像 GC 与磁盘回收"></a>4.6 镜像 GC 与磁盘回收</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># K8s 节点：镜像 GC 由 kubelet 负责</span><br><span class="hljs-comment"># kubelet 参数：</span><br><span class="hljs-comment">#   --image-gc-high-threshold=85   磁盘使用超 85% 触发回收</span><br><span class="hljs-comment">#   --image-gc-low-threshold=80    回收到 80% 以下停止</span><br><br><span class="hljs-comment"># 手动清理（K8s 节点用 crictl 删除未用镜像）</span><br>crictl rmi &lt;image-id&gt;<br><br><span class="hljs-comment"># containerd 内容级 GC</span><br>ctr content prune                 <span class="hljs-comment"># 清理未被引用的 blob（1.7.7+）</span><br>ctr images <span class="hljs-built_in">ls</span> -q | xargs -I&#123;&#125; sh -c <span class="hljs-string">&#x27;echo &#123;&#125;&#x27;</span><br><br><span class="hljs-comment"># nerdctl 清理（类似 docker system prune）</span><br>nerdctl system prune -a -f<br>nerdctl image prune -f<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>血泪教训：K8s 节点 <code>/var/lib/containerd</code> 爆满的经典原因 &#x3D; 日志不轮转 + 镜像 GC 阈值太高 + 悬空 blob。见第 9 章排障。</p>
+</blockquote>
+<h3 id="4-7-镜像平台与多架构"><a href="#4-7-镜像平台与多架构" class="headerlink" title="4.7 镜像平台与多架构"></a>4.7 镜像平台与多架构</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看镜像清单（manifest list / index）</span><br>ctr images <span class="hljs-built_in">ls</span> --digests<br>ctr content get &lt;manifest-digest&gt; | jq .<br><br><span class="hljs-comment"># 拉取指定架构</span><br>crictl pull --platform linux/arm64 ubuntu:24.04<br>ctr images pull --platform linux/arm64 ubuntu:24.04<br><br><span class="hljs-comment"># K8s 多架构节点：kubelet 会自动按节点架构拉取（镜像需支持多架构）</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>手动装镜像到节点时注意架构匹配，否则报 <code>exec format error</code>（见附录报错表）。</p>
+</blockquote>
+<hr>
+<h2 id="第-5-章-容器与任务"><a href="#第-5-章-容器与任务" class="headerlink" title="第 5 章 容器与任务"></a>第 5 章 容器与任务</h2><h3 id="5-1-容器（Container）与任务（Task）的区别"><a href="#5-1-容器（Container）与任务（Task）的区别" class="headerlink" title="5.1 容器（Container）与任务（Task）的区别"></a>5.1 容器（Container）与任务（Task）的区别</h3><p>containerd 把”容器”拆成两个概念：</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>含义</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Container</strong></td>
+<td>静态描述：镜像、rootfs 快照、配置（元数据）</td>
+<td>docker 的容器配置</td>
+</tr>
+<tr>
+<td><strong>Task</strong></td>
+<td>实际运行中的进程实例（有 PID、状态）</td>
+<td>进程本身</td>
+</tr>
+</tbody></table>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">ctr containers create（只创建配置）<br>        |<br>        v<br>ctr task start（启动进程）-&gt; Running<br>        |<br>        +-&gt; 停止/退出 -&gt; Stopped（进程没了，容器配置还在）<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>一个 Container 可以多次创建&#x2F;启动 Task（每次新进程）。</li>
+<li><code>ctr run</code> &#x3D; <code>containers create</code> + <code>tasks start</code> 的便捷组合。</li>
+</ul>
+<h3 id="5-2-创建并运行容器（ctr）"><a href="#5-2-创建并运行容器（ctr）" class="headerlink" title="5.2 创建并运行容器（ctr）"></a>5.2 创建并运行容器（ctr）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 一步到位（run）</span><br>ctr run -d \<br>  --<span class="hljs-built_in">env</span> TZ=Asia/Shanghai \<br>  --<span class="hljs-built_in">env</span> MYSQL_ROOT_PASSWORD=Root123! \<br>  --mount <span class="hljs-built_in">type</span>=<span class="hljs-built_in">bind</span>,src=/data/mysql,dst=/var/lib/mysql,options=rbind:rw \<br>  docker.io/library/mysql:8.0 mysql<br><br><span class="hljs-comment"># 分步（create + start）</span><br>ctr containers create docker.io/library/redis:7-alpine redis<br>ctr tasks start redis<br>ctr tasks <span class="hljs-built_in">ls</span><br><br><span class="hljs-comment"># 前台交互运行</span><br>ctr run --<span class="hljs-built_in">rm</span> -t docker.io/library/alpine:3.20 shell /bin/sh<br><br><span class="hljs-comment"># 指定运行时与快照器</span><br>ctr run --runtime io.containerd.runc.v2 --snapshotter overlayfs app:v1 myapp<br></code></pre></td></tr></table></figure>
+
+<p><strong>生命周期命令：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">ctr tasks <span class="hljs-built_in">ls</span>                     <span class="hljs-comment"># 运行中的任务</span><br>ctr tasks <span class="hljs-built_in">kill</span> -s SIGTERM redis  <span class="hljs-comment"># 发信号</span><br>ctr tasks <span class="hljs-built_in">kill</span> --all -s SIGKILL redis<br>ctr tasks pause redis            <span class="hljs-comment"># 暂停（freeze）</span><br>ctr tasks resume redis           <span class="hljs-comment"># 恢复</span><br>ctr tasks <span class="hljs-built_in">rm</span> -f redis            <span class="hljs-comment"># 删除任务（强制）</span><br>ctr containers <span class="hljs-built_in">rm</span> redis          <span class="hljs-comment"># 删除容器元数据</span><br>ctr containers <span class="hljs-built_in">rm</span> -f redis       <span class="hljs-comment"># 连任务一起删</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-3-快照（Snapshotter）机制"><a href="#5-3-快照（Snapshotter）机制" class="headerlink" title="5.3 快照（Snapshotter）机制"></a>5.3 快照（Snapshotter）机制</h3><p>快照是 containerd 管理 rootfs 的核心抽象：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs text">Active 快照（可写，容器层）<br>   |<br>   v  commit<br>Committed 快照（只读，镜像层）&lt;-- 可被多个容器共享<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">ctr snapshots <span class="hljs-built_in">ls</span><br>ctr snapshots info &lt;snapshot-key&gt;<br><span class="hljs-comment"># overlayfs 实现：/var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常用快照器对比：</strong></p>
+<table>
+<thead>
+<tr>
+<th>快照器</th>
+<th>说明</th>
+<th>适用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>overlayfs</code>（默认）</td>
+<td>基于内核 overlayfs，性能好、省磁盘</td>
+<td>Linux 通用，首选</td>
+</tr>
+<tr>
+<td><code>native</code></td>
+<td>直接目录拷贝，无层共享</td>
+<td>老内核&#x2F;特殊文件系统</td>
+</tr>
+<tr>
+<td><code>devmapper</code></td>
+<td>基于 Device Mapper（thin provisioning）</td>
+<td>overlayfs 不可用时</td>
+</tr>
+<tr>
+<td><code>btrfs</code> &#x2F; <code>zfs</code></td>
+<td>基于文件系统快照</td>
+<td>对应文件系统环境</td>
+</tr>
+<tr>
+<td><code>nydus</code></td>
+<td>容器镜像加速（按需加载）</td>
+<td>大规模镜像分发优化</td>
+</tr>
+<tr>
+<td><code>stargz</code></td>
+<td>懒加载镜像（lazy pulling）</td>
+<td>启动加速场景</td>
+</tr>
+</tbody></table>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 指定快照器（需该快照器插件已启用）</span><br>ctr run --snapshotter devmapper ...<br><span class="hljs-comment"># config.toml 全局设置</span><br><span class="hljs-comment"># snapshotter = &quot;overlayfs&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-4-挂载（Mount）"><a href="#5-4-挂载（Mount）" class="headerlink" title="5.4 挂载（Mount）"></a>5.4 挂载（Mount）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># bind mount（类似 docker -v）</span><br>ctr run -d \<br>  --mount <span class="hljs-built_in">type</span>=<span class="hljs-built_in">bind</span>,src=/srv/config,dst=/etc/app,options=rbind:ro \<br>  app:v1 app<br><br><span class="hljs-comment"># tmpfs</span><br>ctr run -d \<br>  --mount <span class="hljs-built_in">type</span>=tmpfs,dst=/tmp,options=size=128m \<br>  app:v1 app<br><br><span class="hljs-comment"># 只读根文件系统</span><br>ctr run -d --rootfs-ro app:v1 app<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：ctr 没有 docker 的”命名卷”概念；持久化靠 bind mount 或上层（nerdctl volume &#x2F; K8s volume）。</p>
+</blockquote>
+<h3 id="5-5-nerdctl-视角（贴近-docker-体验）"><a href="#5-5-nerdctl-视角（贴近-docker-体验）" class="headerlink" title="5.5 nerdctl 视角（贴近 docker 体验）"></a>5.5 nerdctl 视角（贴近 docker 体验）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">nerdctl run -d --name web \<br>  -p 8080:80 \<br>  -v /srv/www:/usr/share/nginx/html:ro \<br>  -e TZ=Asia/Shanghai \<br>  --restart unless-stopped \<br>  nginx:1.27-alpine<br><br>nerdctl ps -a<br>nerdctl inspect web<br>nerdctl <span class="hljs-built_in">exec</span> -it web sh<br>nerdctl logs -f web<br>nerdctl stop web &amp;&amp; nerdctl <span class="hljs-built_in">rm</span> web<br>nerdctl volume create data-vol<br>nerdctl network create app-net<br>nerdctl run -d --network app-net --name api myapi:v1<br></code></pre></td></tr></table></figure>
+
+<p><strong>nerdctl 与 docker 的差异提醒：</strong></p>
+<ul>
+<li><code>--restart</code> 由 nerdctl 自己实现（复刻策略），不是 containerd 原生能力。</li>
+<li>端口映射依赖 CNI + iptables，rootless 模式依赖 rootlesskit。</li>
+<li><code>nerdctl build</code> 需要 buildkitd 在跑。</li>
+</ul>
+<h3 id="5-6-运行时（Runtime）概念"><a href="#5-6-运行时（Runtime）概念" class="headerlink" title="5.6 运行时（Runtime）概念"></a>5.6 运行时（Runtime）概念</h3><p>containerd 支持多 OCI 运行时，通过 shim 调用：</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes]</span><br>  <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc]</span><br>    <span class="hljs-attr">runtime_type</span> = <span class="hljs-string">&quot;io.containerd.runc.v2&quot;</span><br>    <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]</span><br>      <span class="hljs-attr">SystemdCgroup</span> = <span class="hljs-literal">true</span><br><br>  <span class="hljs-comment"># 沙箱运行时 gVisor</span><br>  <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runsc]</span><br>    <span class="hljs-attr">runtime_type</span> = <span class="hljs-string">&quot;io.containerd.runc.v2&quot;</span><br>    <span class="hljs-attr">runtime_path</span> = <span class="hljs-string">&quot;/usr/local/bin/runsc&quot;</span><br><br>  <span class="hljs-comment"># Kata 安全容器</span><br>  <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.kata]</span><br>    <span class="hljs-attr">runtime_type</span> = <span class="hljs-string">&quot;io.containerd.kata.v2&quot;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ctr 指定运行时运行</span><br>ctr run --runtime io.containerd.runc.v2 alpine:3.20 shell /bin/sh<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>K8s 中通过 RuntimeClass 选择运行时（<code>runtimeClassName: runsc</code>）。</p>
+</blockquote>
+<hr>
+<h2 id="第-6-章-CRI-集成与-Kubernetes"><a href="#第-6-章-CRI-集成与-Kubernetes" class="headerlink" title="第 6 章 CRI 集成与 Kubernetes"></a>第 6 章 CRI 集成与 Kubernetes</h2><h3 id="6-1-什么是-CRI"><a href="#6-1-什么是-CRI" class="headerlink" title="6.1 什么是 CRI"></a>6.1 什么是 CRI</h3><p><strong>CRI（Container Runtime Interface）</strong> 是 Kubernetes 定义的、kubelet 与容器运行时之间的<strong>标准接口</strong>（gRPC + protobuf），包含两组服务：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">kubelet<br>  |<br>  |-- RuntimeService（管理 Pod sandbox 与容器生命周期）<br>  |     RunPodSandbox / CreateContainer / StartContainer / StopPodSandbox ...<br>  |<br>  |-- ImageService（管理镜像）<br>        PullImage / ListImages / RemoveImage ...<br>  |<br>  v<br>containerd（CRI 插件 io.containerd.grpc.v1.cri）<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>kubelet 不关心底层是 Docker&#x2F;containerd&#x2F;CRI-O，只认 CRI。</li>
+<li>containerd 的 CRI 插件把 CRI 请求翻译成 containerd 原生 API。</li>
+<li>自 <strong>K8s 1.24</strong> 移除 dockershim 后，containerd 成为默认&#x2F;主流运行时。</li>
+</ul>
+<h3 id="6-2-节点准备（kubeadm-部署前）"><a href="#6-2-节点准备（kubeadm-部署前）" class="headerlink" title="6.2 节点准备（kubeadm 部署前）"></a>6.2 节点准备（kubeadm 部署前）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 安装 containerd（见第 2 章），确认 CRI 插件启用</span><br>containerd config default | grep -A3 <span class="hljs-string">&#x27;cri&#x27;</span><br><span class="hljs-comment"># 应看到：disabled_plugins 里没有 io.containerd.grpc.v1.cri</span><br><br><span class="hljs-comment"># 2. 生成默认配置</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /etc/containerd<br>containerd config default | <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/containerd/config.toml<br><br><span class="hljs-comment"># 3. 关键：K8s 使用 systemd cgroup 驱动（与 kubelet 一致）</span><br><span class="hljs-comment"># 修改 config.toml：</span><br><span class="hljs-comment">#   SystemdCgroup = true</span><br><span class="hljs-built_in">sudo</span> sed -i <span class="hljs-string">&#x27;s/SystemdCgroup = false/SystemdCgroup = true/&#x27;</span> /etc/containerd/config.toml<br><br><span class="hljs-comment"># 4. 配置镜像加速（docker.io 与 K8s 镜像源，见 4.4）</span><br><span class="hljs-comment"># 5. 配置 pause 镜像（sandbox 镜像）</span><br><span class="hljs-comment"># 6. 重启</span><br><span class="hljs-built_in">sudo</span> systemctl restart containerd<br><br><span class="hljs-comment"># 7. 验证</span><br>crictl version<br>crictl pods<br></code></pre></td></tr></table></figure>
+
+<p><strong>核心配置项（CRI 相关）：</strong></p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-attr">version</span> = <span class="hljs-number">2</span><br><span class="hljs-attr">root</span> = <span class="hljs-string">&quot;/var/lib/containerd&quot;</span><br><span class="hljs-attr">state</span> = <span class="hljs-string">&quot;/run/containerd&quot;</span><br><br><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;]</span><br>  <span class="hljs-attr">sandbox_image</span> = <span class="hljs-string">&quot;registry.k8s.io/pause:3.10&quot;</span>   <span class="hljs-comment"># sandbox（pause）镜像</span><br>  <span class="hljs-attr">enable_selinux</span> = <span class="hljs-literal">false</span><br>  <span class="hljs-attr">enable_unprivileged_ports</span> = <span class="hljs-literal">true</span><br>  <span class="hljs-attr">enable_unprivileged_icmp</span> = <span class="hljs-literal">true</span><br><br>  <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd]</span><br>    <span class="hljs-attr">snapshotter</span> = <span class="hljs-string">&quot;overlayfs&quot;</span><br>    <span class="hljs-attr">default_runtime_name</span> = <span class="hljs-string">&quot;runc&quot;</span><br><br>    <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc]</span><br>      <span class="hljs-attr">runtime_type</span> = <span class="hljs-string">&quot;io.containerd.runc.v2&quot;</span><br>      <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.runtimes.runc.options]</span><br>        <span class="hljs-attr">SystemdCgroup</span> = <span class="hljs-literal">true</span><br><br>  <span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.registry]</span><br>    <span class="hljs-attr">config_path</span> = <span class="hljs-string">&quot;/etc/containerd/certs.d&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="6-3-Pod-与-Sandbox（pause）机制"><a href="#6-3-Pod-与-Sandbox（pause）机制" class="headerlink" title="6.3 Pod 与 Sandbox（pause）机制"></a>6.3 Pod 与 Sandbox（pause）机制</h3><p>K8s 的”Pod”在运行时层面 &#x3D; <strong>sandbox（pause 容器）</strong> + 业务容器：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs text">Pod sandbox（pause 容器）<br>├── 持有网络命名空间 / 共享网络栈<br>├── 持有 IPC、UTS namespace<br>└── 业务容器（app1、sidecar...）加入 sandbox 的命名空间<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>pause 镜像默认 <code>registry.k8s.io/pause:3.10</code>（不同 K8s 版本要求不同版本）。</li>
+<li>国内环境必须把 <code>sandbox_image</code> 换成可访问的镜像源（如 <code>registry.aliyuncs.com/google_containers/pause:3.10</code>）。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看 sandbox</span><br>crictl pods<br>crictl inspectp &lt;sandbox-id&gt;<br><br><span class="hljs-comment"># 手动拉 sandbox 镜像</span><br>crictl pull registry.k8s.io/pause:3.10<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>高频故障</strong>：节点无法拉取 <code>pause</code> 镜像 → Pod 一直 ContainerCreating（<code>Error: ErrImagePull</code>）。处理：配置镜像加速&#x2F;换源，或预拉 pause 镜像到节点。</p>
+</blockquote>
+<h3 id="6-4-kubelet-对接"><a href="#6-4-kubelet-对接" class="headerlink" title="6.4 kubelet 对接"></a>6.4 kubelet 对接</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># kubelet 配置（/var/lib/kubelet/config.yaml 或启动参数）</span><br>--container-runtime-endpoint=unix:///run/containerd/containerd.sock<br>--kubelet-cgroups=/systemd/system.slice<br>--cgroup-driver=systemd          <span class="hljs-comment"># 必须与 containerd 的 SystemdCgroup 一致</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>kubeadm 初始化：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 生成配置</span><br>kubeadm config <span class="hljs-built_in">print</span> init-defaults --component-configs KubeletConfiguration &gt; kubeadm-init.yaml<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># kubeadm-init.yaml 关键片段</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">KubeletConfiguration</span><br><span class="hljs-attr">cgroupDriver:</span> <span class="hljs-string">systemd</span><br><span class="hljs-meta">---</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">InitConfiguration</span><br><span class="hljs-meta">---</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">ClusterConfiguration</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubeadm init --config kubeadm-init.yaml<br>kubectl get nodes<br>kubectl get pods -A<br></code></pre></td></tr></table></figure>
+
+<p><strong>kubelet + containerd 健康自检：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">crictl version<br>crictl pods          <span class="hljs-comment"># 能看到 sandbox</span><br>journalctl -u kubelet -n 100<br>crictl logs &lt;container-id&gt;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-5-K8s-节点日常排障（crictl-实战）"><a href="#6-5-K8s-节点日常排障（crictl-实战）" class="headerlink" title="6.5 K8s 节点日常排障（crictl 实战）"></a>6.5 K8s 节点日常排障（crictl 实战）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 定位异常 Pod</span><br>kubectl get pods -A -o wide<br>kubectl describe pod &lt;pod&gt; -n &lt;ns&gt;<br><br><span class="hljs-comment"># 2. 到节点上看容器</span><br>crictl ps -a<br>crictl inspect &lt;container-id&gt; | grep -A5 -i state<br><br><span class="hljs-comment"># 3. 看日志/进入容器</span><br>crictl logs -f &lt;container-id&gt;<br>crictl <span class="hljs-built_in">exec</span> -it &lt;container-id&gt; sh<br><br><span class="hljs-comment"># 4. 看资源</span><br>crictl stats<br><br><span class="hljs-comment"># 5. 看镜像（拉取是否成功）</span><br>crictl images<br>crictl pull &lt;image&gt;<br><br><span class="hljs-comment"># 6. 事件</span><br>crictl events<br></code></pre></td></tr></table></figure>
+
+<p><strong>常见 CRI 问题对照：</strong></p>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>常见原因</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pod 卡 ContainerCreating</td>
+<td>pause 镜像拉不到</td>
+<td>配加速&#x2F;换 sandbox_image</td>
+</tr>
+<tr>
+<td>ErrImagePull &#x2F; ImagePullBackOff</td>
+<td>镜像不存在&#x2F;仓库认证失败</td>
+<td><code>crictl pull</code> 复现；配 imagePullSecrets</td>
+</tr>
+<tr>
+<td>CrashLoopBackOff</td>
+<td>应用启动失败</td>
+<td><code>crictl logs</code> 看退出原因</td>
+</tr>
+<tr>
+<td>节点 NotReady</td>
+<td>containerd 挂了&#x2F;cgroup 驱动不一致</td>
+<td><code>systemctl status containerd</code>；检查 SystemdCgroup</td>
+</tr>
+<tr>
+<td>sandbox 泄漏（大量 exited sandbox）</td>
+<td>异常删除 Pod</td>
+<td>重启 kubelet&#x2F;containerd 清理</td>
+</tr>
+<tr>
+<td><code>failed to create containerd task</code></td>
+<td>快照&#x2F;存储异常、权限</td>
+<td>看 containerd 日志、检查磁盘</td>
+</tr>
+<tr>
+<td><code>exec format error</code></td>
+<td>架构不匹配</td>
+<td>换对应架构镜像</td>
+</tr>
+</tbody></table>
+<h3 id="6-6-卸载-更换运行时（Docker-→-containerd-迁移）"><a href="#6-6-卸载-更换运行时（Docker-→-containerd-迁移）" class="headerlink" title="6.6 卸载&#x2F;更换运行时（Docker → containerd 迁移）"></a>6.6 卸载&#x2F;更换运行时（Docker → containerd 迁移）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 节点 drain 后操作（kubeadm 场景）</span><br>kubectl drain &lt;node&gt; --ignore-daemonsets --delete-emptydir-data<br><br><span class="hljs-comment"># 1. 停用并移除 docker</span><br><span class="hljs-built_in">sudo</span> systemctl stop docker<br><span class="hljs-built_in">sudo</span> apt-get purge -y docker-ce docker-ce-cli containerd.io   <span class="hljs-comment"># 注意：这也会删 containerd.io！</span><br><span class="hljs-comment"># 迁移场景推荐保留 containerd.io，只卸载 docker-ce 相关：</span><br><span class="hljs-built_in">sudo</span> apt-get purge -y docker-ce docker-ce-cli docker-buildx-plugin docker-compose-plugin<br><br><span class="hljs-comment"># 2. 重新安装/确认 containerd（见第 2 章）</span><br><span class="hljs-comment"># 3. 配置 SystemdCgroup=true + 镜像加速 + sandbox_image</span><br><span class="hljs-comment"># 4. kubeadm 更新 kubelet 参数（--container-runtime-endpoint）</span><br><span class="hljs-comment"># 5. 恢复节点</span><br>kubectl uncordon &lt;node&gt;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>重要</strong>：<code>containerd.io</code> 与 Docker Engine 是同一发行渠道；迁移时只移除 <code>docker-ce</code>，保留 <code>containerd.io</code> 即可无缝切换。</p>
+</blockquote>
+<hr>
+<h2 id="第-7-章-网络与存储"><a href="#第-7-章-网络与存储" class="headerlink" title="第 7 章 网络与存储"></a>第 7 章 网络与存储</h2><h3 id="7-1-containerd-的网络模型"><a href="#7-1-containerd-的网络模型" class="headerlink" title="7.1 containerd 的网络模型"></a>7.1 containerd 的网络模型</h3><p><strong>核心事实：containerd 自己不管理 Pod 网络。</strong></p>
+<ul>
+<li>CRI 场景：kubelet 调用 <strong>CNI 插件</strong>（calico&#x2F;flannel&#x2F;cilium 等）为 sandbox 配置网络。</li>
+<li>nerdctl 场景：nerdctl 自带 CNI 配置（<code>bridge</code>&#x2F;<code>portmap</code> 等插件）实现网络与端口映射。</li>
+<li>ctr 场景：默认无网络（只有 <code>--net-host</code>）。</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs text">Pod sandbox 创建<br>   -&gt; kubelet 调用 CNI（/opt/cni/bin + /etc/cni/net.d 配置）<br>   -&gt; 插件创建 veth、分配 IP、配置路由<br>   -&gt; 业务容器加入 sandbox 网络命名空间<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># CNI 目录</span><br><span class="hljs-built_in">ls</span> /opt/cni/bin                  <span class="hljs-comment"># 插件二进制</span><br><span class="hljs-built_in">ls</span> /etc/cni/net.d/               <span class="hljs-comment"># 网络配置（由网络方案生成）</span><br><br><span class="hljs-comment"># 验证 CNI 插件安装</span><br>/opt/cni/bin/bridge --version 2&gt;/dev/null || <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;bridge not found&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常用 CNI 插件：</strong></p>
+<table>
+<thead>
+<tr>
+<th>插件</th>
+<th>特点</th>
+<th>适用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bridge + portmap</td>
+<td>默认&#x2F;最简</td>
+<td>单机、nerdctl</td>
+</tr>
+<tr>
+<td>flannel</td>
+<td>VXLAN 覆盖网络，简单</td>
+<td>小集群</td>
+</tr>
+<tr>
+<td>calico</td>
+<td>BGP&#x2F;overlay、NetworkPolicy、性能好</td>
+<td>生产主流</td>
+</tr>
+<tr>
+<td>cilium</td>
+<td>eBPF、服务网格能力、高性能</td>
+<td>大规模&#x2F;云原生高级场景</td>
+</tr>
+</tbody></table>
+<h3 id="7-2-存储（快照与数据）"><a href="#7-2-存储（快照与数据）" class="headerlink" title="7.2 存储（快照与数据）"></a>7.2 存储（快照与数据）</h3><ul>
+<li>镜像层：snapshotter 管理（见 5.3）。</li>
+<li>容器可写层：默认 overlayfs，限制与 Docker 相同（写敏感应用建议挂载）。</li>
+<li>K8s 数据卷：由 CSI（Container Storage Interface）插件负责，containerd 不参与。</li>
+<li>日志：K8s 场景由 kubelet 写到 <code>/var/log/pods</code>；containerd 不直接管理容器日志。</li>
+</ul>
+<p><strong>生产存储建议：</strong></p>
+<ul>
+<li><code>/var/lib/containerd</code> 放独立数据盘，监控容量。</li>
+<li>高 IO 的数据库类工作负载：避免 overlayfs 可写层，用宿主机裸盘&#x2F;CSI 本地卷 + 数据目录挂载。</li>
+<li>大批量镜像分发：评估 nydus&#x2F;stargz 懒加载方案降低启动时间。</li>
+</ul>
+<h3 id="7-3-nerdctl-网络实战（单机）"><a href="#7-3-nerdctl-网络实战（单机）" class="headerlink" title="7.3 nerdctl 网络实战（单机）"></a>7.3 nerdctl 网络实战（单机）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 依赖 CNI 插件</span><br>nerdctl network <span class="hljs-built_in">ls</span><br>nerdctl network create --subnet 10.10.0.0/24 app-net<br>nerdctl run -d --network app-net --name api myapi:v1<br>nerdctl run -d --network app-net -p 8080:80 --name web nginx:alpine<br><br><span class="hljs-comment"># 容器间用容器名互访</span><br>nerdctl <span class="hljs-built_in">exec</span> web getent hosts api<br>nerdctl network inspect app-net<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-4-镜像存储与-GC-调优（K8s-生产）"><a href="#7-4-镜像存储与-GC-调优（K8s-生产）" class="headerlink" title="7.4 镜像存储与 GC 调优（K8s 生产）"></a>7.4 镜像存储与 GC 调优（K8s 生产）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># kubelet 镜像 GC 参数（/var/lib/kubelet/config.yaml）</span><br>imageGCHighThresholdPercent: 85<br>imageGCLowThresholdPercent: 80<br><br><span class="hljs-comment"># 节点级手动清理（谨慎）</span><br>crictl rmi --prune           <span class="hljs-comment"># 删除未被使用镜像（crictl v1.26+）</span><br>nerdctl -n k8s.io image prune -a -f   <span class="hljs-comment"># 需 nerdctl 与 k8s.io 命名空间权限</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>不要直接删 &#x2F;var&#x2F;lib&#x2F;containerd 下的文件</strong>——绕过 API 会导致元数据不一致，只能用 GC 工具。</p>
+</blockquote>
+<hr>
+<h2 id="第-8-章-安全加固"><a href="#第-8-章-安全加固" class="headerlink" title="第 8 章 安全加固"></a>第 8 章 安全加固</h2><h3 id="8-1-安全面梳理"><a href="#8-1-安全面梳理" class="headerlink" title="8.1 安全面梳理"></a>8.1 安全面梳理</h3><table>
+<thead>
+<tr>
+<th>层面</th>
+<th>风险</th>
+<th>措施</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>守护进程</td>
+<td>socket 未授权访问、远程 gRPC 裸奔</td>
+<td>收紧权限、不开放 TCP、认证</td>
+</tr>
+<tr>
+<td>镜像供应链</td>
+<td>恶意&#x2F;带漏洞镜像、被投毒镜像</td>
+<td>私有仓库 + 签名验证 + 扫描</td>
+</tr>
+<tr>
+<td>运行时</td>
+<td>容器逃逸、内核漏洞</td>
+<td>非 root、seccomp&#x2F;AppArmor、最小能力</td>
+</tr>
+<tr>
+<td>配置</td>
+<td>敏感信息入镜像、root 运行</td>
+<td>规范 Dockerfile&#x2F;CRI 配置</td>
+</tr>
+<tr>
+<td>节点</td>
+<td>K8s 攻击面（kubelet 未认证等）</td>
+<td>加固 OS + RBAC + 审计</td>
+</tr>
+</tbody></table>
+<h3 id="8-2-守护进程安全"><a href="#8-2-守护进程安全" class="headerlink" title="8.2 守护进程安全"></a>8.2 守护进程安全</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. socket 权限</span><br><span class="hljs-built_in">ls</span> -l /run/containerd/containerd.sock<br><span class="hljs-comment"># srw-rw---- 1 root containerd  -&gt; 默认 root:containerd，非授权用户不可访问</span><br><br><span class="hljs-comment"># 2. 不要开 TCP 监听（默认只监听 unix socket）</span><br>grep -A3 <span class="hljs-string">&#x27;grpc&#x27;</span> /etc/containerd/config.toml<br><span class="hljs-comment"># address = &quot;/run/containerd/containerd.sock&quot;   &lt;- 保持 unix socket</span><br><br><span class="hljs-comment"># 3. 审计</span><br>auditctl -w /var/lib/containerd -k containerd<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>containerd 官方不支持无认证的远程 gRPC 暴露；远程管理一律走受控通道（SSH、K8s API、堡垒机）。</p>
+</blockquote>
+<h3 id="8-3-镜像安全"><a href="#8-3-镜像安全" class="headerlink" title="8.3 镜像安全"></a>8.3 镜像安全</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 只从可信仓库拉取：默认禁止 docker.io 之外的匿名源（可在 CRI 配置中白名单）</span><br><span class="hljs-comment"># 2. 镜像扫描（Trivy 示例）</span><br>trivy image registry.example.com/app:v1.2.3 --severity HIGH,CRITICAL --ignore-unfixed<br><br><span class="hljs-comment"># 3. 镜像签名验证（Notation）</span><br>notation cert add --<span class="hljs-built_in">type</span> ca --store mytrust ca.crt<br>notation sign --key mykey registry.example.com/app:v1.2.3<br><span class="hljs-comment"># containerd 侧启用校验（config.toml）</span><br><span class="hljs-comment"># [plugins.&quot;io.containerd.grpc.v1.cri&quot;.image_decryption]</span><br><span class="hljs-comment">#   key_model = &quot;node&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>供应链安全基线：</strong></p>
+<ul>
+<li>镜像锁定 digest（<code>image@sha256:...</code>）。</li>
+<li>CI 中加入漏洞扫描门禁（HIGH&#x2F;CRITICAL 阻断发布）。</li>
+<li>Harbor&#x2F;私有仓库开启内容信任与签名策略。</li>
+<li>定期更新基础镜像与运行时（runc 升级尤其重要，历史多次逃逸 CVE 出在 runc）。</li>
+</ul>
+<h3 id="8-4-运行时安全（容器内）"><a href="#8-4-运行时安全（容器内）" class="headerlink" title="8.4 运行时安全（容器内）"></a>8.4 运行时安全（容器内）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 非 root 运行（镜像 USER 指令，或 CRI 的 securityContext）</span><br><span class="hljs-comment"># K8s PodSecurityContext 示例：</span><br><span class="hljs-comment">#   runAsNonRoot: true</span><br><span class="hljs-comment">#   runAsUser: 1001</span><br><br><span class="hljs-comment"># 2. seccomp（默认开启：CRI 配置 enable_seccomp = true）</span><br><span class="hljs-comment"># 3. AppArmor / SELinux</span><br><span class="hljs-comment"># 4. 最小能力</span><br><span class="hljs-comment"># K8s：securityContext.capabilities.drop: [&quot;ALL&quot;]</span><br><span class="hljs-comment"># 5. 只读根文件系统：readOnlyRootFilesystem: true</span><br><span class="hljs-comment"># 6. 禁止 privileged：PodSecurity admission（restricted 策略）</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>CRI 配置示例（config.toml）：</strong></p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd]</span><br>  <span class="hljs-attr">default_runtime_name</span> = <span class="hljs-string">&quot;runc&quot;</span><br>  <span class="hljs-attr">discard_unpacked_layers</span> = <span class="hljs-literal">true</span>   <span class="hljs-comment"># 解压后丢弃中间层，省磁盘</span><br><br><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;]</span><br>  <span class="hljs-attr">enable_selinux</span> = <span class="hljs-literal">true</span><br>  <span class="hljs-attr">enable_unprivileged_ports</span> = <span class="hljs-literal">true</span><br>  <span class="hljs-attr">enable_unprivileged_icmp</span> = <span class="hljs-literal">true</span><br>  <span class="hljs-attr">enable_seccomp</span> = <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>K8s 安全上下文示例：</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">securityContext:</span><br>  <span class="hljs-attr">runAsNonRoot:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-attr">runAsUser:</span> <span class="hljs-number">1001</span><br>  <span class="hljs-attr">readOnlyRootFilesystem:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-attr">allowPrivilegeEscalation:</span> <span class="hljs-literal">false</span><br>  <span class="hljs-attr">capabilities:</span><br>    <span class="hljs-attr">drop:</span> [<span class="hljs-string">&quot;ALL&quot;</span>]<br>  <span class="hljs-attr">seccompProfile:</span><br>    <span class="hljs-attr">type:</span> <span class="hljs-string">RuntimeDefault</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="8-5-Rootless-模式"><a href="#8-5-Rootless-模式" class="headerlink" title="8.5 Rootless 模式"></a>8.5 Rootless 模式</h3><p>containerd 支持 rootless（非 root 运行），配合用户命名空间：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 前置：用户命名空间支持</span><br><span class="hljs-built_in">sudo</span> sysctl kernel.unprivileged_userns_clone=1   <span class="hljs-comment"># 老内核可能需要</span><br><br><span class="hljs-comment"># rootless containerd + nerdctl</span><br>containerd-rootless-setuptool.sh install<br>containerd-rootless-setuptool.sh install-buildkit<br>containerd-rootless-setuptool.sh install-kubectl<br><br><span class="hljs-comment"># 使用（无需 root）</span><br>nerdctl run -d -p 8080:80 nginx:alpine<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>rootless 依赖：fuse-overlayfs、slirp4netns&#x2F;rootlesskit；性能与功能有取舍（如部分网络能力受限）。适合开发与多租户场景，生产 K8s 节点通常仍用 root 模式 + 纵深防御。</p>
+</blockquote>
+<h3 id="8-6-加固检查清单"><a href="#8-6-加固检查清单" class="headerlink" title="8.6 加固检查清单"></a>8.6 加固检查清单</h3><ul>
+<li><input disabled="" type="checkbox"> socket 属主 root:containerd，权限 660</li>
+<li><input disabled="" type="checkbox"> 未开放 TCP gRPC 监听</li>
+<li><input disabled="" type="checkbox"> 镜像来自受信仓库且过漏洞扫描</li>
+<li><input disabled="" type="checkbox"> 生产启用镜像签名验证（Notation&#x2F;Cosign）</li>
+<li><input disabled="" type="checkbox"> seccomp 开启，AppArmor&#x2F;SELinux 按发行版启用</li>
+<li><input disabled="" type="checkbox"> 容器非 root 运行、能力最小化、只读 rootfs</li>
+<li><input disabled="" type="checkbox"> runc&#x2F;containerd&#x2F;内核保持最新补丁</li>
+<li><input disabled="" type="checkbox"> K8s 启用 PodSecurity（restricted）与 NetworkPolicy</li>
+<li><input disabled="" type="checkbox"> <code>/var/lib/containerd</code> 独立分区并监控</li>
+<li><input disabled="" type="checkbox"> 审计日志开启（auditd）</li>
+</ul>
+<hr>
+<h2 id="第-9-章-运维与故障排查"><a href="#第-9-章-运维与故障排查" class="headerlink" title="第 9 章 运维与故障排查"></a>第 9 章 运维与故障排查</h2><h3 id="9-1-日志体系"><a href="#9-1-日志体系" class="headerlink" title="9.1 日志体系"></a>9.1 日志体系</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs text">containerd daemon 日志（systemd journal）<br>  journalctl -u containerd -n 200 -f<br><br>容器标准输出（K8s 场景由 kubelet 接管）<br>  /var/log/pods/&lt;ns&gt;_&lt;pod&gt;_&lt;uid&gt;/&lt;container&gt;/0.log<br><br>shim 日志（每个容器）<br>  /run/containerd/io.containerd.runtime.v2.task/&lt;ns&gt;/&lt;container&gt;/log.json<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">journalctl -u containerd -n 100 --no-pager<br>journalctl -u containerd --since <span class="hljs-string">&quot;10 minutes ago&quot;</span><br>journalctl -u kubelet -n 100 --no-pager<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>containerd 本身不负责容器日志持久化；单机用 nerdctl 时日志在 shim 的 log.json，可配日志轮转。</p>
+</blockquote>
+<h3 id="9-2-磁盘爆满（第一高频事故）"><a href="#9-2-磁盘爆满（第一高频事故）" class="headerlink" title="9.2 磁盘爆满（第一高频事故）"></a>9.2 磁盘爆满（第一高频事故）</h3><p><strong>排查顺序：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 确认占用</span><br><span class="hljs-built_in">df</span> -h /var/lib/containerd<br><span class="hljs-built_in">du</span> -sh /var/lib/containerd/* | <span class="hljs-built_in">sort</span> -h<br><br><span class="hljs-comment"># 2. 容器可写层/日志</span><br><span class="hljs-built_in">du</span> -sh /var/log/pods 2&gt;/dev/null | <span class="hljs-built_in">sort</span> -h<br><span class="hljs-built_in">du</span> -sh /run/containerd/io.containerd.runtime.v2.task/* 2&gt;/dev/null | <span class="hljs-built_in">sort</span> -h<br><br><span class="hljs-comment"># 3. 镜像与 blob</span><br>crictl images<br>ctr -n k8s.io content <span class="hljs-built_in">ls</span> | <span class="hljs-built_in">head</span> -20<br><br><span class="hljs-comment"># 4. 清理</span><br>crictl rmi --prune                 <span class="hljs-comment"># 删未使用镜像（K8s 节点）</span><br>crictl images | grep <span class="hljs-string">&#x27;&lt;none&gt;&#x27;</span>      <span class="hljs-comment"># 悬空镜像</span><br>ctr -n k8s.io content prune        <span class="hljs-comment"># 清未引用 blob（低版本无此命令则跳过）</span><br>nerdctl system prune -a -f         <span class="hljs-comment"># 单机场景</span><br><br><span class="hljs-comment"># 5. 预防</span><br><span class="hljs-comment">#  - kubelet 调低 image-gc-high-threshold（85 -&gt; 70）</span><br><span class="hljs-comment">#  - 容器日志轮转（containerd 配置 max_size/max_file 或 kubelet 容器日志策略）</span><br><span class="hljs-comment">#  - 定期巡检脚本 + 告警</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>containerd 日志轮转（CRI 配置）：</strong></p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd]</span><br>  <span class="hljs-attr">max_container_log_line_size</span> = <span class="hljs-number">16384</span><br><br><span class="hljs-comment"># 或 daemon 层面</span><br><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd.logs]</span><br>  <span class="hljs-attr">max_size</span> = <span class="hljs-number">52428800</span>     <span class="hljs-comment"># 50MB</span><br>  <span class="hljs-attr">max_files</span> = <span class="hljs-number">5</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="9-3-常见故障速查表"><a href="#9-3-常见故障速查表" class="headerlink" title="9.3 常见故障速查表"></a>9.3 常见故障速查表</h3><table>
+<thead>
+<tr>
+<th>现象</th>
+<th>原因</th>
+<th>处置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>failed to connect to /run/containerd/containerd.sock</code></td>
+<td>containerd 未启动&#x2F;崩溃</td>
+<td><code>systemctl status containerd</code>，看 journal</td>
+</tr>
+<tr>
+<td>Pod 一直 <code>ContainerCreating</code></td>
+<td>pause 镜像拉不到&#x2F;CNI 故障</td>
+<td><code>crictl pods</code> + <code>crictl pull pause</code></td>
+</tr>
+<tr>
+<td><code>ErrImagePull</code></td>
+<td>镜像不存在&#x2F;无权限</td>
+<td><code>crictl pull</code> 复现；检查认证与地址</td>
+</tr>
+<tr>
+<td>容器启动报 <code>permission denied</code></td>
+<td>非 root 用户无权限&#x2F;AppArmor</td>
+<td>检查镜像 USER、挂载属主</td>
+</tr>
+<tr>
+<td><code>exec format error</code></td>
+<td>架构不匹配</td>
+<td>拉取对应 <code>--platform</code> 镜像</td>
+</tr>
+<tr>
+<td>节点 <code>NotReady</code></td>
+<td>containerd 或网络插件异常</td>
+<td>journal 定位；重启 containerd&#x2F;calico</td>
+</tr>
+<tr>
+<td>大量 <code>exited</code> sandbox</td>
+<td>异常 Pod 清理不彻底</td>
+<td>重启 kubelet；<code>crictl rmp -f</code> 清理</td>
+</tr>
+<tr>
+<td><code>failed to reserve sandbox name</code></td>
+<td>同名 sandbox 残留</td>
+<td><code>crictl rmp</code> 删除残留沙箱</td>
+</tr>
+<tr>
+<td>磁盘持续增长</td>
+<td>镜像 GC 不回收&#x2F;日志不轮转</td>
+<td>见 9.2</td>
+</tr>
+<tr>
+<td><code>unexpected EOF</code> 拉取中断</td>
+<td>网络&#x2F;仓库不稳定</td>
+<td>重试、配加速、加代理</td>
+</tr>
+<tr>
+<td><code>no such image</code>（ctr）</td>
+<td>命名空间&#x2F;名称写错</td>
+<td><code>-n k8s.io</code>；写全镜像名</td>
+</tr>
+</tbody></table>
+<h3 id="9-4-性能调优"><a href="#9-4-性能调优" class="headerlink" title="9.4 性能调优"></a>9.4 性能调优</h3><figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-comment"># config.toml 生产建议</span><br><span class="hljs-attr">version</span> = <span class="hljs-number">2</span><br><span class="hljs-attr">root</span> = <span class="hljs-string">&quot;/var/lib/containerd&quot;</span><br><span class="hljs-attr">state</span> = <span class="hljs-string">&quot;/run/containerd&quot;</span><br><br><span class="hljs-comment"># 并发下载/上传</span><br><span class="hljs-attr">max_concurrent_downloads</span> = <span class="hljs-number">10</span><br><span class="hljs-attr">max_concurrent_uploads</span> = <span class="hljs-number">5</span><br><br><span class="hljs-comment"># 流媒体/大镜像</span><br><span class="hljs-section">[plugins.&quot;io.containerd.grpc.v1.cri&quot;.containerd]</span><br>  <span class="hljs-attr">discard_unpacked_layers</span> = <span class="hljs-literal">true</span><br><br><span class="hljs-comment"># 内核参数（节点级）</span><br><span class="hljs-attr">net.ipv4.ip_local_port_range</span> = <span class="hljs-number">1024</span> <span class="hljs-number">65535</span><br><span class="hljs-attr">net.core.somaxconn</span> = <span class="hljs-number">1024</span><br><span class="hljs-attr">fs.file-max</span> = <span class="hljs-number">1000000</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sysctl -w vm.max_map_count=262144        <span class="hljs-comment"># 部分应用（ES 等）需要</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>性能要点：</strong></p>
+<ul>
+<li>使用 overlayfs 快照器（默认），避免 native。</li>
+<li>镜像构建阶段就尽量精简（层数、大小），减少拉取&#x2F;解压时间。</li>
+<li>大批量镜像预热：提前 <code>crictl pull</code> 或使用懒加载（nydus）。</li>
+<li>高并发创建容器：关注 shim 数量与 PID 限制（<code>TasksMax=infinity</code>）。</li>
+<li>基准：<code>ctr</code> 创建容器毫秒级；对比 Docker 多一层 daemon 开销更小。</li>
+</ul>
+<h3 id="9-5-备份与迁移"><a href="#9-5-备份与迁移" class="headerlink" title="9.5 备份与迁移"></a>9.5 备份与迁移</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 停止 containerd（保证数据一致）</span><br><span class="hljs-built_in">sudo</span> systemctl stop containerd<br><br><span class="hljs-comment"># 2. 打包数据目录</span><br><span class="hljs-built_in">sudo</span> tar -czf /backup/containerd-$(<span class="hljs-built_in">date</span> +%F).tar.gz /var/lib/containerd<br><br><span class="hljs-comment"># 3. 恢复（新机器）</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /var/lib/containerd<br><span class="hljs-built_in">sudo</span> tar -xzf /backup/containerd-xxxx.tar.gz -C /<br><span class="hljs-built_in">sudo</span> systemctl start containerd<br><br><span class="hljs-comment"># 4. 验证</span><br>ctr -n k8s.io images <span class="hljs-built_in">ls</span> | <span class="hljs-built_in">head</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>备份注意：跨 containerd 大版本恢复不一定兼容（bolt 元数据格式变化），建议<strong>用镜像仓库做制品备份</strong>，<code>/var/lib/containerd</code> 只做节点级灾备。数据库等有状态数据务必走应用自身备份。</p>
+</blockquote>
+<h3 id="9-6-事件与指标"><a href="#9-6-事件与指标" class="headerlink" title="9.6 事件与指标"></a>9.6 事件与指标</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 事件</span><br>ctr events --namespace k8s.io<br>crictl events<br><br><span class="hljs-comment"># metrics（Prometheus）</span><br><span class="hljs-comment"># config.toml：</span><br><span class="hljs-comment"># [metrics]</span><br><span class="hljs-comment">#   address = &quot;127.0.0.1:1338&quot;</span><br>curl -s http://127.0.0.1:1338/metrics | grep -E <span class="hljs-string">&#x27;^container|^containerd&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>关键指标：</strong></p>
+<ul>
+<li><code>containerd_containers_total</code> &#x2F; <code>containerd_tasks_running</code></li>
+<li><code>containerd_events_total</code></li>
+<li><code>container_tasks_state</code></li>
+<li><code>containerd_snapshotter_*</code>（快照使用）</li>
+</ul>
+<p><strong>Grafana 面板建议：</strong> node-exporter（主机）+ cAdvisor（容器）+ containerd metrics（运行时）。</p>
+<h3 id="9-7-巡检脚本骨架"><a href="#9-7-巡检脚本骨架" class="headerlink" title="9.7 巡检脚本骨架"></a>9.7 巡检脚本骨架</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-comment"># 每 5 分钟巡检，异常告警</span><br><span class="hljs-built_in">set</span> -euo pipefail<br><br><span class="hljs-comment"># 1. 服务状态</span><br>systemctl is-active containerd &gt;/dev/null || <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;ALERT: containerd down&quot;</span><br><br><span class="hljs-comment"># 2. 磁盘</span><br>USAGE=$(<span class="hljs-built_in">df</span> -h /var/lib/containerd | awk <span class="hljs-string">&#x27;NR==2&#123;print $5&#125;&#x27;</span> | <span class="hljs-built_in">tr</span> -d <span class="hljs-string">&#x27;%&#x27;</span>)<br>[ <span class="hljs-string">&quot;<span class="hljs-variable">$USAGE</span>&quot;</span> -gt 80 ] &amp;&amp; <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;ALERT: disk usage <span class="hljs-variable">$&#123;USAGE&#125;</span>%&quot;</span><br><br><span class="hljs-comment"># 3. 节点容器异常数量</span><br>ABNORMAL=$(crictl ps -a --state exited 2&gt;/dev/null | <span class="hljs-built_in">wc</span> -l)<br>[ <span class="hljs-string">&quot;<span class="hljs-variable">$ABNORMAL</span>&quot;</span> -gt 50 ] &amp;&amp; <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;ALERT: <span class="hljs-variable">$&#123;ABNORMAL&#125;</span> exited containers&quot;</span><br><br><span class="hljs-comment"># 4. socket 可达性</span><br>crictl version &gt;/dev/null 2&gt;&amp;1 || <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;ALERT: cri endpoint unreachable&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第-10-章-进阶与生态"><a href="#第-10-章-进阶与生态" class="headerlink" title="第 10 章 进阶与生态"></a>第 10 章 进阶与生态</h2><h3 id="10-1-插件体系"><a href="#10-1-插件体系" class="headerlink" title="10.1 插件体系"></a>10.1 插件体系</h3><p>containerd 由插件构成，全部通过 gRPC 接口注册：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">ctr plugins <span class="hljs-built_in">ls</span><br><span class="hljs-comment"># 常见插件：</span><br><span class="hljs-comment"># io.containerd.content.v1.content</span><br><span class="hljs-comment"># io.containerd.metadata.v1.bolt</span><br><span class="hljs-comment"># io.containerd.snapshotter.v1.overlayfs</span><br><span class="hljs-comment"># io.containerd.grpc.v1.cri</span><br><span class="hljs-comment"># io.containerd.runtime.v2.task</span><br><span class="hljs-comment"># io.containerd.metrics.v1.metrics</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>config.toml 中启用&#x2F;禁用插件：</strong></p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs toml"><span class="hljs-attr">disabled_plugins</span> = []<br><span class="hljs-attr">required_plugins</span> = []<br><span class="hljs-comment"># 例：禁用未使用的插件减少攻击面</span><br><span class="hljs-comment"># disabled_plugins = [&quot;io.containerd.grpc.v1.healthcheck&quot;]</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="10-2-内容校验、租约（Lease）与-GC"><a href="#10-2-内容校验、租约（Lease）与-GC" class="headerlink" title="10.2 内容校验、租约（Lease）与 GC"></a>10.2 内容校验、租约（Lease）与 GC</h3><ul>
+<li><strong>Content 按 digest 寻址</strong>：天然防篡改、自动去重。</li>
+<li><strong>Lease</strong>：给内容打”引用标记”，防止 GC 误删（如”正在解压”的内容）。</li>
+<li><strong>GC</strong>：containerd 定期清理未被引用的 content&#x2F;snapshots；也可手动 <code>ctr content prune</code>。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看 lease</span><br>ctr leases list<br><br><span class="hljs-comment"># 手动触发 GC（低版本无内置命令时）</span><br><span class="hljs-comment"># 依赖 API 调用；日常交给 containerd 自动 GC + kubelet 镜像 GC</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="10-3-Go-客户端编程（简介）"><a href="#10-3-Go-客户端编程（简介）" class="headerlink" title="10.3 Go 客户端编程（简介）"></a>10.3 Go 客户端编程（简介）</h3><p>containerd 官方 Go 客户端是上层工具（nerdctl、kubelet CRI 插件）的基础：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><br><span class="hljs-keyword">import</span> (<br>	<span class="hljs-string">&quot;context&quot;</span><br>	<span class="hljs-string">&quot;log&quot;</span><br><br>	<span class="hljs-string">&quot;github.com/containerd/containerd&quot;</span><br>	<span class="hljs-string">&quot;github.com/containerd/containerd/namespaces&quot;</span><br>	<span class="hljs-string">&quot;github.com/containerd/containerd/oci&quot;</span><br>)<br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	client, err := containerd.New(<span class="hljs-string">&quot;/run/containerd/containerd.sock&quot;</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br>	<span class="hljs-keyword">defer</span> client.Close()<br><br>	ctx := namespaces.WithNamespace(context.Background(), <span class="hljs-string">&quot;default&quot;</span>)<br><br>	<span class="hljs-comment">// 拉镜像</span><br>	image, err := client.Pull(ctx, <span class="hljs-string">&quot;docker.io/library/alpine:3.20&quot;</span>)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br><br>	<span class="hljs-comment">// 创建容器</span><br>	container, err := client.NewContainer(<br>		ctx,<br>		<span class="hljs-string">&quot;demo&quot;</span>,<br>		containerd.WithImage(image),<br>		containerd.WithNewSnapshot(<span class="hljs-string">&quot;demo-snap&quot;</span>, image),<br>		containerd.WithNewSpec(oci.WithImageConfig(image), oci.WithProcessArgs(<span class="hljs-string">&quot;/bin/sh&quot;</span>, <span class="hljs-string">&quot;-c&quot;</span>, <span class="hljs-string">&quot;echo hello; sleep 5&quot;</span>)),<br>	)<br>	<span class="hljs-keyword">if</span> err != <span class="hljs-literal">nil</span> &#123;<br>		log.Fatal(err)<br>	&#125;<br>	<span class="hljs-keyword">defer</span> container.Delete(ctx, containerd.WithSnapshotCleanup)<br><br>	log.Println(<span class="hljs-string">&quot;container created:&quot;</span>, container.ID())<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 依赖</span><br>go get github.com/containerd/containerd/v2<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>一般运维不需要写 Go；了解 API 分层有助于理解 nerdctl&#x2F;kubelet 行为。</p>
+</blockquote>
+<h3 id="10-4-nerdctl-完整能力（开发-单机主力）"><a href="#10-4-nerdctl-完整能力（开发-单机主力）" class="headerlink" title="10.4 nerdctl 完整能力（开发&#x2F;单机主力）"></a>10.4 nerdctl 完整能力（开发&#x2F;单机主力）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">nerdctl run / ps / <span class="hljs-built_in">exec</span> / logs / inspect / stats   <span class="hljs-comment"># 容器</span><br>nerdctl build / commit / tag / push / pull         <span class="hljs-comment"># 镜像</span><br>nerdctl compose up -d                              <span class="hljs-comment"># Compose</span><br>nerdctl network / volume / namespace               <span class="hljs-comment"># 网络/卷/命名空间</span><br>nerdctl image prune / system prune                 <span class="hljs-comment"># 清理</span><br>nerdctl info<br></code></pre></td></tr></table></figure>
+
+<p><strong>与 Docker CLI 的细微差异：</strong></p>
+<ul>
+<li><code>nerdctl run -d</code> 默认不分配 TTY；<code>-it</code> 行为一致。</li>
+<li>端口映射依赖 CNI portmap 插件。</li>
+<li><code>nerdctl build</code> 依赖 buildkitd（<code>systemctl start buildkit</code> 或 <code>nerdctl builder</code>）。</li>
+<li>支持 rootless 全链路。</li>
+</ul>
+<h3 id="10-5-与生态的完整关系图"><a href="#10-5-与生态的完整关系图" class="headerlink" title="10.5 与生态的完整关系图"></a>10.5 与生态的完整关系图</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs text">开发者视角：<br>  Docker CLI / docker compose / nerdctl<br>        |                  |<br>        v                  v<br>  BuildKit（构建）   containerd（运行）<br>        |                  |<br>        +--------+---------+<br>                 v<br>      Kubernetes（CRI + CNI + CSI）<br>                 |<br>                 v<br>      containerd（每节点运行时）<br></code></pre></td></tr></table></figure>
+
+<p><strong>什么时候选什么：</strong></p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开发机&#x2F;单机容器体验</td>
+<td>Docker Desktop 或 nerdctl</td>
+</tr>
+<tr>
+<td>生产 K8s 集群</td>
+<td>containerd（每节点）+ CRI</td>
+</tr>
+<tr>
+<td>边缘&#x2F;嵌入式</td>
+<td>containerd 精简部署</td>
+</tr>
+<tr>
+<td>离线内网</td>
+<td>containerd + Harbor + crictl&#x2F;nerdctl</td>
+</tr>
+<tr>
+<td>多租户开发隔离</td>
+<td>rootless containerd + nerdctl</td>
+</tr>
+</tbody></table>
+<h3 id="10-6-containerd-2-x-升级要点"><a href="#10-6-containerd-2-x-升级要点" class="headerlink" title="10.6 containerd 2.x 升级要点"></a>10.6 containerd 2.x 升级要点</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 升级前</span><br>containerd --version<br>ctr version<br>containerd config dump &gt; /tmp/config-backup.toml<br><br><span class="hljs-comment"># 停服务 -&gt; 替换二进制 -&gt; 校验配置 -&gt; 启动</span><br><span class="hljs-built_in">sudo</span> systemctl stop containerd<br><span class="hljs-built_in">sudo</span> tar -C /usr/local -xzf containerd-2.0.x-linux-amd64.tar.gz<br><span class="hljs-built_in">sudo</span> containerd config check<br><span class="hljs-built_in">sudo</span> systemctl start containerd<br>crictl version &amp;&amp; crictl pods<br></code></pre></td></tr></table></figure>
+
+<p><strong>2.x 主要变化（迁移注意）：</strong></p>
+<ul>
+<li>默认启用独立镜像存储（image store），镜像管理行为更接近 Docker。</li>
+<li>配置语法&#x2F;字段变化：用 <code>containerd config default</code> 重新生成并合并自己的修改。</li>
+<li>移除部分废弃 API&#x2F;插件（旧 snapshotters、旧客户端版本）。</li>
+<li>runc 升级到 v3 运行时接口（runc 版本需配套）。</li>
+<li>更多细节以官方升级文档为准。</li>
+</ul>
+<blockquote>
+<p>升级原则：测试环境先验证 → 灰度节点 → 全量；K8s 集群升级 containerd 前确认与 kubelet 版本兼容矩阵。</p>
+</blockquote>
+<hr>
+<h2 id="第-11-章-常用命令速查表"><a href="#第-11-章-常用命令速查表" class="headerlink" title="第 11 章 常用命令速查表"></a>第 11 章 常用命令速查表</h2><h3 id="11-1-ctr（原生）"><a href="#11-1-ctr（原生）" class="headerlink" title="11.1 ctr（原生）"></a>11.1 ctr（原生）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs bash">ctr version<br>ctr namespace <span class="hljs-built_in">ls</span> / ns create / ns remove<br><br><span class="hljs-comment"># 镜像</span><br>ctr images pull docker.io/library/nginx:alpine<br>ctr images push registry.example.com/app:v1<br>ctr images <span class="hljs-built_in">ls</span> [-q]<br>ctr images <span class="hljs-built_in">rm</span> &lt;image&gt;<br>ctr images import app.tar<br>ctr images <span class="hljs-built_in">export</span> app.tar &lt;image&gt;<br>ctr images check<br>ctr images prune<br><br><span class="hljs-comment"># 内容</span><br>ctr content <span class="hljs-built_in">ls</span><br>ctr content <span class="hljs-built_in">rm</span> sha256:xxxx<br><br><span class="hljs-comment"># 容器与任务</span><br>ctr containers <span class="hljs-built_in">ls</span><br>ctr run -d --<span class="hljs-built_in">env</span> A=B --mount <span class="hljs-built_in">type</span>=<span class="hljs-built_in">bind</span>,src=/x,dst=/y img name<br>ctr run --<span class="hljs-built_in">rm</span> -t img sh<br>ctr tasks <span class="hljs-built_in">ls</span><br>ctr tasks <span class="hljs-built_in">exec</span> -t --exec-id e1 name sh<br>ctr tasks <span class="hljs-built_in">kill</span> -s SIGTERM name<br>ctr tasks pause/resume name<br>ctr tasks <span class="hljs-built_in">rm</span> -f name<br>ctr containers <span class="hljs-built_in">rm</span> -f name<br><br><span class="hljs-comment"># 快照</span><br>ctr snapshots <span class="hljs-built_in">ls</span><br><br><span class="hljs-comment"># 事件/插件/租约</span><br>ctr events<br>ctr plugins <span class="hljs-built_in">ls</span><br>ctr leases list<br></code></pre></td></tr></table></figure>
+
+<h3 id="11-2-crictl（CRI-K8s-节点）"><a href="#11-2-crictl（CRI-K8s-节点）" class="headerlink" title="11.2 crictl（CRI &#x2F; K8s 节点）"></a>11.2 crictl（CRI &#x2F; K8s 节点）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash">crictl version<br>crictl ps [-a]<br>crictl pods<br>crictl images<br>crictl pull nginx:alpine<br>crictl rmi &lt;image&gt;<br>crictl <span class="hljs-built_in">exec</span> -it &lt;<span class="hljs-built_in">id</span>&gt; sh<br>crictl logs -f &lt;<span class="hljs-built_in">id</span>&gt;<br>crictl stats<br>crictl top &lt;<span class="hljs-built_in">id</span>&gt;<br>crictl inspect &lt;<span class="hljs-built_in">id</span>&gt;<br>crictl inspectp &lt;pod-id&gt;<br>crictl start/stop/rm/rmp &lt;<span class="hljs-built_in">id</span>&gt;<br>crictl events<br>crictl portforward &lt;pod-id&gt; 8080:80<br>crictl rmi --prune<br></code></pre></td></tr></table></figure>
+
+<h3 id="11-3-nerdctl（docker-兼容）"><a href="#11-3-nerdctl（docker-兼容）" class="headerlink" title="11.3 nerdctl（docker 兼容）"></a>11.3 nerdctl（docker 兼容）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">nerdctl version<br>nerdctl run -d -p 8080:80 --name web nginx:alpine<br>nerdctl ps -a<br>nerdctl <span class="hljs-built_in">exec</span> -it web sh<br>nerdctl logs -f web<br>nerdctl stop/start/restart/rm web<br>nerdctl images / pull / push / tag / rmi<br>nerdctl save -o x.tar img<br>nerdctl load -i x.tar<br>nerdctl build -t app:v1 .<br>nerdctl compose up -d<br>nerdctl network <span class="hljs-built_in">ls</span>/create/rm<br>nerdctl volume <span class="hljs-built_in">ls</span>/create/rm<br>nerdctl stats<br>nerdctl system prune -a -f<br>nerdctl image prune -f<br>nerdctl info<br></code></pre></td></tr></table></figure>
+
+<h3 id="11-4-系统级"><a href="#11-4-系统级" class="headerlink" title="11.4 系统级"></a>11.4 系统级</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl status/start/stop/restart containerd<br>journalctl -u containerd -n 200 -f<br>containerd config default &gt; /etc/containerd/config.toml<br>containerd config check<br>crictl version<br>ss -l | grep containerd<br><span class="hljs-built_in">df</span> -h /var/lib/containerd<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="A-术语表"><a href="#A-术语表" class="headerlink" title="A. 术语表"></a>A. 术语表</h3><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>OCI</td>
+<td>开放容器标准（image&#x2F;runtime 规范）</td>
+</tr>
+<tr>
+<td>CRI</td>
+<td>Kubernetes 容器运行时接口</td>
+</tr>
+<tr>
+<td>CNI</td>
+<td>容器网络接口（K8s Pod 网络）</td>
+</tr>
+<tr>
+<td>CSI</td>
+<td>容器存储接口（K8s 卷）</td>
+</tr>
+<tr>
+<td>Sandbox</td>
+<td>CRI 中的 Pod 沙箱（pause 容器）</td>
+</tr>
+<tr>
+<td>Shim</td>
+<td>每容器一个的 containerd 垫片进程</td>
+</tr>
+<tr>
+<td>Snapshotter</td>
+<td>rootfs 快照管理（存储驱动）</td>
+</tr>
+<tr>
+<td>Content Store</td>
+<td>镜像 blob 内容存储</td>
+</tr>
+<tr>
+<td>Namespace</td>
+<td>containerd 数据逻辑隔离空间</td>
+</tr>
+<tr>
+<td>Task</td>
+<td>运行中的容器进程实例</td>
+</tr>
+<tr>
+<td>Lease</td>
+<td>内容引用标记（防 GC）</td>
+</tr>
+<tr>
+<td>RuntimeClass</td>
+<td>K8s 选择容器运行时的机制</td>
+</tr>
+<tr>
+<td>Rootless</td>
+<td>非 root 运行容器</td>
+</tr>
+</tbody></table>
+<h3 id="B-官方与推荐资料"><a href="#B-官方与推荐资料" class="headerlink" title="B. 官方与推荐资料"></a>B. 官方与推荐资料</h3><ul>
+<li>containerd 官网：<a target="_blank" rel="noopener" href="https://containerd.io/">https://containerd.io/</a></li>
+<li>GitHub：<a target="_blank" rel="noopener" href="https://github.com/containerd/containerd">https://github.com/containerd/containerd</a></li>
+<li>CRI 文档：<a target="_blank" rel="noopener" href="https://github.com/containerd/containerd/blob/main/docs/cri">https://github.com/containerd/containerd/blob/main/docs/cri</a></li>
+<li>crictl：<a target="_blank" rel="noopener" href="https://github.com/kubernetes-sigs/cri-tools">https://github.com/kubernetes-sigs/cri-tools</a></li>
+<li>nerdctl：<a target="_blank" rel="noopener" href="https://github.com/containerd/nerdctl">https://github.com/containerd/nerdctl</a></li>
+<li>runc：<a target="_blank" rel="noopener" href="https://github.com/opencontainers/runc">https://github.com/opencontainers/runc</a></li>
+<li>CNI 插件：<a target="_blank" rel="noopener" href="https://github.com/containernetworking/plugins">https://github.com/containernetworking/plugins</a></li>
+<li>containerd 升级指南（2.x）：<a target="_blank" rel="noopener" href="https://github.com/containerd/containerd/blob/main/docs/getting-started.md">https://github.com/containerd/containerd/blob/main/docs/getting-started.md</a></li>
+</ul>
+<h3 id="C-常见报错对照表"><a href="#C-常见报错对照表" class="headerlink" title="C. 常见报错对照表"></a>C. 常见报错对照表</h3><table>
+<thead>
+<tr>
+<th>报错</th>
+<th>含义</th>
+<th>处理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>failed to connect to containerd</code></td>
+<td>daemon 不可达</td>
+<td>启动 containerd；检查 socket</td>
+</tr>
+<tr>
+<td><code>connection refused</code></td>
+<td>socket 未监听&#x2F;权限</td>
+<td><code>ss -lx</code>；确认用户</td>
+</tr>
+<tr>
+<td><code>permission denied</code>（socket）</td>
+<td>非 root&#x2F;非 containerd 组</td>
+<td>sudo 或加组</td>
+</tr>
+<tr>
+<td><code>not found: image ...</code></td>
+<td>镜像不存在&#x2F;命名空间错</td>
+<td>用 <code>-n k8s.io</code>；写全名</td>
+</tr>
+<tr>
+<td><code>failed to resolve reference</code></td>
+<td>拉取失败（网络&#x2F;认证）</td>
+<td>配加速&#x2F;仓库认证</td>
+</tr>
+<tr>
+<td><code>image is not used</code> 删除失败</td>
+<td>镜像仍被容器引用</td>
+<td>删容器后再删镜像</td>
+</tr>
+<tr>
+<td><code>exec format error</code></td>
+<td>架构不匹配</td>
+<td>换 <code>--platform</code> 镜像</td>
+</tr>
+<tr>
+<td><code>failed to create shim task</code></td>
+<td>运行时&#x2F;快照&#x2F;权限问题</td>
+<td>journal 定位；查 runc 版本</td>
+</tr>
+<tr>
+<td><code>sandbox name already reserved</code></td>
+<td>sandbox 残留</td>
+<td><code>crictl rmp -f</code> 清理</td>
+</tr>
+<tr>
+<td><code>no space left on device</code></td>
+<td>磁盘满</td>
+<td>见 9.2 清理流程</td>
+</tr>
+<tr>
+<td><code>snapshot already exists</code></td>
+<td>同名快照冲突</td>
+<td>删旧容器&#x2F;快照再试</td>
+</tr>
+<tr>
+<td><code>unexpected EOF</code></td>
+<td>拉取中断</td>
+<td>重试&#x2F;换源&#x2F;加代理</td>
+</tr>
+</tbody></table>
+<h3 id="D-进阶自测清单"><a href="#D-进阶自测清单" class="headerlink" title="D. 进阶自测清单"></a>D. 进阶自测清单</h3><ul>
+<li><input disabled="" type="checkbox"> 能解释 containerd、shim、runc 三者的职责边界</li>
+<li><input disabled="" type="checkbox"> 会用 ctr&#x2F;crictl&#x2F;nerdctl 完成镜像与容器全生命周期操作</li>
+<li><input disabled="" type="checkbox"> 理解 k8s.io &#x2F; moby &#x2F; default 命名空间的区别</li>
+<li><input disabled="" type="checkbox"> 能配置镜像加速、私有仓库认证、sandbox 镜像</li>
+<li><input disabled="" type="checkbox"> 会排查 Pod ContainerCreating &#x2F; ErrImagePull &#x2F; 节点 NotReady</li>
+<li><input disabled="" type="checkbox"> 掌握磁盘爆满的处置流程与镜像 GC 原理</li>
+<li><input disabled="" type="checkbox"> 会配置 SystemdCgroup 并理解 cgroup 驱动一致性的坑</li>
+<li><input disabled="" type="checkbox"> 能完成 Docker 到 containerd 的迁移</li>
+<li><input disabled="" type="checkbox"> 理解 CRI&#x2F;CNI&#x2F;CSI 三大接口的分工</li>
+<li><input disabled="" type="checkbox"> 知道 rootless、seccomp、签名验证等安全手段</li>
+<li><input disabled="" type="checkbox"> 能编写基于 ctr&#x2F;crictl 的巡检脚本</li>
+<li><input disabled="" type="checkbox"> 能独立规划 containerd 节点的存储与容量监控</li>
+</ul>
+<blockquote>
+<p>学完本手册，你就掌握了云原生”运行时底座”。下一步建议深入 Kubernetes 控制面（kubelet、CRI、CNI 插件）与镜像供应链安全（签名、扫描、策略）。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/containerd/" class="category-chain-item">containerd</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/containerd/" class="print-no-link">#containerd</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>containerd 从入门到精通实战手册</div>
+      <div>https://blog.t-ao.cn/2026/08/03/containerd从入门到精通实战手册/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>TAO</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/02/Docker%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%E5%AE%9E%E6%88%98%E6%89%8B%E5%86%8C/" title="Docker 从入门到精通实战手册">
+                        <span class="hidden-mobile">Docker 从入门到精通实战手册</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://www.biibll.com" target="_blank" rel="nofollow noopener"><span>Blog Power by</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
