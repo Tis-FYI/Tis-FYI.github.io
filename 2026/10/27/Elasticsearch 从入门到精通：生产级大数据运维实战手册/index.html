@@ -1,0 +1,1291 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="TAO">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Elasticsearch 从入门到精通：生产级大数据运维实战手册 适用版本：Elasticsearch 7.x &#x2F; 8.x目标读者：中间件运维工程师、大数据平台运维工程师、SRE、后端架构师编写理念：拒绝晦涩的源码堆砌，全部从运维实战视角出发——用通俗的语言讲透底层原理，给出可直接复制执行的命令、生产级配置参数与故障应急 SOP。  手册结构概览本手册按照运维工程师的成长路径，分为四个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elasticsearch 从入门到精通：生产级大数据运维实战手册">
+<meta property="og:url" content="https://blog.t-ao.cn/2026/10/27/Elasticsearch%20%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%EF%BC%9A%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%A4%A7%E6%95%B0%E6%8D%AE%E8%BF%90%E7%BB%B4%E5%AE%9E%E6%88%98%E6%89%8B%E5%86%8C/index.html">
+<meta property="og:site_name" content="TAO&#39;s Blog">
+<meta property="og:description" content="Elasticsearch 从入门到精通：生产级大数据运维实战手册 适用版本：Elasticsearch 7.x &#x2F; 8.x目标读者：中间件运维工程师、大数据平台运维工程师、SRE、后端架构师编写理念：拒绝晦涩的源码堆砌，全部从运维实战视角出发——用通俗的语言讲透底层原理，给出可直接复制执行的命令、生产级配置参数与故障应急 SOP。  手册结构概览本手册按照运维工程师的成长路径，分为四个">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-10-27T03:18:34.000Z">
+<meta property="article:modified_time" content="2026-10-27T07:43:39.986Z">
+<meta property="article:author" content="TAO">
+<meta property="article:tag" content="Elasticsearch">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Elasticsearch 从入门到精通：生产级大数据运维实战手册 - TAO&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.t-ao.cn","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>IIRRR</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>常用站点</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Elasticsearch 从入门到精通：生产级大数据运维实战手册"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-10-27 11:18" pubdate>
+          2026年10月27日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          123 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Elasticsearch 从入门到精通：生产级大数据运维实战手册</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Elasticsearch-从入门到精通：生产级大数据运维实战手册"><a href="#Elasticsearch-从入门到精通：生产级大数据运维实战手册" class="headerlink" title="Elasticsearch 从入门到精通：生产级大数据运维实战手册"></a>Elasticsearch 从入门到精通：生产级大数据运维实战手册</h1><blockquote>
+<p><strong>适用版本</strong>：Elasticsearch 7.x &#x2F; 8.x<br><strong>目标读者</strong>：中间件运维工程师、大数据平台运维工程师、SRE、后端架构师<br><strong>编写理念</strong>：拒绝晦涩的源码堆砌，全部从<strong>运维实战视角</strong>出发——用通俗的语言讲透底层原理，给出可直接复制执行的命令、生产级配置参数与故障应急 SOP。</p>
+</blockquote>
+<h2 id="手册结构概览"><a href="#手册结构概览" class="headerlink" title="手册结构概览"></a>手册结构概览</h2><p>本手册按照运维工程师的成长路径，分为四个阶段共八个章节：</p>
+<table>
+<thead>
+<tr>
+<th align="left">阶段</th>
+<th align="left">章节</th>
+<th align="left">核心解决的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>第一阶段：入门筑基</strong></td>
+<td align="left">第一章：运维视角下的核心概念与架构<br>第二章：生产级集群规划与标准化部署</td>
+<td align="left">搞懂 ES 底层怎么存数据、为什么叫“近实时”、节点角色怎么拆、服务器怎么选型、OS 和 JVM 怎么调优才不会上线即崩。</td>
+</tr>
+<tr>
+<td align="left"><strong>第二阶段：日常管家</strong></td>
+<td align="left">第三章：高频 CAT 与 Cluster API 速查实战<br>第四章：索引生命周期管理（ILM）与分片治理</td>
+<td align="left">掌握每天必用的巡检命令、看懂集群健康状态、解决分片多大合适、实现冷热数据自动流转与过期自动清理。</td>
+</tr>
+<tr>
+<td align="left"><strong>第三阶段：进阶变更</strong></td>
+<td align="left">第五章：集群变更、扩缩容、滚动重启与升级 SOP<br>第六章：数据备份与灾难恢复（Snapshot &amp; Restore）</td>
+<td align="left">做到变更零事故：重启节点不丢数据、安全下线机器、解锁磁盘满导致的索引只读、建立自动化快照防删库。</td>
+</tr>
+<tr>
+<td align="left"><strong>第四阶段：精通排障</strong></td>
+<td align="left">第七章：性能调优与深度排障指南<br>第八章：生产故障应急预案（Runbook）与监控体系</td>
+<td align="left">榨干硬件写入与查询极限、读懂熔断器与线程池报错、手握 CPU 100% &#x2F; OOM &#x2F; 集群变 Red 的在线抢救手册。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第一章：初识-Elasticsearch-——-运维视角下的核心概念与架构（入门篇）"><a href="#第一章：初识-Elasticsearch-——-运维视角下的核心概念与架构（入门篇）" class="headerlink" title="第一章：初识 Elasticsearch —— 运维视角下的核心概念与架构（入门篇）"></a>第一章：初识 Elasticsearch —— 运维视角下的核心概念与架构（入门篇）</h2><p>很多运维同学刚接触 Elasticsearch（以下简称 ES）时，容易被一堆专有名词绕晕。其实，你只需要把它看作一个<strong>自动分库分表、自带主从高可用、并且专门针对“按词查找”做了极致优化的分布式文件存储系统</strong>。</p>
+<h3 id="1-1-用“新华字典”和“分布式数据库”秒懂核心概念"><a href="#1-1-用“新华字典”和“分布式数据库”秒懂核心概念" class="headerlink" title="1.1 用“新华字典”和“分布式数据库”秒懂核心概念"></a>1.1 用“新华字典”和“分布式数据库”秒懂核心概念</h3><h4 id="（1）倒排索引（Inverted-Index）与正排列存（Doc-Values）"><a href="#（1）倒排索引（Inverted-Index）与正排列存（Doc-Values）" class="headerlink" title="（1）倒排索引（Inverted Index）与正排列存（Doc Values）"></a>（1）倒排索引（Inverted Index）与正排列存（Doc Values）</h4><ul>
+<li><strong>为什么 MySQL 查 <code>LIKE &#39;%报错%&#39;</code> 慢，而 ES 快？</strong><ul>
+<li><strong>MySQL（正排遍历）</strong>：就像一本书没有目录，你要找包含“连接超时”的句子，只能从第 1 页翻到第 1000 页，逐行扫描（全表扫描）。</li>
+<li><strong>ES 倒排索引（专门用于搜索过滤）</strong>：就像《新华字典》的检字表。ES 在数据写入时，先把一句话拆成词（分词 Term），建一张“词 -&gt; 包含该词的文档 ID 列表”的映射表。你搜“连接超时”，ES 直接查目录拿到文档 ID，耗时仅几毫秒。</li>
+<li><strong>ES Doc Values（专门用于排序和聚合 <code>agg</code>）</strong>：光有倒排索引还不够。如果老板要按“响应耗时”排序或统计每个服务报错次数，倒排索引就反而不方便了。于是 ES 在写入时还会默认生成一份<strong>列式存储（Doc Values）</strong>，把所有文档的<strong>同一个字段</strong>紧凑地存在磁盘上，配合操作系统的页缓存（Page Cache），实现极速聚合与排序。</li>
+<li><strong>运维启示</strong>：ES 之所以吃磁盘、吃内存，是因为你写进去一份 JSON 数据，ES 在底层帮你存了至少三份核心结构：<strong>原始 JSON（<code>_source</code>）</strong> + <strong>倒排索引（用于搜）</strong> + <strong>Doc Values（用于算）</strong>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="（2）逻辑概念-vs-物理落地（运维最核心的认知）"><a href="#（2）逻辑概念-vs-物理落地（运维最核心的认知）" class="headerlink" title="（2）逻辑概念 vs 物理落地（运维最核心的认知）"></a>（2）逻辑概念 vs 物理落地（运维最核心的认知）</h4><p>以前教程总喜欢拿 ES 和 MySQL 做对比，但对运维来说，理解**“逻辑名称”与“磁盘上的物理实体”**的对应关系更为关键：</p>
+<table>
+<thead>
+<tr>
+<th align="left">核心概念</th>
+<th align="left">通俗解释（运维视角）</th>
+<th align="left">物理上到底是什么？</th>
+<th align="left">运维核心关注点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Document（文档）</strong></td>
+<td align="left">一条日志记录或一条商品数据（JSON 格式）。</td>
+<td align="left">存储在分片内部的一条记录。</td>
+<td align="left">单条文档不宜过大（建议控制在 KB 级，避免几十 MB 的大字段写入）。</td>
+</tr>
+<tr>
+<td align="left"><strong>Index（索引）</strong></td>
+<td align="left">具有相同业务属性的数据集合（比如 <code>nginx-access-2026.10.14</code>）。</td>
+<td align="left"><strong>纯逻辑概念（虚拟文件夹）</strong>，本身不直接对应单个物理文件，由多个 Shard 拼装而成。</td>
+<td align="left">按天&#x2F;按大小滚动创建，千万不能把全年几十 TB 日志塞进同一个 Index。</td>
+</tr>
+<tr>
+<td align="left"><strong>Shard（分片）</strong></td>
+<td align="left">把一个大 Index 水平切分成多个小块，分布到不同机器上并行读写。</td>
+<td align="left"><strong>真正的物理干活单元！</strong> 每一个 Shard 本质上就是一个独立的 <strong>Apache Lucene 实例</strong>，在 Linux 磁盘上对应一个独立的文件夹。</td>
+<td align="left"><strong>分片数过多会导致集群崩溃（分片爆炸）</strong>；单个分片建议控制在 <strong>20GB ~ 50GB</strong>。</td>
+</tr>
+<tr>
+<td align="left"><strong>Primary Shard（主分片）</strong></td>
+<td align="left">负责接收写请求的分片，创建索引时数量固定。</td>
+<td align="left">物理 Lucene 目录。</td>
+<td align="left"><strong>一旦创建索引，主分片数量不可直接修改</strong>（改数量必须重建索引 Reindex）。</td>
+</tr>
+<tr>
+<td align="left"><strong>Replica Shard（副本分片）</strong></td>
+<td align="left">主分片的完整拷贝，负责高可用容灾和分担读请求。</td>
+<td align="left">物理 Lucene 目录（绝对不会和对应的主分片放在同一个节点上）。</td>
+<td align="left">副本数量可以<strong>随时动态在线修改</strong>（如紧急扩容读能力，或大批量写入时临时置为 0）。</td>
+</tr>
+<tr>
+<td align="left"><strong>Segment（段）</strong></td>
+<td align="left">一个 Shard 内部还会继续拆分成多个小文件块，叫做 Segment。</td>
+<td align="left">Lucene 文件夹下的 <code>.cfs</code> &#x2F; <code>.doc</code> &#x2F; <code>.tim</code> 等底层文件，<strong>具有不可变性（Immutable）</strong>。</td>
+<td align="left">段越多，查询越慢、越耗内存；后台会自动执行 <strong>Segment Merge（段合并）</strong>，极其消耗磁盘 I&#x2F;O 和 CPU。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="1-2-节点角色全景解析与生产拆分原则"><a href="#1-2-节点角色全景解析与生产拆分原则" class="headerlink" title="1.2 节点角色全景解析与生产拆分原则"></a>1.2 节点角色全景解析与生产拆分原则</h3><p>在测试环境里，一台机器往往身兼数职（既是裁判又是运动员）。但在生产环境中，如果不做角色隔离，一次复杂的聚合查询把数据节点内存打爆，就会连带导致集群主节点（Master）失联，进而引发全集群雪崩。</p>
+<table>
+<thead>
+<tr>
+<th align="left">节点角色（8.x 配置名）</th>
+<th align="left">7.x 对应配置</th>
+<th align="left">角色职责通俗解读</th>
+<th align="left">硬件配置偏好</th>
+<th align="left">生产环境部署建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Master-eligible（主候选节点）</strong></td>
+<td align="left"><code>node.master: true</code></td>
+<td align="left"><strong>集群大脑&#x2F;裁判</strong>。只负责管理集群元数据（有哪些索引、Schema 是什么、哪个分片在哪台机器上），<strong>绝不处理具体的文档读写</strong>。</td>
+<td align="left">低配即可（如 4C&#x2F;8G 或 8C&#x2F;16G），磁盘要求低，但网络必须极度稳定。</td>
+<td align="left"><strong>中大型集群必须独立部署 3 台专用 Master 节点</strong>（奇数台，防脑裂）。</td>
+</tr>
+<tr>
+<td align="left"><strong>Data（数据节点 &#x2F; 热温冷分层）</strong></td>
+<td align="left"><code>node.data: true</code></td>
+<td align="left"><strong>苦力运动员</strong>。负责存分片数据、执行倒排索引构建、全文检索和聚合计算。在 7.10+&#x2F;8.x 中细分为：<code>data_hot</code>（热）、<code>data_warm</code>（温）、<code>data_cold</code>（冷）、<code>data_content</code>（内容）。</td>
+<td align="left"><strong>高配</strong>（如 16C~32C &#x2F; 64G &#x2F; NVMe SSD 大盘）。</td>
+<td align="left">核心计算与存储主力，按数据生命周期划分热节点（SSD）与温冷节点（大容量 HDD）。</td>
+</tr>
+<tr>
+<td align="left"><strong>Coordinating Only（仅协调节点）</strong></td>
+<td align="left"><code>master/data/ingest</code> 全设为 <code>false</code></td>
+<td align="left"><strong>智能网关&#x2F;负载均衡器</strong>。接收客户端请求，把请求转发给对应的数据节点，等数据节点算完后再汇总结果返回给客户端。</td>
+<td align="left">中高配 CPU 与内存（32G），无需大磁盘。</td>
+<td align="left">当业务有大量复杂聚合查询时，建议部署 2~3 台独立协调节点，防止汇聚结果时拖垮数据节点。</td>
+</tr>
+<tr>
+<td align="left"><strong>Ingest（预处理节点）</strong></td>
+<td align="left"><code>node.ingest: true</code></td>
+<td align="left"><strong>数据清洗工</strong>。在数据真正落盘前，执行 Pipeline 管道（比如用正则切分日志、解析 IP 地理位置、转换字段类型），替代部分 Logstash 功能。</td>
+<td align="left">CPU 密集型（正则解析耗 CPU），无需大磁盘。</td>
+<td align="left">如重度使用 Ingest Pipeline，可与协调节点合并部署为网关层。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="1-3-数据写入与查询的底层全链路（理解“近实时-NRT”）"><a href="#1-3-数据写入与查询的底层全链路（理解“近实时-NRT”）" class="headerlink" title="1.3 数据写入与查询的底层全链路（理解“近实时 NRT”）"></a>1.3 数据写入与查询的底层全链路（理解“近实时 NRT”）</h3><p>面试和排障最常问的问题：<strong>“为什么数据写进 ES 后，要过 1 秒才能搜到？为什么不能立刻落盘？”</strong> 作为运维，看懂下面这四个动作，你就彻底掌握了 ES 性能调优的命门：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">[客户端写入请求] <br>      │<br>      ▼<br><span class="hljs-number">1</span>. 写入内存 Indexing <span class="hljs-keyword">Buffer </span> +  追加写磁盘 Translog（防断电丢数据）<br>      │  (此时数据在内存 <span class="hljs-keyword">Buffer </span>里，还不能被搜索！)<br>      │<br>      ├──► 每隔 <span class="hljs-number">1</span> 秒（refresh_interval）触发 【Refresh】<br>      │         │<br>      │         ▼<br>      │    内存 <span class="hljs-keyword">Buffer </span>数据生成新的 Segment（段），进入操作系统 Page <span class="hljs-keyword">Cache</span><br><span class="hljs-keyword"></span>      │    (★ 此时数据还没有真正 fsync 刷入物理磁盘，但已经可以被搜索到了！所以叫 <span class="hljs-number">1</span>秒近实时 NRT)<br>      │<br>      ├──► 每隔 <span class="hljs-number">5</span> 秒 或 每次请求（取决于配置）触发 【Translog 刷盘】<br>      │         │<br>      │         ▼<br>      │    Translog 执行 fsync 落入物理磁盘（如果机器断电，重启时靠重放 Translog 恢复 Page <span class="hljs-keyword">Cache </span>里未落盘的段）<br>      │<br>      └──► 每隔 <span class="hljs-number">30</span> 分钟 或 Translog 满 <span class="hljs-number">512</span>MB 触发 【Flush】<br>                │<br>                ▼<br>           将 OS Page <span class="hljs-keyword">Cache </span>中所有的 Segment 彻底 fsync 刷入物理磁盘，并清空旧的 Translog！<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>Refresh（刷新，默认 1 秒一次）</strong>：把内存 Buffer 里的文档变成一个新的小 Segment 放进操作系统缓存（OS Page Cache），让数据<strong>可被搜索</strong>。<ul>
+<li><em>运维调优锚点</em>：每次 Refresh 都会产生一个新 Segment。如果大批量导数据时还保持 1 秒一次，会产生海量碎片小文件。<strong>把 <code>refresh_interval</code> 调大到 <code>30s</code> 甚至 <code>60s</code>，写入吞吐量能直接翻倍！</strong></li>
+</ul>
+</li>
+<li><strong>Translog（事务日志，类似 MySQL 的 Redo Log）</strong>：因为 Refresh 只是把数据放进了操作系统的内存缓存（Page Cache），万一服务器断电，内存就丢了。所以每次写内存的同时，都会顺序写一份 Translog。默认是每个写请求都 <code>fsync</code> 落盘（最安全，但耗 I&#x2F;O），如果允许极端宕机丢失 5 秒数据，可改为异步刷盘（<code>index.translog.durability: async</code>）。</li>
+<li><strong>Flush（落盘，自动触发）</strong>：把操作系统缓存里的 Segment 真正调用 <code>fsync</code> 写死到物理硬盘上，同时删掉老的 Translog。运维通常不需要手动干预 Flush，但在<strong>重启节点前手动执行一次 <code>POST _flush/synced</code>（或直接刷盘）</strong>，可以让节点重启后的恢复速度提升数倍。</li>
+<li><strong>Merge（段合并，后台自动运行）</strong>：既然每秒 Refresh 都会产生一个小 Segment，一天下来岂不是有 86400 个小文件？文件句柄早爆了！所以 ES 后台有专门的合并线程，不断把十几个小 Segment 合并成一个大 Segment，并在合并过程中真正物理删除那些被标记为已删除（<code>Deleted Docs</code>）的数据。<ul>
+<li><em>运维调优锚点</em>：当你发现集群半夜没有业务请求，但磁盘 I&#x2F;O 和 CPU 突然飙高，90% 是在做大规模 Segment Merge。对于不再写入的历史日志索引（如昨天的日志），运维可以在凌晨低峰期手动调用 <strong><code>_forcemerge?max_num_segments=1</code></strong>，释放磁盘空间并大幅提升查询速度。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="第二章：生产级集群规划与标准化部署（入门到实战）"><a href="#第二章：生产级集群规划与标准化部署（入门到实战）" class="headerlink" title="第二章：生产级集群规划与标准化部署（入门到实战）"></a>第二章：生产级集群规划与标准化部署（入门到实战）</h2><p>在生产环境中，“默认配置跑起来”等于埋雷。95% 的线上初期故障，都是因为部署时漏掉了操作系统参数或分片容量算错了。</p>
+<h3 id="2-1-硬件选型与容量评估公式"><a href="#2-1-硬件选型与容量评估公式" class="headerlink" title="2.1 硬件选型与容量评估公式"></a>2.1 硬件选型与容量评估公式</h3><h4 id="（1）黄金容量评估公式（接手新业务必算）"><a href="#（1）黄金容量评估公式（接手新业务必算）" class="headerlink" title="（1）黄金容量评估公式（接手新业务必算）"></a>（1）黄金容量评估公式（接手新业务必算）</h4><p>假设业务方找到你：“我们要把网关日志接入 ES，每天原始日志大约 <strong>500GB</strong>，要求保留 <strong>14 天</strong>，请帮我评估需要多少台服务器？”</p>
+<p>请严格按以下四步计算：</p>
+<ol>
+<li><strong>计算膨胀系数（Inflation Factor）</strong>：JSON 明文变成 ES 索引后，加上倒排索引、Doc Values 和段文件开销，通常膨胀系数为 <strong>1.1 ~ 1.3</strong>（如果开启了复杂分词或多字段 multi-fields，按 1.5 算；若开启 <code>best_compression</code> 压缩，通常在 0.8 ~ 1.0）。我们按常规 <strong>1.2</strong> 计算。</li>
+<li><strong>计算副本倍数（Replica Factor）</strong>：生产环境为了高可用，默认配置 1 个副本（即 1 主 1 副，共 <strong>2 份</strong>数据）。</li>
+<li><strong>预留安全水位与后台开销（Overhead）</strong>：<ul>
+<li>ES 磁盘使用率达到 <strong>85%（Low Watermark）</strong> 就不再往该节点分配新分片；达到 <strong>90%</strong> 开始迁出分片。</li>
+<li>Segment Merge 时需要临时双倍空间，还要留出约 10% 的操作系统预留。</li>
+<li>因此，磁盘可用空间最多只能按 <strong>70%（即预留 30% 空闲）</strong> 来规划。</li>
+</ul>
+</li>
+<li><strong>总磁盘空间计算公式</strong>：<br>$$\text{总所需物理磁盘} &#x3D; \frac{\text{每日原始数据量} \times \text{保留天数} \times \text{膨胀系数} \times (1 + \text{副本数})}{0.7}$$<br>代入上面的例子：<br>$$\text{总所需物理磁盘} &#x3D; \frac{500\text{ GB} \times 14 \times 1.2 \times (1 + 1)}{0.7} &#x3D; \frac{16800\text{ GB}}{0.7} &#x3D; 24000\text{ GB} \approx 24\text{ TB}$$</li>
+<li><strong>节点数与内存推导</strong>：<ul>
+<li>单台 Data 节点的标准黄金配置是 <strong>16核 &#x2F; 64GB 内存 &#x2F; 4TB~6TB SSD</strong>。</li>
+<li>内存与磁盘的黄金配比（Memory-to-Disk Ratio）：<ul>
+<li><strong>高频实时检索&#x2F;热节点（Hot）</strong>：建议内存与磁盘比为 <strong>1 : 16 ~ 1 : 32</strong>（即 64GB 内存的机器，挂载 1TB ~ 2TB 数据）。</li>
+<li><strong>日志分析&#x2F;温冷节点（Warm&#x2F;Cold）</strong>：建议内存与磁盘比为 <strong>1 : 48 ~ 1 : 96</strong>（即 64GB 内存的机器，挂载 3TB ~ 6TB 数据）。</li>
+</ul>
+</li>
+<li>对于本例（日志场景 24TB 总盘），按单机 64GB 内存 + 4TB NVMe SSD 计算，部署 <strong>6 台数据节点 + 3 台轻量 Master 节点</strong> 即可稳妥支撑。</li>
+</ul>
+</li>
+</ol>
+<h4 id="（2）JVM-堆内存黄金法则：为什么绝对不能超过-31GB（32GB）？"><a href="#（2）JVM-堆内存黄金法则：为什么绝对不能超过-31GB（32GB）？" class="headerlink" title="（2）JVM 堆内存黄金法则：为什么绝对不能超过 31GB（32GB）？"></a>（2）JVM 堆内存黄金法则：为什么绝对不能超过 31GB（32GB）？</h4><p>这是运维铁律，包含两个核心原因：</p>
+<ol>
+<li><strong>必须留一半内存给操作系统（OS Page Cache）</strong>：ES 的底层引擎 Lucene 严重依赖 Linux 操作系统的文件缓存（Page Cache）来缓存 Segment 文件和 Doc Values。如果机器有 64GB 内存，你把 60GB 都分给 ES 的 JVM 堆，Lucene 读文件每次都要硬啃物理磁盘，性能会慢几十倍！因此，<strong>JVM Heap 最多分配物理内存的 50%</strong>。</li>
+<li><strong>不能突破 32GB 的指针压缩界限（Compressed OOPs）</strong>：在 64 位 JVM 中，只要堆内存小于 32GB，JVM 会自动开启“压缩普通对象指针（Compressed OOPs）”，用 32 位（4字节）寻址；一旦你配成 <code>32g</code> 或 <code>33g</code>，指针压缩失效，退化为 64 位（8字节）寻址，不仅白白浪费了约 15%~20% 的内存存指针，GC 停顿时间还会暴增！实际上，在分配达到 32GB 之前一点点（约 31.5GB），压缩就会失效。<ul>
+<li><strong>结论</strong>：无论物理机是 64GB 还是 128GB 内存，单实例 JVM 堆内存<strong>最大固定设置为 <code>-Xms30g -Xmx30g</code>（或 <code>31g</code>）</strong>。如果物理机有 256GB 内存怎么办？在一台物理机上通过 Docker&#x2F;K8s 或多目录部署 <strong>2~3 个 ES 节点实例</strong>。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="2-2-操作系统级必做调优清单（Linux-上线前基线检查）"><a href="#2-2-操作系统级必做调优清单（Linux-上线前基线检查）" class="headerlink" title="2.2 操作系统级必做调优清单（Linux 上线前基线检查）"></a>2.2 操作系统级必做调优清单（Linux 上线前基线检查）</h3><p>在启动 ES 之前，必须以 <code>root</code> 身份在所有节点执行以下系统调优，否则 ES 连启动自检（Bootstrap Checks）都过不了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 创建专用运行用户（ES 严禁使用 root 用户直接启动！）</span><br>groupadd elasticsearch<br>useradd -g elasticsearch -m elasticsearch<br><br><span class="hljs-comment"># 2. 彻底关闭 Swap 交换分区（生死线！）</span><br><span class="hljs-comment"># 原因：一旦 JVM 堆内存被交换到磁盘 Swap 上，一次 GC 原本只需 50ms，会被磁盘 I/O 拖慢到几分钟，直接导致节点失联脱群！</span><br>swapoff -a<br>sed -i <span class="hljs-string">&#x27;/swap/s/^/#/&#x27;</span> /etc/fstab<br><br><span class="hljs-comment"># 3. 调整内核参数 /etc/sysctl.conf</span><br><span class="hljs-built_in">cat</span> &gt;&gt; /etc/sysctl.conf &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span><br><span class="hljs-comment"># ES 使用 mmap 映射大量 Segment 文件，默认 65530 远不够用，必须调大到 262144</span><br>vm.max_map_count = 262144<br><span class="hljs-comment"># 尽量不使用 swap（配合 swapoff 双保险）</span><br>vm.swappiness = 1<br><span class="hljs-comment"># 降低 TCP keepalive 探测时间，加快死连接回收（防止防火墙静默掐断空闲长连接）</span><br>net.ipv4.tcp_keepalive_time = 600<br>net.ipv4.tcp_keepalive_intvl = 30<br>net.ipv4.tcp_keepalive_probes = 3<br><span class="hljs-comment"># 降低 TCP 重传次数（默认 15 次约耗时 15 分钟，ES 节点宕机时会导致集群选主或剔除节点卡住十来分钟，建议调为 5）</span><br>net.ipv4.tcp_retries2 = 5<br>EOF<br>sysctl -p<br><br><span class="hljs-comment"># 4. 调整用户资源限制 /etc/security/limits.conf</span><br><span class="hljs-built_in">cat</span> &gt;&gt; /etc/security/limits.conf &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span><br>elasticsearch soft nofile 65536<br>elasticsearch hard nofile 65536<br>elasticsearch soft <span class="hljs-built_in">nproc</span>  4096<br>elasticsearch hard <span class="hljs-built_in">nproc</span>  4096<br>elasticsearch soft memlock unlimited<br>elasticsearch hard memlock unlimited<br>EOF<br><br><span class="hljs-comment"># 5. 关闭透明大页（Transparent Huge Pages, THP）</span><br><span class="hljs-comment"># 原因：开启 THP 会导致内存碎片整理时出现不可预测的 CPU 尖刺和延迟抖动</span><br><span class="hljs-built_in">echo</span> never &gt; /sys/kernel/mm/transparent_hugepage/enabled<br><span class="hljs-built_in">echo</span> never &gt; /sys/kernel/mm/transparent_hugepage/defrag<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>磁盘挂载建议</strong>：数据盘格式化建议使用 <code>xfs</code> 或 <code>ext4</code>，在 <code>/etc/fstab</code> 中挂载时务必加上 <code>noatime</code> 参数（例如 <code>defaults,noatime</code>），禁止每次读取文件时更新访问时间戳，可显著减少无意义的磁盘写 I&#x2F;O。</p>
+</blockquote>
+<hr>
+<h3 id="2-3-JVM-参数调优实战（config-jvm-options-d-custom-options）"><a href="#2-3-JVM-参数调优实战（config-jvm-options-d-custom-options）" class="headerlink" title="2.3 JVM 参数调优实战（config/jvm.options.d/custom.options）"></a>2.3 JVM 参数调优实战（<code>config/jvm.options.d/custom.options</code>）</h3><p>在 ES 7.x 后期及 8.x 中，官方强烈建议不要直接修改主文件 <code>config/jvm.options</code>，而是在 <code>config/jvm.options.d/</code> 目录下新建一个 <code>heap.options</code> 文件（升级时不会被覆盖）：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment">## 1. 堆内存大小：Xms 和 Xmx 必须完全相等，防止运行期动态扩缩堆引发停顿</span><br><span class="hljs-comment">## 64G 物理内存机器设置为 30g（切勿超过 31g）</span><br>-Xms30g<br>-Xmx30g<br><br><span class="hljs-comment">## 2. 垃圾回收器：JDK 11/17/21（ES 7.x/8.x 内置 JDK）默认且强烈推荐使用 G1GC</span><br><span class="hljs-comment">## 对于大堆内存（&gt;= 16GB），G1GC 比老旧的 CMS 停顿时间更可控</span><br>-XX:+UseG1GC<br>-XX:<span class="hljs-attr">G1ReservePercent</span>=<span class="hljs-number">25</span><br>-XX:<span class="hljs-attr">InitiatingHeapOccupancyPercent</span>=<span class="hljs-number">30</span><br>-XX:<span class="hljs-attr">MaxGCPauseMillis</span>=<span class="hljs-number">200</span><br><br><span class="hljs-comment">## 3. OOM 保护与现场保留（故障复盘救命配置）</span><br>-XX:+HeapDumpOnOutOfMemoryError<br>-XX:<span class="hljs-attr">HeapDumpPath</span>=/data/elasticsearch/logs/heapdump.hprof<br>-XX:+ExitOnOutOfMemoryError<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-4-elasticsearch-yml-生产级核心配置模板与详解"><a href="#2-4-elasticsearch-yml-生产级核心配置模板与详解" class="headerlink" title="2.4 elasticsearch.yml 生产级核心配置模板与详解"></a>2.4 <code>elasticsearch.yml</code> 生产级核心配置模板与详解</h3><p>以下是一个包含 <strong>3 台专用 Master + N 台 Data 节点</strong> 的生产环境标准配置模板（以某台热数据节点 <code>es-data-hot-01</code> 为例，同时标注了专用 Master 的差异点）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># ======================== 1. 集群与节点标识 ========================</span><br><span class="hljs-attr">cluster.name:</span> <span class="hljs-string">prod-log-cluster</span><br><span class="hljs-attr">node.name:</span> <span class="hljs-string">es-data-hot-01</span><br><br><span class="hljs-comment"># 节点角色定义（ES 7.10+ / 8.x 新语法）</span><br><span class="hljs-comment"># - 如果是专用 Master 节点，写：node.roles: [ master ]</span><br><span class="hljs-comment"># - 如果是热数据节点，写：node.roles: [ data_hot, data_content, ingest ]</span><br><span class="hljs-comment"># - 如果是温数据节点，写：node.roles: [ data_warm ]</span><br><span class="hljs-comment"># - 如果是仅协调节点，写：node.roles: [ ]</span><br><span class="hljs-attr">node.roles:</span> [ <span class="hljs-string">data_hot</span>, <span class="hljs-string">data_content</span>, <span class="hljs-string">ingest</span> ]<br><br><span class="hljs-comment"># 机架感知属性（可选，高可用进阶：确保主分片和副本分片不会落在同一个物理机柜/可用区）</span><br><span class="hljs-attr">node.attr.rack_id:</span> <span class="hljs-string">rack_a</span><br><span class="hljs-attr">cluster.routing.allocation.awareness.attributes:</span> <span class="hljs-string">rack_id</span><br><br><span class="hljs-comment"># ======================== 2. 存储路径与内存锁定 ====================</span><br><span class="hljs-comment"># 数据目录支持配置多个路径（挂载多块独立物理盘时用逗号分隔，但注意：如果一块盘坏了且未做 RAID，整个节点上的分片都会受损）</span><br><span class="hljs-attr">path.data:</span> <span class="hljs-string">/data1/es_data,/data2/es_data</span><br><span class="hljs-attr">path.logs:</span> <span class="hljs-string">/data1/es_logs</span><br><br><span class="hljs-comment"># 锁定物理内存，严禁 OS 将 ES 内存交换到 Swap</span><br><span class="hljs-attr">bootstrap.memory_lock:</span> <span class="hljs-literal">true</span><br><br><span class="hljs-comment"># ======================== 3. 网络与集群发现（防脑裂） ==============</span><br><span class="hljs-attr">network.host:</span> <span class="hljs-number">10.10</span><span class="hljs-number">.20</span><span class="hljs-number">.11</span><br><span class="hljs-attr">http.port:</span> <span class="hljs-number">9200</span><br><span class="hljs-attr">transport.port:</span> <span class="hljs-number">9300</span><br><br><span class="hljs-comment"># 种子节点列表：填入所有【专用 Master 候选节点】的 IP:Port 即可，不要把几百台 Data 节点全写进去！</span><br><span class="hljs-attr">discovery.seed_hosts:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-number">10.10</span><span class="hljs-number">.20</span><span class="hljs-number">.1</span><span class="hljs-string">:9300</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-number">10.10</span><span class="hljs-number">.20</span><span class="hljs-number">.2</span><span class="hljs-string">:9300</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-number">10.10</span><span class="hljs-number">.20</span><span class="hljs-number">.3</span><span class="hljs-string">:9300</span><br><br><span class="hljs-comment"># 集群首次引导选主列表：</span><br><span class="hljs-comment"># 【极其重要】仅在集群第一次全新启动时配置 3 台 Master 的 node.name；</span><br><span class="hljs-comment"># 一旦集群首次启动成功并形成状态后，建议在所有节点的配置文件中注释掉此行！</span><br><span class="hljs-attr">cluster.initial_master_nodes:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">es-master-01</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">es-master-02</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">es-master-03</span><br><br><span class="hljs-comment"># ======================== 4. 安全与跨域配置 ========================</span><br><span class="hljs-comment"># 生产环境强烈建议开启 xpack 安全认证（ES 8.x 默认自动开启）</span><br><span class="hljs-attr">xpack.security.enabled:</span> <span class="hljs-literal">true</span><br><span class="hljs-attr">xpack.security.transport.ssl.enabled:</span> <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>运维防坑指南：7.x &#x2F; 8.x 还需要配 <code>discovery.zen.minimum_master_nodes</code> 防脑裂吗？</strong><br><strong>不需要了！</strong> 在 ES 6.x 及以前，如果忘记配 <code>(N/2)+1</code>，网络抖动就会出现“脑裂（Split-Brain，产生两个 Master 导致数据错乱）”。从 <strong>ES 7.0 开始</strong>，ES 重写了分布式共识算法，内置了自动计算多数派（Quorum）的机制，旧参数已彻底废弃。你只需要保证专用 Master 候选节点数量是 <strong>奇数（3 台或 5 台，切勿配 2 台！）</strong>，ES 会自动管理法定投票人数。</p>
+</blockquote>
+<hr>
+<h2 id="第三章：日常运维高频-CAT-与-Cluster-API-速查实战（中级篇）"><a href="#第三章：日常运维高频-CAT-与-Cluster-API-速查实战（中级篇）" class="headerlink" title="第三章：日常运维高频 CAT 与 Cluster API 速查实战（中级篇）"></a>第三章：日常运维高频 CAT 与 Cluster API 速查实战（中级篇）</h2><p>进了生产环境，运维工程师每天打交道最多的就是 RESTful API。加上 <code>?v</code> 参数可以显示表头，加上 <code>?s=字段名:desc</code> 可以排序，加上 <code>?h=字段1,字段2</code> 可以只看关心的列。</p>
+<h3 id="3-1-集群健康度诊断（-cluster-health）"><a href="#3-1-集群健康度诊断（-cluster-health）" class="headerlink" title="3.1 集群健康度诊断（_cluster/health）"></a>3.1 集群健康度诊断（<code>_cluster/health</code>）</h3><p>每天早上巡检的第一条命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -u elastic:password -X GET <span class="hljs-string">&quot;http://10.10.20.11:9200/_cluster/health?pretty&quot;</span><br></code></pre></td></tr></table></figure>
+<p>重点看返回结果中的以下几个指标：</p>
+<table>
+<thead>
+<tr>
+<th align="left">状态 &#x2F; 字段</th>
+<th align="left">物理含义</th>
+<th align="left">运维处置级别</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong><code>status: green</code></strong></td>
+<td align="left">所有的**主分片（Primary）<strong>和</strong>副本分片（Replica）**都处于正常已分配（Started）状态。</td>
+<td align="left">健康，无需干预。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>status: yellow</code></strong></td>
+<td align="left">所有的<strong>主分片</strong>都正常（<strong>数据一滴没丢，读写完全正常</strong>），但有部分<strong>副本分片</strong>未分配（Unassigned）。最常见于：单节点测试环境配了 <code>number_of_replicas: 1</code>，或者某台数据节点刚重启正在恢复副本。</td>
+<td align="left"><strong>关注级</strong>。需查明副本为何没分出去，防止此时再挂一台机器升级为 Red。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>status: red</code></strong></td>
+<td align="left"><strong>有至少一个主分片丢失或未分配！</strong> 此时涉及该主分片的数据无法写入，查询结果也不完整。</td>
+<td align="left"><strong>P0 级紧急故障</strong>！必须立即排查是节点宕机、磁盘打满还是分片损坏。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>unassigned_shards</code></strong></td>
+<td align="left">未分配的分片数量。</td>
+<td align="left">正常集群应为 <code>0</code>。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>initializing_shards</code> &#x2F; <code>relocating_shards</code></strong></td>
+<td align="left">正在初始化恢复的分片数 &#x2F; 正在跨节点搬家的分片数。</td>
+<td align="left">若长时间卡住不动，需检查网络带宽与 <code>recovery</code> 限速参数。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>number_of_pending_tasks</code></strong></td>
+<td align="left">Master 节点排队等待处理的集群级任务数（如建索引、更新 Mapping、分片路由变更）。</td>
+<td align="left">正常应为 <code>0</code> 或个位数。若持续上百，说明 Master 节点不堪重负（常见于分片太多或动态 Mapping 失控）。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="3-2-cat-系列命令运维三板斧（可直接复制的实战组合拳）"><a href="#3-2-cat-系列命令运维三板斧（可直接复制的实战组合拳）" class="headerlink" title="3.2 _cat 系列命令运维三板斧（可直接复制的实战组合拳）"></a>3.2 <code>_cat</code> 系列命令运维三板斧（可直接复制的实战组合拳）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 查看所有节点的 CPU、内存、负载、角色与主节点（带 * 号的是当前 Elected Master）</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/nodes?v&amp;h=ip,name,node.role,master,heap.percent,ram.percent,cpu,load_1m,disk.used_percent&amp;s=heap.percent:desc&quot;</span><br><br><span class="hljs-comment"># 2. 查看各节点的磁盘使用率与剩余空间（排查磁盘不均衡）</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/allocation?v&amp;s=disk.percent:desc&quot;</span><br><br><span class="hljs-comment"># 3. 找出集群中占用空间最大的前 20 个索引</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/indices?v&amp;s=store.size:desc&quot;</span> | <span class="hljs-built_in">head</span> -n 21<br><br><span class="hljs-comment"># 4. 快速揪出所有状态为 red 或 yellow 的异常索引</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/indices?v&amp;health=red&quot;</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/indices?v&amp;health=yellow&quot;</span><br><br><span class="hljs-comment"># 5. 抓出所有未分配（UNASSIGNED）的分片及其最后未分配原因（最后一列直接告诉你为什么没分出去！）</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/shards?v&amp;h=index,shard,prirep,state,node,unassigned.reason&quot;</span> | grep UNASSIGNED<br><br><span class="hljs-comment"># 6. 查看写入（write）和查询（search）线程池是否有排队（queue）和拒绝（rejected）</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/thread_pool/write,search?v&amp;h=node_name,name,active,queue,rejected,completed&amp;s=rejected:desc&quot;</span><br><br><span class="hljs-comment"># 7. 查看正在进行的分片恢复/迁移进度（节点重启后看还要多久恢复 Green）</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/recovery?v&amp;active_only=true&amp;h=index,shard,time,type,stage,source_node,target_node,files_percent,bytes_percent&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-3-分片未分配（Unassigned-Shards）万金油诊断工具"><a href="#3-3-分片未分配（Unassigned-Shards）万金油诊断工具" class="headerlink" title="3.3 分片未分配（Unassigned Shards）万金油诊断工具"></a>3.3 分片未分配（Unassigned Shards）万金油诊断工具</h3><p>当你发现集群变成 <code>Yellow</code> 或 <code>Red</code>，有分片卡在 <code>UNASSIGNED</code> 状态时，<strong>千万不要盲目重启集群</strong>！直接运行下面这条官方神级诊断命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -u elastic:password -X GET <span class="hljs-string">&quot;http://10.10.20.11:9200/_cluster/allocation/explain?pretty&quot;</span><br></code></pre></td></tr></table></figure>
+<p>（如果你想查特定索引的特定分片，也可以传参：<code>-d &#39;&#123;&quot;index&quot;: &quot;my-log-2026.10.14&quot;, &quot;shard&quot;: 0, &quot;primary&quot;: false&#125;&#39;</code>）</p>
+<p>返回 JSON 中重点看 <strong><code>allocate_explanation</code></strong> 和每个节点的 <strong><code>deciders</code></strong> 列表。最常见的 5 种报错原因与秒级解法如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left"><code>explain</code> 返回的常见原因关键字</th>
+<th align="left">通俗翻译（为什么分不出去？）</th>
+<th align="left">一招制敌解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>the shard cannot be allocated to the same node on which a copy of the shard already exists</code></td>
+<td align="left">主分片和副本分片不能放在同一台机器上，而你现在只有 1 台机器（或节点数少于 <code>1 + 副本数</code>）。</td>
+<td align="left">将该索引副本数调小：<code>PUT /索引名/_settings &#123;&quot;index.number_of_replicas&quot;: 0&#125;</code>，或者扩容新节点。</td>
+</tr>
+<tr>
+<td align="left"><code>cluster.routing.allocation.enable is set to [primaries / none]</code></td>
+<td align="left">之前有运维做滚动重启时关闭了分片自动分配，重启完忘了打开！</td>
+<td align="left">重新开启自动分配：<code>PUT _cluster/settings &#123;&quot;persistent&quot;:&#123;&quot;cluster.routing.allocation.enable&quot;: null&#125;&#125;</code>。</td>
+</tr>
+<tr>
+<td align="left"><code>exceeds the cluster.routing.allocation.disk.watermark.low</code></td>
+<td align="left">节点的磁盘使用率超过了 85%（低水位线），拒绝接收新分片。</td>
+<td align="left">清理过期旧索引、扩容磁盘，或临时调高水位线阈值。</td>
+</tr>
+<tr>
+<td align="left"><code>reached the limit of [5] retries for allocation</code></td>
+<td align="left">分片在分配过程中连续失败了 5 次（比如当时网络闪断或内存瞬间不足），被系统挂起不再自动重试了。</td>
+<td align="left">故障解除后，触发一次重试：<code>POST /_cluster/reroute?retry_failed=true</code>。</td>
+</tr>
+<tr>
+<td align="left"><code>node does not match index setting [index.routing.allocation.require.data]</code></td>
+<td align="left">索引配置了冷热分层（比如要求分配到 <code>warm</code> 节点），但集群里根本没有打 <code>data_warm</code> 角色标签的节点。</td>
+<td align="left">检查节点角色配置或修改索引的 <code>routing.allocation.require</code> 策略。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第四章：索引生命周期管理（ILM）与分片治理（中级篇）"><a href="#第四章：索引生命周期管理（ILM）与分片治理（中级篇）" class="headerlink" title="第四章：索引生命周期管理（ILM）与分片治理（中级篇）"></a>第四章：索引生命周期管理（ILM）与分片治理（中级篇）</h2><p>如果说部署是盖房子，那么**分片与索引生命周期管理（ILM）**就是决定这个集群能安稳跑三年、还是三个月就崩盘的核心内功。</p>
+<h3 id="4-1-分片设计黄金法则（防“分片爆炸”与“大分片症”）"><a href="#4-1-分片设计黄金法则（防“分片爆炸”与“大分片症”）" class="headerlink" title="4.1 分片设计黄金法则（防“分片爆炸”与“大分片症”）"></a>4.1 分片设计黄金法则（防“分片爆炸”与“大分片症”）</h3><p>在生产环境中，关于分片有两句至理名言：</p>
+<ol>
+<li><strong>“一个分片不是免费的！”</strong> 每一个分片（无论里面只有 1 条数据还是 1 亿条数据），都是一个独立的 Lucene 实例，都会在内存中维护倒排索引词典（Term Dictionary &#x2F; FST）、占用文件描述符，并且 Master 节点必须管理它的路由状态。</li>
+<li><strong>经验黄金法则</strong>：<ul>
+<li><strong>单分片大小</strong>：控制在 <strong>20GB ~ 50GB</strong> 之间最佳（日志类冷数据最大不宜超过 50GB，高频搜索业务建议 15GB~30GB）。</li>
+<li><strong>单节点分片总数</strong>：每 <strong>1GB JVM Heap 内存，承载的分片数量不要超过 20 个</strong>。举例：一台配置了 <code>30GB</code> 堆内存的数据节点，其上挂载的分片总数建议控制在 <strong>600 个以内</strong>（ES 7.x+ 默认硬限制 <code>cluster.max_shards_per_node</code> 为 1000）。</li>
+</ul>
+</li>
+</ol>
+<h4 id="常见反面教材：分片爆炸（Oversharding）"><a href="#常见反面教材：分片爆炸（Oversharding）" class="headerlink" title="常见反面教材：分片爆炸（Oversharding）"></a>常见反面教材：分片爆炸（Oversharding）</h4><p>很多新手为 50 个微服务分别按天建索引，每个索引无脑配 <code>5主1副</code>（即每天新增 $50 \times 10 &#x3D; 500$ 个分片），其实每个微服务一天只有几 MB 日志。半年后，集群里有 <strong>9 万个几十 KB 的空壳小分片</strong>，导致 Master 节点内存撑爆、集群卡死！</p>
+<ul>
+<li><strong>治理手段</strong>：<ol>
+<li>小数据量索引合并（或按月建索引，配 <code>1主1副</code>）。</li>
+<li>彻底放弃“按固定自然日切分”，改用 <strong>ILM 按大小+时间自动滚动（Rollover）</strong>（比如满 150GB 或满 7 天才切新索引）。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="4-2-索引模板（Index-Template）与防止-Mapping-字段失控"><a href="#4-2-索引模板（Index-Template）与防止-Mapping-字段失控" class="headerlink" title="4.2 索引模板（Index Template）与防止 Mapping 字段失控"></a>4.2 索引模板（Index Template）与防止 Mapping 字段失控</h3><p>ES 默认开启了 <strong>Dynamic Mapping（动态映射）</strong>：只要研发往 JSON 里塞一个新字段，ES 就自动识别类型并加进 Mapping。如果研发不小心把用户 ID 或动态 URL 当成了 JSON 的 Key（比如 <code>&#123;&quot;user_1001&quot;: &quot;ok&quot;, &quot;user_1002&quot;: &quot;fail&quot;&#125;</code>），索引字段数会在几分钟内飙升上万，导致集群 Master 崩溃！</p>
+<p>生产环境必须使用 <strong>Composable Index Template（组件化索引模板）</strong> 进行强管控：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// PUT _index_template/template_prod_logs</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;index_patterns&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;prod-app-logs-*&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;priority&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">200</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;template&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;settings&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;number_of_shards&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">3</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;number_of_replicas&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;refresh_interval&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;10s&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;index.codec&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;best_compression&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;index.lifecycle.name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;policy_prod_logs_ilm&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;index.lifecycle.rollover_alias&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;prod-app-logs-write&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;index.mapping.total_fields.limit&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1000</span><br>    <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;mappings&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;dynamic&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;dynamic_templates&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>        <span class="hljs-punctuation">&#123;</span><br>          <span class="hljs-attr">&quot;strings_as_keywords&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>            <span class="hljs-attr">&quot;match_mapping_type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;string&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;mapping&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>              <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;keyword&quot;</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">&quot;ignore_above&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">256</span><br>            <span class="hljs-punctuation">&#125;</span><br>          <span class="hljs-punctuation">&#125;</span><br>        <span class="hljs-punctuation">&#125;</span><br>      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;properties&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;@timestamp&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;date&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;level&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;keyword&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;service_name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;keyword&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;trace_id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;keyword&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;cost_ms&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;long&quot;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;text&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;analyzer&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;standard&quot;</span> <span class="hljs-punctuation">&#125;</span><br>      <span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>模板亮点解析</strong>：</p>
+<ol>
+<li><strong><code>strings_as_keywords</code> 动态模板</strong>：默认情况下，ES 会把任何未知字符串同时映射为 <code>text</code>（分词全文检索）和 <code>.keyword</code>（精确匹配），白白浪费近一倍磁盘！通过上面的动态模板，把所有未显式声明的字符串默认只存为 <code>keyword</code>（且超过 256 字符不建索引），只有真正需要全文检索的 <code>message</code> 字段才显式指定为 <code>text</code>，<strong>直接省下 30%~40% 的磁盘与内存！</strong></li>
+<li><strong><code>index.codec: best_compression</code></strong>：启用 LZ4 换 Deflate（ZSTD）高压缩率算法，日志场景可再节省约 <strong>15%~25%</strong> 的磁盘空间，仅消耗极少量的 CPU。</li>
+</ol>
+</blockquote>
+<hr>
+<h3 id="4-3-ILM（索引生命周期管理）冷热温全流程自动化配置"><a href="#4-3-ILM（索引生命周期管理）冷热温全流程自动化配置" class="headerlink" title="4.3 ILM（索引生命周期管理）冷热温全流程自动化配置"></a>4.3 ILM（索引生命周期管理）冷热温全流程自动化配置</h3><p>运维最怕半夜两点被磁盘告警吵醒起床删日志。通过 ILM 策略，我们可以让 ES 自动完成以下流转：</p>
+<ul>
+<li><strong>Hot（热阶段）</strong>：当前正在写入的索引，放在 NVMe SSD 热节点上；当索引大小达到 <strong>120GB</strong>（3 个主分片，每个约 40GB）或写入满 <strong>1 天</strong>时，自动滚动（Rollover）生成新索引。</li>
+<li><strong>Warm（温阶段）</strong>：滚动下来的旧索引进入只读状态，满 2 天后自动迁移到普通 SATA SSD &#x2F; HDD 温节点，自动将 Segment 合并为 1 个（<code>forcemerge</code>），并将副本降为 1。</li>
+<li><strong>Delete（删除阶段）</strong>：满 <strong>14 天</strong>后，自动物理删除该索引释放磁盘。</li>
+</ul>
+<h4 id="第一步：创建-ILM-生命周期策略"><a href="#第一步：创建-ILM-生命周期策略" class="headerlink" title="第一步：创建 ILM 生命周期策略"></a>第一步：创建 ILM 生命周期策略</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// PUT _ilm/policy/policy_prod_logs_ilm</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;policy&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;phases&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;hot&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;min_age&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;0ms&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;actions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>          <span class="hljs-attr">&quot;rollover&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>            <span class="hljs-attr">&quot;max_size&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;120gb&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;max_primary_shard_size&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;40gb&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;max_age&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;1d&quot;</span><br>          <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-attr">&quot;set_priority&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;priority&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">100</span> <span class="hljs-punctuation">&#125;</span><br>        <span class="hljs-punctuation">&#125;</span><br>      <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;warm&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;min_age&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2d&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;actions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>          <span class="hljs-attr">&quot;readonly&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-attr">&quot;allocate&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>            <span class="hljs-attr">&quot;number_of_replicas&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;include&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;_tier_preference&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;data_warm,data_hot&quot;</span> <span class="hljs-punctuation">&#125;</span><br>          <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-attr">&quot;forcemerge&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>            <span class="hljs-attr">&quot;max_num_segments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><br>          <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-attr">&quot;set_priority&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;priority&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">50</span> <span class="hljs-punctuation">&#125;</span><br>        <span class="hljs-punctuation">&#125;</span><br>      <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;delete&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;min_age&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;14d&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;actions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>          <span class="hljs-attr">&quot;delete&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><span class="hljs-punctuation">&#125;</span><br>        <span class="hljs-punctuation">&#125;</span><br>      <span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="第二步：创建初始引导索引（Bootstrap-Index）并绑定写入别名"><a href="#第二步：创建初始引导索引（Bootstrap-Index）并绑定写入别名" class="headerlink" title="第二步：创建初始引导索引（Bootstrap Index）并绑定写入别名"></a>第二步：创建初始引导索引（Bootstrap Index）并绑定写入别名</h4><p>使用 Rollover 时，索引名称必须以 <code>-数字</code> 结尾（如 <code>-000001</code>），客户端永远只向别名 <code>prod-app-logs-write</code> 写入数据：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// PUT prod-app-logs-000001</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;aliases&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;prod-app-logs-write&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;is_write_index&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><br>    <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<p>此后，当 <code>prod-app-logs-000001</code> 写满 120GB 或满 1 天，ES 会自动创建 <code>prod-app-logs-000002</code>，并自动把 <code>prod-app-logs-write</code> 的 <code>is_write_index: true</code> 切换到 <code>000002</code> 上，全程对业务方完全透明！</p>
+<hr>
+<h3 id="4-4-索引平滑重建与零停机切换（Reindex-Alias）"><a href="#4-4-索引平滑重建与零停机切换（Reindex-Alias）" class="headerlink" title="4.4 索引平滑重建与零停机切换（Reindex + Alias）"></a>4.4 索引平滑重建与零停机切换（Reindex + Alias）</h3><p>正如前文所说：<strong>一个索引一旦建好，它的主分片数（<code>number_of_shards</code>）和已有字段的 Mapping 类型是绝对不能直接修改的！</strong><br>如果研发把 <code>order_id</code> 存成了 <code>long</code>，现在要改成 <code>keyword</code>，怎么实现<strong>业务零停机</strong>修改？</p>
+<p><strong>标准四步法（别名切换大法）</strong>：</p>
+<ol>
+<li><strong>日常规范</strong>：业务代码里查询和写入<strong>永远不要直接写死物理索引名</strong>（如 <code>orders_v1</code>），而是用别名（Alias）<code>orders_alias</code> 指向 <code>orders_v1</code>。</li>
+<li><strong>创建新索引</strong>：新建 <code>orders_v2</code>，配置好正确的新 Mapping 和主分片数。</li>
+<li><strong>后台执行 <code>_reindex</code> 数据迁移</strong>（加上 <code>wait_for_completion=false</code> 转为后台异步 Task，并加上 <code>requests_per_second</code> 限流防止打挂线上集群）：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -u elastic:password -X POST <span class="hljs-string">&quot;http://10.10.20.11:9200/_reindex?wait_for_completion=false&amp;requests_per_second=5000&quot;</span> -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">  &quot;source&quot;: &#123;</span><br><span class="hljs-string">    &quot;index&quot;: &quot;orders_v1&quot;,</span><br><span class="hljs-string">    &quot;size&quot;: 2000</span><br><span class="hljs-string">  &#125;,</span><br><span class="hljs-string">  &quot;dest&quot;: &#123;</span><br><span class="hljs-string">    &quot;index&quot;: &quot;orders_v2&quot;,</span><br><span class="hljs-string">    &quot;op_type&quot;: &quot;index&quot;</span><br><span class="hljs-string">  &#125;</span><br><span class="hljs-string">&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+（可以通过返回的任务 ID 执行 <code>GET _tasks/任务ID</code> 查看迁移进度）。</li>
+<li><strong>原子级切换别名（毫秒级完成，业务完全无感）</strong>：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// POST _aliases</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;actions&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;remove&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;index&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;orders_v1&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;alias&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;orders_alias&quot;</span> <span class="hljs-punctuation">&#125;</span> <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;add&quot;</span><span class="hljs-punctuation">:</span>    <span class="hljs-punctuation">&#123;</span> <span class="hljs-attr">&quot;index&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;orders_v2&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-attr">&quot;alias&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;orders_alias&quot;</span> <span class="hljs-punctuation">&#125;</span> <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<hr>
+<h2 id="第五章：集群变更、扩缩容、滚动重启与升级-SOP（进阶篇）"><a href="#第五章：集群变更、扩缩容、滚动重启与升级-SOP（进阶篇）" class="headerlink" title="第五章：集群变更、扩缩容、滚动重启与升级 SOP（进阶篇）"></a>第五章：集群变更、扩缩容、滚动重启与升级 SOP（进阶篇）</h2><h3 id="5-1-节点滚动重启（Rolling-Restart）标准操作流程"><a href="#5-1-节点滚动重启（Rolling-Restart）标准操作流程" class="headerlink" title="5.1 节点滚动重启（Rolling Restart）标准操作流程"></a>5.1 节点滚动重启（Rolling Restart）标准操作流程</h3><p><strong>为什么不能直接登录服务器敲 <code>systemctl restart elasticsearch</code>？</strong><br>如果你直接重启一台装有 500 个分片的数据节点，Master 发现该节点断联后，过了 1 分钟（默认 <code>index.unassigned.node_left.delayed_timeout</code>）就会认为这台机器彻底挂了，开始疯狂把这 500 个分片复制到其他机器上！全集群网络带宽和磁盘 I&#x2F;O 瞬间打满。等你 3 分钟后把这台机器启动起来，分片又往回搬，造成灾难性的“分片风暴（Shard Storm）”。</p>
+<p><strong>正确的生产级单节点滚动重启 6 步 SOP</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 【第 1 步】临时关闭副本分片自动均衡与重分配（只允许主分片分配）</span><br>curl -u elastic:password -X PUT <span class="hljs-string">&quot;http://10.10.20.11:9200/_cluster/settings&quot;</span> -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">  &quot;persistent&quot;: &#123;</span><br><span class="hljs-string">    &quot;cluster.routing.allocation.enable&quot;: &quot;primaries&quot;</span><br><span class="hljs-string">  &#125;</span><br><span class="hljs-string">&#125;&#x27;</span><br><br><span class="hljs-comment"># 【第 2 步】主动触发一次刷盘（Flush），清空 Translog，让节点重启后秒级恢复分片</span><br>curl -u elastic:password -X POST <span class="hljs-string">&quot;http://10.10.20.11:9200/_flush&quot;</span><br><br><span class="hljs-comment"># 【第 3 步】（可选，8.x/7.x 开启了 ML 机器学习时执行）暂停机器学习任务后，在目标节点停止 ES 服务</span><br>systemctl stop elasticsearch<br><br><span class="hljs-comment"># 【第 4 步】执行维护操作（如升级内核、修改配置、更换内存条），随后启动 ES 服务</span><br>systemctl start elasticsearch<br><br><span class="hljs-comment"># 【第 5 步】观察节点是否已重新加入集群（看到节点出现在列表中）</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/nodes?v&quot;</span><br><br><span class="hljs-comment"># 【第 6 步】重新开启全部分片自动分配，并等待集群恢复为 Green 状态后，再操作下一台节点！</span><br>curl -u elastic:password -X PUT <span class="hljs-string">&quot;http://10.10.20.11:9200/_cluster/settings&quot;</span> -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">  &quot;persistent&quot;: &#123;</span><br><span class="hljs-string">    &quot;cluster.routing.allocation.enable&quot;: null</span><br><span class="hljs-string">  &#125;</span><br><span class="hljs-string">&#125;&#x27;</span><br><span class="hljs-comment"># 持续观察直到 status 变回 green 且 unassigned_shards 为 0</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cluster/health?pretty&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-2-集群在线平滑缩容与节点安全下线（Decommission）-SOP"><a href="#5-2-集群在线平滑缩容与节点安全下线（Decommission）-SOP" class="headerlink" title="5.2 集群在线平滑缩容与节点安全下线（Decommission） SOP"></a>5.2 集群在线平滑缩容与节点安全下线（Decommission） SOP</h3><p>当某台机器硬件老化或云主机到期需要退订时，<strong>严禁直接关机</strong>！哪怕你配了 1 个副本，如果同时下线两台机器，主副分片同时掉线就会直接丢数据。</p>
+<p><strong>安全排空节点数据（Drain Node）的 3 步标准操作</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 【第 1 步】告诉集群：把 IP 为 10.10.20.18（或按 _name）的节点列入“分配黑名单”</span><br><span class="hljs-comment"># ES 会自动将该节点上的所有分片平滑搬迁到其他健康节点上，期间读写完全不受影响！</span><br>curl -u elastic:password -X PUT <span class="hljs-string">&quot;http://10.10.20.11:9200/_cluster/settings&quot;</span> -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">  &quot;transient&quot;: &#123;</span><br><span class="hljs-string">    &quot;cluster.routing.allocation.exclude._ip&quot;: &quot;10.10.20.18&quot;</span><br><span class="hljs-string">  &#125;</span><br><span class="hljs-string">&#125;&#x27;</span><br><br><span class="hljs-comment"># 【第 2 步】监控该节点上的分片数量是否已经降为 0</span><br><span class="hljs-comment"># 观察 shards 列变为 0，且没有任何 relocating_shards</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/allocation?v&quot;</span> | grep <span class="hljs-string">&quot;10.10.20.18&quot;</span><br><br><span class="hljs-comment"># 【第 3 步】确认该节点 shards 数量为 0 后，安全停止该节点的 ES 进程，并清空排除规则</span><br><span class="hljs-comment"># 在 10.10.20.18 上执行：systemctl stop elasticsearch</span><br><span class="hljs-comment"># 然后清理集群 exclude 设置：</span><br>curl -u elastic:password -X PUT <span class="hljs-string">&quot;http://10.10.20.11:9200/_cluster/settings&quot;</span> -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">  &quot;transient&quot;: &#123;</span><br><span class="hljs-string">    &quot;cluster.routing.allocation.exclude._ip&quot;: null</span><br><span class="hljs-string">  &#125;</span><br><span class="hljs-string">&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>运维提速小技巧</strong>：如果节点缩容或扩容时觉得分片搬家太慢（默认单节点限速 <code>40mb/s</code>、并发恢复数为 <code>2</code>），而你的机房是万兆网卡 + NVMe SSD，可以在低峰期动态调大恢复速度：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// PUT _cluster/settings</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;transient&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;indices.recovery.max_bytes_per_sec&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;200mb&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;cluster.routing.allocation.node_concurrent_recoveries&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">6</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure></blockquote>
+<hr>
+<h3 id="5-3-磁盘水位线（Watermark）告警与索引变“只读”解锁指南"><a href="#5-3-磁盘水位线（Watermark）告警与索引变“只读”解锁指南" class="headerlink" title="5.3 磁盘水位线（Watermark）告警与索引变“只读”解锁指南"></a>5.3 磁盘水位线（Watermark）告警与索引变“只读”解锁指南</h3><p>这是运维最常遇到的线上突发状况之一：业务突然报警说**“所有数据都写不进 ES 了，报错 <code>FORBIDDEN/12/index read-only / allow delete (api)</code> 或 <code>disk usage exceeded flood-stage watermark</code>”**。</p>
+<h4 id="（1）先看懂-ES-的三级磁盘保护水位线"><a href="#（1）先看懂-ES-的三级磁盘保护水位线" class="headerlink" title="（1）先看懂 ES 的三级磁盘保护水位线"></a>（1）先看懂 ES 的三级磁盘保护水位线</h4><p>ES 为了防止磁盘彻底写满（100%）导致 Lucene 索引文件损坏，设计了三道防线：</p>
+<table>
+<thead>
+<tr>
+<th align="left">水位线名称</th>
+<th align="left">参数名</th>
+<th align="left">默认阈值</th>
+<th align="left">触发后的集群行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>低水位线（Low）</strong></td>
+<td align="left"><code>cluster.routing.allocation.disk.watermark.low</code></td>
+<td align="left"><strong>85%</strong></td>
+<td align="left">该节点<strong>停止接收新建的分片或从其他节点迁入的分片</strong>（但已在上面的主分片仍可继续写入数据）。</td>
+</tr>
+<tr>
+<td align="left"><strong>高水位线（High）</strong></td>
+<td align="left"><code>cluster.routing.allocation.disk.watermark.high</code></td>
+<td align="left"><strong>90%</strong></td>
+<td align="left">ES 开始<strong>主动将该节点上的现有分片搬迁到其他磁盘空闲的节点</strong>上。</td>
+</tr>
+<tr>
+<td align="left"><strong>洪峰水位线（Flood Stage）</strong></td>
+<td align="left"><code>cluster.routing.allocation.disk.watermark.flood_stage</code></td>
+<td align="left"><strong>95%</strong></td>
+<td align="left"><strong>触发熔断级保护！</strong> 只要某个索引有任意一个分片落在这台超过 95% 的节点上，ES 就会将该索引强制锁死为<strong>只读模式（<code>read_only_allow_delete: true</code>）</strong>，禁止一切写入！</td>
+</tr>
+</tbody></table>
+<h4 id="（2）解锁“索引只读”的正确处理流程"><a href="#（2）解锁“索引只读”的正确处理流程" class="headerlink" title="（2）解锁“索引只读”的正确处理流程"></a>（2）解锁“索引只读”的正确处理流程</h4><ol>
+<li><strong>治标先治本</strong>：先通过 <code>DELETE /过期索引名</code> 清理无用历史数据，或者扩容磁盘，让节点磁盘使用率降到 85% 以下。</li>
+<li><strong>关于自动解锁与手动解锁</strong>：<ul>
+<li>在 <strong>ES 7.4 及以上版本</strong>中，当磁盘空间释放回到安全水位线以下后，ES 会自动解除 <code>read_only_allow_delete</code> 锁。</li>
+<li>如果处于旧版本，或者磁盘清理后锁仍未自动解开，执行以下 API 批量解锁所有索引：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -u elastic:password -X PUT <span class="hljs-string">&quot;http://10.10.20.11:9200/_all/_settings&quot;</span> -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">  &quot;index.blocks.read_only_allow_delete&quot;: null</span><br><span class="hljs-string">&#125;&#x27;</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><strong>大盘机器的水位线调优建议</strong>：如果单机挂了 10TB 磁盘，95% 意味着还剩 500GB 空间就被锁死，有点浪费。你可以把百分比改成<strong>绝对剩余字节值</strong>：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// PUT _cluster/settings</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;persistent&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;cluster.routing.allocation.disk.watermark.low&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;500gb&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;cluster.routing.allocation.disk.watermark.high&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;300gb&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;cluster.routing.allocation.disk.watermark.flood_stage&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;150gb&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<hr>
+<h2 id="第六章：数据备份与灾难恢复（Snapshot-Restore）（进阶篇）"><a href="#第六章：数据备份与灾难恢复（Snapshot-Restore）（进阶篇）" class="headerlink" title="第六章：数据备份与灾难恢复（Snapshot &amp; Restore）（进阶篇）"></a>第六章：数据备份与灾难恢复（Snapshot &amp; Restore）（进阶篇）</h2><p><strong>“副本（Replica）绝对不等于备份（Backup）！”</strong><br>如果研发写错脚本执行了 <code>DELETE /prod-orders*</code>，或者代码 Bug 污染了全表数据，主分片和副本分片会在同一毫秒内一起灰飞烟灭。唯一的后悔药就是 <strong>Snapshot（快照备份）</strong>。</p>
+<h3 id="6-1-快照底层原理：为什么-ES-备份这么快且省空间？"><a href="#6-1-快照底层原理：为什么-ES-备份这么快且省空间？" class="headerlink" title="6.1 快照底层原理：为什么 ES 备份这么快且省空间？"></a>6.1 快照底层原理：为什么 ES 备份这么快且省空间？</h3><p>ES 的快照备份是基于 <strong>Lucene Segment（段）级别</strong>的，并且<strong>天然全部是增量备份</strong>！</p>
+<ul>
+<li>因为 Segment 文件一旦生成就是**不可变（Immutable）**的。</li>
+<li>第一次拍快照时，ES 把所有 Segment 文件拷贝到远端仓库（如 S3&#x2F;MinIO&#x2F;NFS）。</li>
+<li>第二次拍快照时，ES 对比一下仓库，只拷贝<strong>上次快照之后新生成的 Segment 文件</strong>，之前已经备份过的 Segment 直接复用引用！因此日常定时拍快照对集群性能影响极小。</li>
+</ul>
+<hr>
+<h3 id="6-2-注册备份仓库与-SLM（快照生命周期管理）自动化实战"><a href="#6-2-注册备份仓库与-SLM（快照生命周期管理）自动化实战" class="headerlink" title="6.2 注册备份仓库与 SLM（快照生命周期管理）自动化实战"></a>6.2 注册备份仓库与 SLM（快照生命周期管理）自动化实战</h3><p>生产环境推荐使用 <strong>S3 兼容对象存储（阿里云 OSS &#x2F; 腾讯云 COS &#x2F; AWS S3 &#x2F; 自建 MinIO）</strong> 或 <strong>共享文件系统（NFS &#x2F; CephFS）</strong> 作为备份仓库。以下以共享挂载目录 <code>/mnt/es_backup</code> 为例（注意：如果用 <code>fs</code> 类型，<strong>集群内所有 Master 和 Data 节点都必须挂载同一个共享目录</strong>，并在 <code>elasticsearch.yml</code> 中配置 <code>path.repo: [&quot;/mnt/es_backup&quot;]</code>）：</p>
+<h4 id="第一步：注册并校验备份仓库"><a href="#第一步：注册并校验备份仓库" class="headerlink" title="第一步：注册并校验备份仓库"></a>第一步：注册并校验备份仓库</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 注册名为 my_fs_backup 的仓库，并限制备份/恢复速率为 100mb/s 防止打满业务网卡</span><br>curl -u elastic:password -X PUT <span class="hljs-string">&quot;http://10.10.20.11:9200/_snapshot/my_fs_backup&quot;</span> -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">  &quot;type&quot;: &quot;fs&quot;,</span><br><span class="hljs-string">  &quot;settings&quot;: &#123;</span><br><span class="hljs-string">    &quot;location&quot;: &quot;/mnt/es_backup/prod_cluster&quot;,</span><br><span class="hljs-string">    &quot;compress&quot;: true,</span><br><span class="hljs-string">    &quot;max_snapshot_bytes_per_sec&quot;: &quot;100mb&quot;,</span><br><span class="hljs-string">    &quot;max_restore_bytes_per_sec&quot;: &quot;100mb&quot;</span><br><span class="hljs-string">  &#125;</span><br><span class="hljs-string">&#125;&#x27;</span><br><br><span class="hljs-comment"># 2. 【必做】校验所有节点是否都能正常读写该仓库！</span><br>curl -u elastic:password -X POST <span class="hljs-string">&quot;http://10.10.20.11:9200/_snapshot/my_fs_backup/_verify?pretty&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="第二步：配置-SLM（Snapshot-Lifecycle-Management）全自动定时备份与清理"><a href="#第二步：配置-SLM（Snapshot-Lifecycle-Management）全自动定时备份与清理" class="headerlink" title="第二步：配置 SLM（Snapshot Lifecycle Management）全自动定时备份与清理"></a>第二步：配置 SLM（Snapshot Lifecycle Management）全自动定时备份与清理</h4><p>无需再写 Linux Crontab 脚本，直接用内置的 SLM 实现“每天凌晨 01:30 自动备份核心索引，保留最近 15 天的快照，超期自动清理”：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// PUT _slm/policy/daily_core_backup</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;schedule&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;0 30 1 * * ?&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;&lt;core-snap-&#123;now/d&#125;&gt;&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;repository&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;my_fs_backup&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;config&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;indices&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;prod-orders-*&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;prod-users-*&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;ignore_unavailable&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;include_global_state&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;retention&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;expire_after&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;15d&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;min_count&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">5</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;max_count&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">30</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="第三步：灾难恢复实战（安全恢复法：重命名恢复-校验后切流）"><a href="#第三步：灾难恢复实战（安全恢复法：重命名恢复-校验后切流）" class="headerlink" title="第三步：灾难恢复实战（安全恢复法：重命名恢复 + 校验后切流）"></a>第三步：灾难恢复实战（安全恢复法：重命名恢复 + 校验后切流）</h4><p>假设线上索引 <code>prod-orders-000001</code> 数据被误改，我们需要从昨晚的快照 <code>core-snap-2026.10.13-xxxx</code> 中恢复。<br><strong>切忌直接覆盖线上同名索引</strong>！最稳妥的做法是恢复成一个带 <code>_restored</code> 后缀的新索引，核对数据无误后再切别名：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -u elastic:password -X POST <span class="hljs-string">&quot;http://10.10.20.11:9200/_snapshot/my_fs_backup/core-snap-2026.10.13-xxxx/_restore&quot;</span> -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">  &quot;indices&quot;: &quot;prod-orders-000001&quot;,</span><br><span class="hljs-string">  &quot;rename_pattern&quot;: &quot;(.+)&quot;,</span><br><span class="hljs-string">  &quot;rename_replacement&quot;: &quot;$1_restored&quot;,</span><br><span class="hljs-string">  &quot;include_aliases&quot;: false</span><br><span class="hljs-string">&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第七章：性能调优与深度排障指南（精通篇）"><a href="#第七章：性能调优与深度排障指南（精通篇）" class="headerlink" title="第七章：性能调优与深度排障指南（精通篇）"></a>第七章：性能调优与深度排障指南（精通篇）</h2><p>当集群规模达到上百 TB、写入峰值每秒几十万条（几十万 EPS）时，默认参数就会遇到瓶颈。本章总结了生产验证过的性能压榨方案。</p>
+<h3 id="7-1-写入性能极致调优（高吞吐日志-大促写入场景）"><a href="#7-1-写入性能极致调优（高吞吐日志-大促写入场景）" class="headerlink" title="7.1 写入性能极致调优（高吞吐日志&#x2F;大促写入场景）"></a>7.1 写入性能极致调优（高吞吐日志&#x2F;大促写入场景）</h3><table>
+<thead>
+<tr>
+<th align="left">调优维度</th>
+<th align="left">具体配置 &#x2F; 操作方法</th>
+<th align="left">为什么能提升写入性能？</th>
+<th align="left">生产取舍与风险提示</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>1. 调大 Refresh 间隔</strong></td>
+<td align="left"><code>index.refresh_interval: &quot;30s&quot;</code>（全量导历史数据时甚至可临时设为 <code>&quot;-1&quot;</code> 关闭刷新，导完再改回）</td>
+<td align="left">大幅减少每秒生成微型 Segment 的次数，降低后续 Segment Merge 的 I&#x2F;O 压力，写入吞吐量可提升 <strong>50% ~ 100%</strong>。</td>
+<td align="left">数据写入后最长需要等 30 秒才能被搜到（对日志监控场景完全可接受）。</td>
+</tr>
+<tr>
+<td align="left"><strong>2. 调整 Translog 刷盘策略</strong></td>
+<td align="left"><code>index.translog.durability: &quot;async&quot;</code><br><code>index.translog.sync_interval: &quot;5s&quot;</code><br><code>index.translog.flush_threshold_size: &quot;1024mb&quot;</code></td>
+<td align="left">默认 <code>request</code> 模式下每次 Bulk 请求都必须等待物理磁盘 <code>fsync</code> 完成才返回成功；改为 <code>async</code> 后每隔 5 秒刷盘一次，磁盘 IOPS 压力骤降。</td>
+<td align="left">若服务器发生硬断电或内核 Panic，该节点上最近 <strong>5 秒内</strong>写入且未刷盘的数据可能丢失（核心金融账务禁用，海量日志强烈推荐）。</td>
+</tr>
+<tr>
+<td align="left"><strong>3. 批量写入（Bulk）黄金大小</strong></td>
+<td align="left">控制单次 <code>_bulk</code> 请求的物理体积在 <strong>5MB ~ 15MB</strong> 之间（条数通常在 1000 ~ 5000 条）。</td>
+<td align="left">请求太小会导致网络往返开销大；请求太大（如单次 100MB）会瞬间撑爆协调节点和数据节点的堆内存，触发 GC 停顿甚至 OOM。</td>
+<td align="left">务必按**字节大小（MB）**而非单纯按条数做客户端限流。</td>
+</tr>
+<tr>
+<td align="left"><strong>4. 使用自动生成的 <code>_id</code></strong></td>
+<td align="left">写入时不指定文档 <code>_id</code>，让 ES 自动生成有序紧凑 UUID。</td>
+<td align="left">如果业务自己指定 <code>_id</code>（如订单号），ES 每次写入前都必须先去该分片的所有 Segment 查一遍“这个 ID 是否已存在（判断是新增还是更新）”，白白耗费大量磁盘随机读 I&#x2F;O！</td>
+<td align="left">需要幂等去重的业务必须指定 <code>_id</code>；纯追加日志场景一律让 ES 自动生成 <code>_id</code>。</td>
+</tr>
+<tr>
+<td align="left"><strong>5. 全量初始化导数据时临时置 0 副本</strong></td>
+<td align="left">导数据前：<code>number_of_replicas: 0</code>；导完后改回 <code>1</code>。</td>
+<td align="left">省去写入期间主副分片双倍索引构建开销，导完后再开启副本只做纯文件块拷贝，总耗时缩短近一半。</td>
+<td align="left">导数据期间无副本高可用保护。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="7-2-查询性能调优与“防慢查询打死集群”机制"><a href="#7-2-查询性能调优与“防慢查询打死集群”机制" class="headerlink" title="7.2 查询性能调优与“防慢查询打死集群”机制"></a>7.2 查询性能调优与“防慢查询打死集群”机制</h3><p>很多时候集群被打挂，不是因为写入太猛，而是因为某位研发在 Kibana 或代码里甩出了一个“毒查询（Query of Death）”。</p>
+<h4 id="（1）让研发遵守的-4-条黄金查询军规"><a href="#（1）让研发遵守的-4-条黄金查询军规" class="headerlink" title="（1）让研发遵守的 4 条黄金查询军规"></a>（1）让研发遵守的 4 条黄金查询军规</h4><ol>
+<li><strong>能用 <code>filter</code> 绝不用 <code>must</code></strong>：在 <code>bool</code> 查询中，如果只是做精确筛选（如时间范围、状态码 <code>status=200</code>、租户 ID），不需要算相关性得分（<code>_score</code>），一定要放进 <strong><code>filter</code> 子句</strong>！因为 <code>filter</code> 不仅跳过算分 CPU 开销，还会自动利用 <strong>Node Query Cache（节点查询缓存，缓存 Bitset 位图）</strong>，第二次查直接内存命中！</li>
+<li><strong>严禁使用左模糊通配符（<code>wildcard: &quot;*error*&quot;</code>）或复杂正则</strong>：以前缀 <code>*</code> 开头的查询，会导致倒排索引目录彻底失效，迫使 ES 全表扫描词典中的每一个词，CPU 瞬间飙红！如需模糊匹配，请在写入时使用 <code>ngram</code> 分词器或 <code>wildcard</code> 专用字段类型（ES 7.9+ 引入）。</li>
+<li><strong>严禁深度分页（<code>from: 100000, size: 10</code>）</strong>：<ul>
+<li><em>原理剖析</em>：如果你的索引有 10 个分片，你要查第 100,000 到 100,010 条数据，协调节点必须让<strong>每一个分片都把前 100,010 条数据捞出来排序</strong>，然后汇总 $10 \times 100,010 &#x3D; 1,000,100$ 条数据在协调节点内存中二次排序，最后只取 10 条扔掉 100 万条！</li>
+<li><em>防线与替代</em>：ES 默认限制 <code>index.max_result_window: 10000</code>。<strong>千万不要轻易把这个参数改成 100 万！</strong> 深度翻页或全量导出请强制要求业务改用 <strong><code>search_after</code>（带 PIT &#x2F; Point in Time）</strong>。</li>
+<li>PIT 创建时，ES 会在每个分片上固定住当时那一组 Lucene segment（一个只读的 searcher 视图）。之后拿这个 PIT 做的所有查询，看到的都是这份固定的数据：<ul>
+<li>翻页期间的新增、更新、删除都看不到。</li>
+<li>refresh 和 segment merge 也不会改变这个视图，因为被 PIT 引用的 segment 会被保留，不会被合并删掉。</li>
+<li>所以同一个 PIT 下，排序结果稳定，不会出现某条数据因为被更新而在两页之间”跳页”，造成重复或遗漏。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>避免在高基数（High Cardinality）字段上做无限制嵌套 Terms 聚合</strong>：比如在有 1 亿个不同 <code>user_id</code> 的字段上做 <code>size: 100000</code> 的 <code>terms</code> 聚合，会瞬间触发熔断器报错。</li>
+</ol>
+<h4 id="（2）开启慢查询日志（Slow-Log）抓捕线上毒查询"><a href="#（2）开启慢查询日志（Slow-Log）抓捕线上毒查询" class="headerlink" title="（2）开启慢查询日志（Slow Log）抓捕线上毒查询"></a>（2）开启慢查询日志（Slow Log）抓捕线上毒查询</h4><p>当集群间歇性卡顿时，对可疑索引动态开启慢查询日志（落盘在节点的 <code>logs/*_index_search_slowlog.json</code> 中）：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// PUT /prod-orders-*/_settings</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;index.search.slowlog.threshold.query.warn&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;5s&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;index.search.slowlog.threshold.query.info&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2s&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;index.search.slowlog.threshold.fetch.warn&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;1s&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;index.indexing.slowlog.threshold.index.warn&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;5s&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="7-3-读懂-ES-的两大护城河：熔断器（Circuit-Breaker）与线程池（Thread-Pool）"><a href="#7-3-读懂-ES-的两大护城河：熔断器（Circuit-Breaker）与线程池（Thread-Pool）" class="headerlink" title="7.3 读懂 ES 的两大护城河：熔断器（Circuit Breaker）与线程池（Thread Pool）"></a>7.3 读懂 ES 的两大护城河：熔断器（Circuit Breaker）与线程池（Thread Pool）</h3><p>很多运维看到 <code>CircuitBreakingException</code> 或 <code>EsRejectedExecutionException</code> 会慌神，其实这是 ES 在<strong>断臂求生，保护节点不被 OOM 搞死</strong>！</p>
+<h4 id="（1）内存熔断器体系（报错：-parent-Data-too-large-data-for-would-be-xxx-xxxgb-which-is-larger-than-the-limit）"><a href="#（1）内存熔断器体系（报错：-parent-Data-too-large-data-for-would-be-xxx-xxxgb-which-is-larger-than-the-limit）" class="headerlink" title="（1）内存熔断器体系（报错：[parent] Data too large, data for [...] would be [xxx/xxxgb], which is larger than the limit）"></a>（1）内存熔断器体系（报错：<code>[parent] Data too large, data for [...] would be [xxx/xxxgb], which is larger than the limit</code>）</h4><p>ES 在执行请求前会预估该操作需要消耗多少 JVM 堆内存，一旦超限直接拒绝该请求并返回 429，而不是任由它把整个 JVM 搞崩：</p>
+<table>
+<thead>
+<tr>
+<th align="left">熔断器名称</th>
+<th align="left">配置参数与默认占 Heap 比例</th>
+<th align="left">负责拦截什么操作？</th>
+<th align="left">频繁触发时的排障思路</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Parent（父熔断器）</strong></td>
+<td align="left"><code>indices.breaker.total.limit</code>（开启真实内存统计 <code>use_real_memory: true</code> 时默认 <strong>95% Heap</strong>）</td>
+<td align="left">统计当前 JVM 堆内存的实际总占用率，是一切子熔断器的总闸门。</td>
+<td align="left">说明 JVM 老年代（Old Gen）内存长期居高不下！需排查：① 分片数是否过多占满基础内存；② 是否有大聚合查询未释放；③ 执行 <code>POST /_cache/clear?fielddata=true</code> 临时清理缓存救急。</td>
+</tr>
+<tr>
+<td align="left"><strong>Fielddata 熔断器</strong></td>
+<td align="left"><code>indices.breaker.fielddata.limit</code>（默认 <strong>40% Heap</strong>）</td>
+<td align="left">当研发试图对 <code>text</code> 分词字段做排序或聚合并且开启了 <code>fielddata: true</code> 时，<strong>ES 会把整列倒排索引全加载进堆内存！</strong></td>
+<td align="left"><strong>严禁对 <code>text</code> 字段开启 <code>fielddata: true</code>！</strong> 排序和聚合必须改用 <code>.keyword</code> 子字段（走磁盘页缓存的 Doc Values）。</td>
+</tr>
+<tr>
+<td align="left"><strong>Request 熔断器</strong></td>
+<td align="left"><code>indices.breaker.request.limit</code>（默认 <strong>60% Heap</strong>）</td>
+<td align="left">拦截单次聚合查询（Aggregations）在内存中构建桶（Buckets）所消耗的临时内存。</td>
+<td align="left">业务写了多层嵌套 <code>terms</code> 聚合且 <code>size</code> 设得极大，联系研发优化聚合深度或拆分为多次查询。</td>
+</tr>
+<tr>
+<td align="left"><strong>In-flight Requests 熔断器</strong></td>
+<td align="left"><code>network.breaker.inflight_requests.limit</code>（默认 <strong>100% Heap</strong>）</td>
+<td align="left">拦截当前正在通过网络接收的所有 HTTP&#x2F;Transport 请求体（如超大的 Bulk 请求）占用的内存。</td>
+<td align="left">客户端并发发送了过大的 <code>_bulk</code> 请求包，减小客户端单次 Bulk 的 MB 大小。</td>
+</tr>
+</tbody></table>
+<h4 id="（2）线程池队列与拒绝（报错：EsRejectedExecutionException-rejected-execution-of-on-EsThreadPoolExecutor）"><a href="#（2）线程池队列与拒绝（报错：EsRejectedExecutionException-rejected-execution-of-on-EsThreadPoolExecutor）" class="headerlink" title="（2）线程池队列与拒绝（报错：EsRejectedExecutionException: rejected execution of ... on EsThreadPoolExecutor）"></a>（2）线程池队列与拒绝（报错：<code>EsRejectedExecutionException: rejected execution of ... on EsThreadPoolExecutor</code>）</h4><p>每个节点内部针对不同任务维护了独立的线程池，最核心的是两个：</p>
+<ul>
+<li><strong><code>write</code> 线程池</strong>（负责文档写入&#x2F;删除&#x2F;更新）：线程数 &#x3D; CPU 核心数，默认队列长度（<code>queue_size</code>）&#x3D; <strong>10000</strong>（7.x 后期及 8.x 已调至 10000，早期版本为 200）。</li>
+<li><strong><code>search</code> 线程池</strong>（负责查询&#x2F;聚合）：线程数 &#x3D; <code>int((CPU核心数 * 3) / 2) + 1</code>，默认队列长度 &#x3D; <strong>1000</strong>。</li>
+<li><strong>为什么会出现 Rejected（拒绝）？</strong><br>当所有干活线程都忙不过来，新来的请求会进 <code>queue</code> 排队；一旦连排队队列（如 1000 个位置）也塞满了，第 1001 个请求就会被立即拒绝报错（HTTP 429）！</li>
+<li><strong>运维禁忌</strong>：不要一看到 Rejected 就盲目去把 <code>queue_size</code> 调成 50000！队列越长，占用的堆内存越大，且请求在队列里排了 30 秒早就超时了。正确的做法是：<strong>查清为什么线程干活变慢了</strong>（是磁盘 I&#x2F;O 满了？还是分片路由集中在单台机器上导致热点倾斜？）。</li>
+</ul>
+<hr>
+<h2 id="第八章：生产故障应急预案手册（Runbook）与监控体系建设（精通篇）"><a href="#第八章：生产故障应急预案手册（Runbook）与监控体系建设（精通篇）" class="headerlink" title="第八章：生产故障应急预案手册（Runbook）与监控体系建设（精通篇）"></a>第八章：生产故障应急预案手册（Runbook）与监控体系建设（精通篇）</h2><h3 id="8-1-监控指标全景图与告警阈值矩阵（Prometheus-Grafana）"><a href="#8-1-监控指标全景图与告警阈值矩阵（Prometheus-Grafana）" class="headerlink" title="8.1 监控指标全景图与告警阈值矩阵（Prometheus + Grafana）"></a>8.1 监控指标全景图与告警阈值矩阵（Prometheus + Grafana）</h3><p>生产环境建议使用 <strong><code>prometheus-community/elasticsearch_exporter</code></strong> 采集指标（或者使用官方 Metricbeat + Kibana Stack Monitoring）。以下是运维必须配置告警的核心指标矩阵：</p>
+<table>
+<thead>
+<tr>
+<th align="left">监控维度</th>
+<th align="left">核心指标项</th>
+<th align="left">Warning（预警阈值）</th>
+<th align="left">Critical（严重告警阈值）</th>
+<th align="left">业务影响与备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>集群状态</strong></td>
+<td align="left"><code>elasticsearch_cluster_health_status</code></td>
+<td align="left"><code>yellow</code> 持续 &gt; 10 分钟</td>
+<td align="left"><strong><code>red</code> 持续 &gt; 1 分钟</strong></td>
+<td align="left">Red 代表主分片缺失，读写受损，需立即介入。</td>
+</tr>
+<tr>
+<td align="left"><strong>节点存活</strong></td>
+<td align="left"><code>elasticsearch_cluster_health_number_of_nodes</code></td>
+<td align="left">节点数比预期少 1</td>
+<td align="left">Master 候选节点存活数 &lt; 2</td>
+<td align="left">节点脱群或宕机。</td>
+</tr>
+<tr>
+<td align="left"><strong>待处理任务</strong></td>
+<td align="left"><code>elasticsearch_cluster_health_number_of_pending_tasks</code></td>
+<td align="left">&gt; 20 持续 3 分钟</td>
+<td align="left">&gt; 100 持续 3 分钟</td>
+<td align="left">Master 节点阻塞，集群元数据变更卡死。</td>
+</tr>
+<tr>
+<td align="left"><strong>JVM 内存</strong></td>
+<td align="left"><code>elasticsearch_jvm_memory_used_bytes / max_bytes</code> (Old Gen)</td>
+<td align="left">堆内存使用率 &gt; <strong>75%</strong></td>
+<td align="left">堆内存使用率 &gt; <strong>85%</strong> 持续 5 分钟</td>
+<td align="left">随时可能触发 Full GC 卡死或 Parent 熔断器拒绝请求。</td>
+</tr>
+<tr>
+<td align="left"><strong>GC 耗时</strong></td>
+<td align="left"><code>rate(elasticsearch_jvm_gc_collection_seconds_sum[5m])</code></td>
+<td align="left">单次 GC &gt; 1s</td>
+<td align="left">每分钟 GC 总停顿 &gt; <strong>10s</strong></td>
+<td align="left">GC 停顿过长会导致节点心跳超时（默认 30s），被 Master 踢出集群！</td>
+</tr>
+<tr>
+<td align="left"><strong>磁盘水位</strong></td>
+<td align="left"><code>elasticsearch_filesystem_data_used_percent</code></td>
+<td align="left">&gt; <strong>80%</strong></td>
+<td align="left">&gt; <strong>85%</strong>（触碰 Low Watermark）</td>
+<td align="left">超过 85% 无法分配新分片，超过 95% 索引被锁只读。</td>
+</tr>
+<tr>
+<td align="left"><strong>线程池拒绝</strong></td>
+<td align="left"><code>increase(elasticsearch_thread_pool_rejected_count[5m])</code></td>
+<td align="left"><code>search</code> 拒绝 &gt; 0</td>
+<td align="left"><code>write</code> 拒绝 &gt; 0</td>
+<td align="left">代表已经有线上写入或查询请求失败，需客户端重试或排查瓶颈。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="8-2-六大经典生产事故应急排障-SOP（手把手抢救指南）"><a href="#8-2-六大经典生产事故应急排障-SOP（手把手抢救指南）" class="headerlink" title="8.2 六大经典生产事故应急排障 SOP（手把手抢救指南）"></a>8.2 六大经典生产事故应急排障 SOP（手把手抢救指南）</h3><h4 id="事故一：节点-CPU-瞬间飙升至-100-，查询大面积超时，如何在线“抓鬼”并杀掉慢查询？"><a href="#事故一：节点-CPU-瞬间飙升至-100-，查询大面积超时，如何在线“抓鬼”并杀掉慢查询？" class="headerlink" title="事故一：节点 CPU 瞬间飙升至 100%，查询大面积超时，如何在线“抓鬼”并杀掉慢查询？"></a>事故一：节点 CPU 瞬间飙升至 100%，查询大面积超时，如何在线“抓鬼”并杀掉慢查询？</h4><p>当你收到告警发现某几台数据节点 CPU 100% 时，按以下 3 步在 <strong>1 分钟内恢复集群</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 【第 1 步】查看当前正在导致 CPU 飙升的热点线程（Hot Threads），定位是 Merge、Write 还是 Search</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_nodes/hot_threads?threads=3&amp;interval=1000ms&quot;</span><br><br><span class="hljs-comment"># 【第 2 步】如果是 Search 导致，立即列出当前集群中运行时间超过 3 秒的所有查询任务（按运行耗时排序）</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/tasks?v&amp;detailed=true&amp;actions=*search*&amp;s=running_time:desc&quot;</span><br><span class="hljs-comment"># 或者用 JSON 格式看完整的查询 DSL 语句和 task_id（形如 nodeId:taskId，例如 uQ5_abc123:889900）：</span><br>curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_tasks?actions=*search*&amp;detailed=true&amp;pretty&quot;</span><br><br><span class="hljs-comment"># 【第 3 步】找到那个跑了几十秒的“毒查询” Task ID，直接在线强杀（Cancel）该任务！</span><br>curl -u elastic:password -X POST <span class="hljs-string">&quot;http://10.10.20.11:9200/_tasks/uQ5_abc123:889900/_cancel?pretty&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="事故二：集群变成-Red，某个主分片卡在-UNASSIGNED-死活恢复不出来怎么办？"><a href="#事故二：集群变成-Red，某个主分片卡在-UNASSIGNED-死活恢复不出来怎么办？" class="headerlink" title="事故二：集群变成 Red，某个主分片卡在 UNASSIGNED 死活恢复不出来怎么办？"></a>事故二：集群变成 Red，某个主分片卡在 <code>UNASSIGNED</code> 死活恢复不出来怎么办？</h4><ol>
+<li><strong>第一步</strong>：先跑 <code>GET _cluster/allocation/explain?pretty</code> 查看原因。<ul>
+<li>如果提示 <code>node_left</code> 或原持有最新主分片数据的节点 <code>es-data-03</code> 宕机了：<strong>第一优先级永远是把 <code>es-data-03</code> 救活拉起来！</strong> 只要它重新加入集群，主分片会自动恢复，一滴数据都不会丢。</li>
+</ul>
+</li>
+<li><strong>第二步</strong>：如果是因为分配重试达到 5 次上限，执行：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -u elastic:password -X POST <span class="hljs-string">&quot;http://10.10.20.11:9200/_cluster/reroute?retry_failed=true&quot;</span><br></code></pre></td></tr></table></figure></li>
+<li><strong>第三步（极端兜底手段：物理机器彻底烧毁无法开机，且该分片没有副本或副本数据较旧）</strong>：<br>如果持有唯一主分片的机器硬盘彻底报废，且你没有快照备份（或决定放弃该分片的数据以换取整个索引恢复可用），可以使用 <code>_cluster/reroute</code> 的 <code>allocate_stale_primary</code>（强制启用旧主分片，会丢失部分未同步数据）或 <code>allocate_empty_primary</code>（<strong>高危！直接分配一个空的主分片，该分片原有数据彻底清空！执行前必须请示领导并确认无挽回可能</strong>）：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// POST _cluster/reroute</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;commands&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;allocate_stale_primary&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;index&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;damaged-index-name&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;shard&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">0</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;node&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;es-data-hot-02&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;accept_data_loss&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><br>      <span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<hr>
+<h4 id="事故三：业务写入报错-Limit-of-total-fields-1000-has-been-exceeded（字段数被打爆）"><a href="#事故三：业务写入报错-Limit-of-total-fields-1000-has-been-exceeded（字段数被打爆）" class="headerlink" title="事故三：业务写入报错 Limit of total fields [1000] has been exceeded（字段数被打爆）"></a>事故三：业务写入报错 <code>Limit of total fields [1000] has been exceeded</code>（字段数被打爆）</h4><ul>
+<li><strong>原因</strong>：单个索引里的字段数量超过了默认的 1000 个上限（通常是因为动态 JSON 里把变量当成了 Key）。</li>
+<li><strong>应急止血</strong>：临时将该索引的字段数上限调大到 2000，让线上业务先恢复写入：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -u elastic:password -X PUT <span class="hljs-string">&quot;http://10.10.20.11:9200/报错的索引名/_settings&quot;</span> -H <span class="hljs-string">&#x27;Content-Type: application/json&#x27;</span> -d<span class="hljs-string">&#x27;</span><br><span class="hljs-string">&#123;</span><br><span class="hljs-string">  &quot;index.mapping.total_fields.limit&quot;: 2000</span><br><span class="hljs-string">&#125;&#x27;</span><br></code></pre></td></tr></table></figure></li>
+<li><strong>根治方案</strong>：导出该索引的 Mapping（<code>GET /索引名/_mapping</code>），找出是哪个动态对象下面塞了几百个奇奇怪怪的子字段，将该父字段在索引模板中改为 <code>&quot;type&quot;: &quot;flattened&quot;</code>（ES 7.x+ 专为动态 JSON 对象设计的类型，不管里面有多少个子 Key，只算 1 个字段！）或者设置 <code>&quot;enabled&quot;: false</code>（只存 <code>_source</code> 不建索引）。</li>
+</ul>
+<hr>
+<h4 id="事故四：单台节点写入负载极高（热点倾斜-Hot-Spot），其他节点却很闲"><a href="#事故四：单台节点写入负载极高（热点倾斜-Hot-Spot），其他节点却很闲" class="headerlink" title="事故四：单台节点写入负载极高（热点倾斜 Hot Spot），其他节点却很闲"></a>事故四：单台节点写入负载极高（热点倾斜 Hot Spot），其他节点却很闲</h4><ul>
+<li><strong>现象</strong>：集群有 10 台 Data 节点，但只有 <code>es-data-01</code> 和 <code>es-data-02</code> 的 CPU 和磁盘 I&#x2F;O 跑满，<code>write</code> 线程池开始出现 <code>rejected</code>，另外 8 台机器负载还不到 10%。</li>
+<li><strong>根因剖析</strong>：当前正在高频写入的当天热索引（比如 <code>prod-log-today</code>），只设置了 <strong>2 个主分片</strong>！哪怕你有 10 台机器，这 2 个主分片（加上 2 个副本）最多也只能落在这 10 台机器中的 4 台上干活，另外 6 台机器只有昨天只读的老分片，根本分担不了今天的写入压力！</li>
+<li><strong>根治方案</strong>：<ol>
+<li><strong>主分片数应与热数据节点数量成整数倍匹配</strong>（例如有 6 台 <code>data_hot</code> 节点，高频写入的大索引建议设置 <code>number_of_shards: 6</code>，1 主 1 副共 12 个分片刚好均匀铺满 6 台机器）。</li>
+<li>配置<strong>单节点单索引最大分片数限制</strong>，强迫同一个热索引的分片均匀打散到所有节点上，绝对禁止扎堆在同一台节点：<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// PUT /prod-log-today/_settings</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;index.routing.allocation.total_shards_per_node&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ul>
+<hr>
+<h4 id="事故五：JVM-老年代内存持续-85-，频繁触发-Full-GC-或-Parent-熔断"><a href="#事故五：JVM-老年代内存持续-85-，频繁触发-Full-GC-或-Parent-熔断" class="headerlink" title="事故五：JVM 老年代内存持续 &gt; 85%，频繁触发 Full GC 或 Parent 熔断"></a>事故五：JVM 老年代内存持续 &gt; 85%，频繁触发 Full GC 或 Parent 熔断</h4><ol>
+<li><strong>第一步（看内存到底被谁吃了）</strong>：执行以下节点统计命令，拆解是 Segment 元数据、Fielddata、Query Cache 还是 Bulk 队列吃掉了内存：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -s -u elastic:password <span class="hljs-string">&quot;http://10.10.20.11:9200/_cat/nodes?v&amp;h=name,heap.percent,fielddata.memory_size,query_cache.memory_size,request_cache.memory_size,segments.memory,segments.count&quot;</span><br></code></pre></td></tr></table></figure></li>
+<li><strong>第二步（紧急清理缓存回血）</strong>：如果看到 <code>fielddata.memory_size</code> 或 <code>query_cache.memory_size</code> 占了好几个 GB，立即清理缓存（无损操作，只会让接下来的几次查询重新加载缓存）：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -u elastic:password -X POST <span class="hljs-string">&quot;http://10.10.20.11:9200/_cache/clear?pretty&quot;</span><br></code></pre></td></tr></table></figure></li>
+<li><strong>第三步（长期治理）</strong>：<ul>
+<li>如果 <code>segments.count</code> 极大（单节点几万个段），说明小分片太多或未做 Force Merge：立即关闭冷索引（<code>POST /冷索引名/_close</code>——关闭后的索引只占磁盘，几乎不占内存）或执行 <code>_forcemerge</code>。</li>
+<li>检查 JVM 启动参数是否配置了 <code>-XX:+HeapDumpOnOutOfMemoryError</code>，若发生 OOM，使用 Eclipse MAT 分析 <code>.hprof</code> 文件定位大对象。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="事故六：Master-节点频繁重选、Pending-Tasks-堆积上千，建索引超时"><a href="#事故六：Master-节点频繁重选、Pending-Tasks-堆积上千，建索引超时" class="headerlink" title="事故六：Master 节点频繁重选、Pending Tasks 堆积上千，建索引超时"></a>事故六：Master 节点频繁重选、Pending Tasks 堆积上千，建索引超时</h4><ul>
+<li><strong>现象</strong>：报错 <code>ProcessClusterEventTimeoutException</code> 或 <code>MasterNotDiscoveredException</code>，<code>_cluster/pending_tasks</code> 里有成百上千个 <code>create-index</code> 或 <code>put-mapping</code> 任务。</li>
+<li><strong>根因剖析</strong>：<ol>
+<li>集群总分片数突破了数万个，导致 <code>Cluster State</code>（集群状态元数据表）体积高达几百 MB，Master 每次修改完分片状态同步给几百个节点都要好几秒。</li>
+<li>每天凌晨 <code>00:00:00</code> 整点，几百个按天切分的索引集中在同一秒钟触发创建（或者动态 Mapping 疯狂更新），把单线程处理元数据变更的 Master 节点彻底堵死。</li>
+</ol>
+</li>
+<li><strong>解决方案</strong>：<ol>
+<li><strong>削峰错峰</strong>：将按自然日 <code>00:00</code> 集中创建索引，改造为 <strong>ILM 按大小+时间自动 Rollover</strong>，或者在凌晨 <code>23:50</code> 通过脚本提前预创建好明天的索引。</li>
+<li><strong>治理分片膨胀</strong>：删除过期索引、使用 <code>_shrink</code> 合并历史小分片索引，将集群总分片数压降到安全水位。</li>
+<li><strong>确保专用 Master 节点纯净</strong>：严禁往 Master 节点发送任何查询或写入请求（客户端负载均衡列表里只配 Coordinating 节点或 Data 节点，绝对不能填 Master 节点的 IP！）。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="8-3-运维工程师日常巡检-Checklist"><a href="#8-3-运维工程师日常巡检-Checklist" class="headerlink" title="8.3 运维工程师日常巡检 Checklist"></a>8.3 运维工程师日常巡检 Checklist</h3><p>为了做到“治未病”，建议将以下检查项固化为日常巡检习惯或自动化巡检脚本：</p>
+<table>
+<thead>
+<tr>
+<th align="left">巡检周期</th>
+<th align="left">检查项</th>
+<th align="left">合格标准</th>
+<th align="left">关联检查命令 &#x2F; 指标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>每日巡检（自动化）</strong></td>
+<td align="left">集群健康状态与未分配分片</td>
+<td align="left"><code>status == green</code>，<code>unassigned_shards == 0</code></td>
+<td align="left"><code>GET _cluster/health</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每日巡检（自动化）</strong></td>
+<td align="left">节点磁盘最高使用率</td>
+<td align="left">所有节点 <code>disk.percent &lt; 80%</code>，且节点间差值 <code>&lt; 15%</code></td>
+<td align="left"><code>GET _cat/allocation?v&amp;s=disk.percent:desc</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每日巡检（自动化）</strong></td>
+<td align="left">节点 JVM 堆内存与 GC</td>
+<td align="left">老年代使用率峰值 <code>&lt; 80%</code>，无频繁 Old GC</td>
+<td align="left"><code>GET _cat/nodes?v&amp;h=name,heap.percent</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每日巡检（自动化）</strong></td>
+<td align="left">线程池 Rejected 计数</td>
+<td align="left">最近 24 小时 <code>write</code> 和 <code>search</code> 的 <code>rejected</code> 增量为 <code>0</code></td>
+<td align="left"><code>GET _cat/thread_pool/write,search?v</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每周巡检</strong></td>
+<td align="left">分片合理性审计</td>
+<td align="left">单节点分片总数 <code>&lt; 600</code>；不存在大于 <code>60GB</code> 的巨型单分片或大量 <code>&lt; 100MB</code> 的碎片索引</td>
+<td align="left"><code>GET _cat/shards?v&amp;s=store:desc</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每周巡检</strong></td>
+<td align="left">快照备份有效性检查</td>
+<td align="left">SLM 每日快照状态均为 <code>SUCCESS</code>，无失败记录</td>
+<td align="left"><code>GET _slm/stats</code> 及 <code>GET _cat/snapshots/my_fs_backup?v</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每月巡检</strong></td>
+<td align="left">慢查询审计与 Mapping 膨胀检查</td>
+<td align="left">汇总 <code>slowlog</code> Top 10 慢查询推动研发改造；检查是否有字段数 <code>&gt; 800</code> 的索引</td>
+<td align="left">分析 <code>*_search_slowlog.json</code> 日志</td>
+</tr>
+<tr>
+<td align="left"><strong>每季度演练</strong></td>
+<td align="left">灾难恢复与故障切换演练</td>
+<td align="left">在测试&#x2F;预发环境从生产快照恢复一个索引并校验数据完整性</td>
+<td align="left">执行 <code>_restore</code> 演练 SOP</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Elasticsearch/" class="category-chain-item">Elasticsearch</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Elasticsearch/" class="print-no-link">#Elasticsearch</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/10/27/Kubernetes%20(K8s)%20%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%EF%BC%9A%E7%94%9F%E4%BA%A7%E7%BA%A7%E4%BA%91%E5%8E%9F%E7%94%9F%E8%BF%90%E7%BB%B4%E5%AE%9E%E6%88%98%E6%89%8B%E5%86%8C/" title="Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册">
+                        <span class="hidden-mobile">Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://www.biibll.com" target="_blank" rel="nofollow noopener"><span>Return 200 OK</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

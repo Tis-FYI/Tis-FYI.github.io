@@ -1,0 +1,1125 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="TAO">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册 适用版本：Kubernetes v1.24 ~ v1.31+（基于 containerd 容器运行时与 kubeadm &#x2F; 云托管架构）目标读者：云原生运维工程师、SRE、系统管理员、DevOps 工程师、后端架构师编写理念：彻底抛弃晦涩的概念堆砌，全程站在一线云原生运维与 SRE 实战视角——用大白话讲透 K8s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册">
+<meta property="og:url" content="https://blog.t-ao.cn/2026/10/27/Kubernetes%20(K8s)%20%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%EF%BC%9A%E7%94%9F%E4%BA%A7%E7%BA%A7%E4%BA%91%E5%8E%9F%E7%94%9F%E8%BF%90%E7%BB%B4%E5%AE%9E%E6%88%98%E6%89%8B%E5%86%8C/index.html">
+<meta property="og:site_name" content="TAO&#39;s Blog">
+<meta property="og:description" content="Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册 适用版本：Kubernetes v1.24 ~ v1.31+（基于 containerd 容器运行时与 kubeadm &#x2F; 云托管架构）目标读者：云原生运维工程师、SRE、系统管理员、DevOps 工程师、后端架构师编写理念：彻底抛弃晦涩的概念堆砌，全程站在一线云原生运维与 SRE 实战视角——用大白话讲透 K8s">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-10-27T03:18:34.000Z">
+<meta property="article:modified_time" content="2026-10-27T07:41:01.894Z">
+<meta property="article:author" content="TAO">
+<meta property="article:tag" content="Kubernetes">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册 - TAO&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.t-ao.cn","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>IIRRR</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>常用站点</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-10-27 11:18" pubdate>
+          2026年10月27日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          93 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Kubernetes-K8s-从入门到精通：生产级云原生运维实战手册"><a href="#Kubernetes-K8s-从入门到精通：生产级云原生运维实战手册" class="headerlink" title="Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册"></a>Kubernetes (K8s) 从入门到精通：生产级云原生运维实战手册</h1><blockquote>
+<p><strong>适用版本</strong>：Kubernetes v1.24 ~ v1.31+（基于 <code>containerd</code> 容器运行时与 <code>kubeadm</code> &#x2F; 云托管架构）<br><strong>目标读者</strong>：云原生运维工程师、SRE、系统管理员、DevOps 工程师、后端架构师<br><strong>编写理念</strong>：彻底抛弃晦涩的概念堆砌，全程站在<strong>一线云原生运维与 SRE 实战视角</strong>——用大白话讲透 K8s 组件协作全链路，给出可直接复制上线的生产级 YAML 模板、零停机发布配置、Etcd 灾备与证书续期 SOP，以及 <code>Pending</code> &#x2F; <code>CrashLoopBackOff</code> &#x2F; <code>OOMKilled</code> &#x2F; <code>Terminating</code> 等高频生产故障的秒级排障指南。</p>
+</blockquote>
+<h2 id="手册结构概览"><a href="#手册结构概览" class="headerlink" title="手册结构概览"></a>手册结构概览</h2><p>本手册按照云原生运维工程师的进阶路径，分为四个阶段共八个章节：</p>
+<table>
+<thead>
+<tr>
+<th align="left">阶段</th>
+<th align="left">章节</th>
+<th align="left">核心解决的问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>第一阶段：入门筑基</strong></td>
+<td align="left">第一章：运维视角下的 K8s 架构与请求全生命周期<br>第二章：容量规划、OS 内核调优与运行时（<code>crictl</code>）实战</td>
+<td align="left">搞懂 Master&#x2F;Worker 各组件到底在干嘛、为什么最小单位是 Pod、创建 Pod 底层经历了哪 6 步；配好 Linux 内核、IPVS 与 <code>containerd</code>。</td>
+</tr>
+<tr>
+<td align="left"><strong>第二阶段：日常管家</strong></td>
+<td align="left">第三章：工作负载与满分生产级 Deployment YAML 规范<br>第四章：K8s 网络全链路：CNI、Service、DNS 与 Ingress</td>
+<td align="left">彻底解决滚动发版偶发 502、探针配置不当引发雪崩重启、Java 容器莫名被 OOMKill，打通 Service 转发与 CoreDNS 5秒延迟毛刺治理。</td>
+</tr>
+<tr>
+<td align="left"><strong>第三阶段：进阶运维</strong></td>
+<td align="left">第五章：持久化存储（PV&#x2F;PVC&#x2F;SC）与配置挂载深坑<br>第六章：节点维护、证书续期、Etcd 灾备与自动弹性伸缩</td>
+<td align="left">掌握动态存储扩容、解决 <code>subPath</code> 挂载不热更新的坑，熟练执行节点安全排水（Drain）、1年期证书一键续期与 Etcd 快照恢复。</td>
+</tr>
+<tr>
+<td align="left"><strong>第四阶段：精通排障</strong></td>
+<td align="left">第七章：RBAC 最小权限、多租户配额与网络隔离<br>第八章：生产故障应急预案（Runbook）与监控巡检体系</td>
+<td align="left">生成受限研发 <code>kubeconfig</code>、用 <code>ResourceQuota</code> 锁死命名空间上限；手握 7 大经典故障（Pod 起不来、删不掉、连不通、节点 NotReady）急救手册。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第一章：初识-Kubernetes-——-运维视角下的集群架构与请求全生命周期（入门篇）"><a href="#第一章：初识-Kubernetes-——-运维视角下的集群架构与请求全生命周期（入门篇）" class="headerlink" title="第一章：初识 Kubernetes —— 运维视角下的集群架构与请求全生命周期（入门篇）"></a>第一章：初识 Kubernetes —— 运维视角下的集群架构与请求全生命周期（入门篇）</h2><p>很多传统运维刚转 K8s 时，会被一堆 <code>apiserver</code>、<code>controller</code>、<code>kubelet</code>、<code>cni</code> 搞得头晕眼花。其实，你只需要把整个 K8s 集群想象成一个<strong>全自动化的“现代化集装箱港口调度中心”</strong>。</p>
+<h3 id="1-1-用“集装箱港口调度中心”秒懂-K8s-核心组件"><a href="#1-1-用“集装箱港口调度中心”秒懂-K8s-核心组件" class="headerlink" title="1.1 用“集装箱港口调度中心”秒懂 K8s 核心组件"></a>1.1 用“集装箱港口调度中心”秒懂 K8s 核心组件</h3><p>一个生产级 K8s 集群由两类服务器组成：<strong>控制平面节点（Control Plane &#x2F; Master 节点，只当指挥官不跑业务）</strong> 和 <strong>工作节点（Worker Node，真正干苦力跑业务容器的货轮）</strong>。</p>
+<table>
+<thead>
+<tr>
+<th align="left">所在节点</th>
+<th align="left">组件名称</th>
+<th align="left">港口角色比喻</th>
+<th align="left">真实职责大白话解读</th>
+<th align="left">运维生死红线（挂了会怎样？）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Master 控制面</strong></td>
+<td align="left"><strong><code>kube-apiserver</code></strong></td>
+<td align="left"><strong>唯一前台总机 &#x2F; 安检大门</strong></td>
+<td align="left">集群里<strong>唯一能直接读写 <code>etcd</code> 数据库</strong>的组件！不管是运维敲 <code>kubectl</code>，还是其他组件汇报状态，都必须先过它的认证（Authentication）、鉴权（RBAC）和准入控制（Admission）。</td>
+<td align="left">无状态组件，可通过负载均衡器（HAProxy&#x2F;Nginx + Keepalived）部署 3 台实现高可用。全部挂掉时：已有业务容器照常运行，但无法发布、扩缩容或查询状态。</td>
+</tr>
+<tr>
+<td align="left"><strong>Master 控制面</strong></td>
+<td align="left"><strong><code>etcd</code></strong></td>
+<td align="left"><strong>唯一保险柜总账本</strong></td>
+<td align="left">强一致性的分布式 KV 数据库（基于 Raft 协议）。集群里所有的配置、Pod 状态、Secret 密码全存在这里。</td>
+<td align="left"><strong>全集群最娇贵的心脏！</strong> 必须部署 <strong>3 台或 5 台（奇数）</strong> 且必须挂载 <strong>SSD 固态盘</strong>；一旦超过半数节点损坏且无快照备份，整个 K8s 集群直接脑死亡！</td>
+</tr>
+<tr>
+<td align="left"><strong>Master 控制面</strong></td>
+<td align="left"><strong><code>kube-scheduler</code></strong></td>
+<td align="left"><strong>智能调度排班员</strong></td>
+<td align="left">专门盯着那些刚创建出来、还没分配机器（<code>nodeName</code> 为空）的新 Pod，经过两轮筛选——<strong>预选（过滤掉内存不够、有污点的机器）</strong> 和 <strong>优选（给剩余机器打分）</strong>，拍板决定把 Pod 放到哪台 Worker 节点上。</td>
+<td align="left">只负责“拍板写账本（把选好的节点名写回 APIServer）”，自己绝不去启动容器。</td>
+</tr>
+<tr>
+<td align="left"><strong>Master 控制面</strong></td>
+<td align="left"><strong><code>kube-controller-manager</code></strong></td>
+<td align="left"><strong>24小时巡检纠偏大管家</strong></td>
+<td align="left">内部包含几十个死循环控制器（Deployment、Node、Endpoint 控制器等）。它的唯一哲学就是：<strong>对比“账本里的期望状态（如 <code>replicas: 3</code>）”和“实际存活状态（如只剩 2 个）”，一旦不一致就立刻下单补齐！</strong></td>
+<td align="left">支撑 K8s 故障自愈的核心大脑（主备 Leader 选举模式运行）。</td>
+</tr>
+<tr>
+<td align="left"><strong>Worker 工作节点</strong></td>
+<td align="left"><strong><code>kubelet</code></strong></td>
+<td align="left"><strong>驻船包工头</strong></td>
+<td align="left">跑在每一台宿主机上的 Linux <code>systemd</code> 服务（不跑在容器里）。它时刻监听 APIServer：“有没有分给我们这台机器的 Pod？” 一旦有，立刻指挥本机的容器运行时拉镜像、启容器、挂存储卷，并按时执行健康检查探针。</td>
+<td align="left">如果某台机器上的 <code>kubelet</code> 挂了超过 40 秒，Master 就会把这台机器标记为 <code>NotReady</code>，5 分钟后自动把上面的 Pod 驱逐重建到其他健康机器上！</td>
+</tr>
+<tr>
+<td align="left"><strong>Worker 工作节点</strong></td>
+<td align="left"><strong><code>containerd</code></strong></td>
+<td align="left"><strong>起重机操作工（容器运行时）</strong></td>
+<td align="left">以前是 Docker，从 K8s 1.24 起正式移除内置 <code>dockershim</code>，全面采用更轻量的 <strong><code>containerd</code></strong> 调用底层 <code>runc</code> 真正创建隔离的 Linux 容器进程。</td>
+<td align="left">负责镜像拉取、容器生命周期管理。</td>
+</tr>
+<tr>
+<td align="left"><strong>Worker 工作节点</strong></td>
+<td align="left"><strong><code>kube-proxy</code></strong></td>
+<td align="left"><strong>船上内部电话交换机</strong></td>
+<td align="left">每台节点跑一个（DaemonSet），负责把访问 <code>Service</code> 虚拟 IP（ClusterIP）的流量，通过内核的 <strong><code>iptables</code> 或 <code>IPVS</code> 规则</strong>负载均衡转发给后端真实的 Pod IP。</td>
+<td align="left">如果某台节点的 <code>kube-proxy</code> 挂了，该节点上新发布的 Service 转发规则将无法更新。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="1-2-为什么-K8s-的最小调度单位是-Pod，而不是单个容器？"><a href="#1-2-为什么-K8s-的最小调度单位是-Pod，而不是单个容器？" class="headerlink" title="1.2 为什么 K8s 的最小调度单位是 Pod，而不是单个容器？"></a>1.2 为什么 K8s 的最小调度单位是 Pod，而不是单个容器？</h3><p>新手最爱问：“Docker 已经能跑容器了，K8s 为什么还要在容器外面再包一层叫 <strong>Pod（豆荚）</strong> 的壳？”</p>
+<h4 id="用“合租一居室”秒懂-Pod-与-pause（Infra）根容器"><a href="#用“合租一居室”秒懂-Pod-与-pause（Infra）根容器" class="headerlink" title="用“合租一居室”秒懂 Pod 与 pause（Infra）根容器"></a>用“合租一居室”秒懂 Pod 与 <code>pause</code>（Infra）根容器</h4><p>假设你的主业务容器是一个轻量级的 <code>Nginx</code> 或 <code>Java</code> 程序，现在你想给它配一个日志采集器（<code>Filebeat</code>）或者流量代理（<code>Envoy Sidecar</code>）。</p>
+<ul>
+<li>如果把它们作为两个完全独立的容器去调度：它们可能被分到两台不同的物理机上，既没法直接通过 <code>127.0.0.1</code> 高速通信，也没法共享同一个本地日志目录。</li>
+<li><strong>Pod 的天才设计</strong>：<ol>
+<li>每当 Kubelet 启动一个 Pod 时，它会<strong>永远先启动一个体积极小（仅几百 KB）、什么业务都不干的隐藏容器——叫做 <code>pause</code>（又名 Infra 根容器）</strong>！</li>
+<li>这个 <code>pause</code> 容器负责把“房间”租下来：申请到整个 Pod 唯一的 <strong>Pod IP</strong>，建好独立的网络命名空间（<code>Network Namespace</code>）和存储卷。</li>
+<li>随后启动的业务容器 A（如 Java）和辅助容器 B（Sidecar 如 Filebeat），通过 Linux 内核技术直接 <code>Join</code> 加入 <code>pause</code> 容器的网络命名空间！</li>
+<li><strong>最终效果</strong>：同一个 Pod 里的所有容器，<strong>看到的网卡、IP 地址、端口范围完全是同一个（可以直接通过 <code>localhost:8080</code> 互相访问，但要注意不能监听同一个端口！）</strong>，并且只要 <code>pause</code> 容器不死，哪怕里面的业务容器崩溃重启了十次，<strong>这个 Pod 的 IP 地址也不会发生改变</strong>！</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="1-3-当你敲下-kubectl-apply-f-app-yaml-后，底层到底发生了哪-6-步？"><a href="#1-3-当你敲下-kubectl-apply-f-app-yaml-后，底层到底发生了哪-6-步？" class="headerlink" title="1.3 当你敲下 kubectl apply -f app.yaml 后，底层到底发生了哪 6 步？"></a>1.3 当你敲下 <code>kubectl apply -f app.yaml</code> 后，底层到底发生了哪 6 步？</h3><p>看懂下面这张时序图，以后遇到 Pod 起不来，你就能在 10 秒内判断出是哪个组件掉链子了：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">[运维敲下 kubectl apply -f deployment.yaml]<br>        │<br>        ▼<br>【第 <span class="hljs-number">1</span> 步：前台登记】kube-apiserver 校验 YAML 语法与 RBAC 权限，将 Deployment 对象写入 etcd 账本。<br>        │<br>        ▼<br>【第 <span class="hljs-number">2</span> 步：逐级拆单】kube-controller-manager 监听到新 Deployment ──► 创建 ReplicaSet ──► 创建出 <span class="hljs-number">3</span> 个处于 Pending 状态、且 nodeName 为空的 Pod 对象写回 etcd。<br>        │<br>        ▼<br>【第 <span class="hljs-number">3</span> 步：排班选机】kube-scheduler 发现有 nodeName 为空的 Pod ──► 检查所有节点的剩余 CPU/内存、污点、亲和性 ──► 选出最优节点（如 <span class="hljs-keyword">node</span><span class="hljs-title">-02</span>），将 Pod 的 <span class="hljs-attr">nodeName=</span><span class="hljs-string">&quot;node-02&quot;</span> 写回 etcd。<br>        │<br>        ▼<br>【第 <span class="hljs-number">4</span> 步：领活干活】<span class="hljs-keyword">node</span><span class="hljs-title">-02</span> 节点上的 kubelet 监听到有分配给自己的 Pod ──► 通过 CRI 接口命令本机的 containerd 启动容器。<br>        │<br>        ▼<br>【第 <span class="hljs-number">5</span> 步：插网线配 IP】containerd 先创建 pause 根容器 ──► 调用 CNI 网络插件（如 Calico）为该 Pod 分配虚拟网卡（veth pair）和集群全局唯一的 Pod IP ──► 拉取业务镜像并启动业务容器。<br>        │<br>        ▼<br>【第 <span class="hljs-number">6</span> 步：健康检查与挂流量】kubelet 执行 startupProbe / readinessProbe 探针通过后，上报 Pod Ready ──► Endpoint 控制器将该 Pod IP:Port 加入 Service 列表中，kube-proxy 更新全集群 IPVS 转发规则，流量正式进入！<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第二章：生产级集群规划、OS-内核调优与高可用部署基线（入门到实战）"><a href="#第二章：生产级集群规划、OS-内核调优与高可用部署基线（入门到实战）" class="headerlink" title="第二章：生产级集群规划、OS 内核调优与高可用部署基线（入门到实战）"></a>第二章：生产级集群规划、OS 内核调优与高可用部署基线（入门到实战）</h2><h3 id="2-1-生产集群容量与网段规划黄金铁律"><a href="#2-1-生产集群容量与网段规划黄金铁律" class="headerlink" title="2.1 生产集群容量与网段规划黄金铁律"></a>2.1 生产集群容量与网段规划黄金铁律</h3><p>在动手装集群前，以下 3 个规划一旦上线极难修改，必须提前算清：</p>
+<ol>
+<li><strong>三大核心网段（CIDR）绝对不能重叠，且必须留足扩容余量！</strong><ul>
+<li><strong>宿主机物理网段（Node CIDR）</strong>：如 <code>10.10.0.0/16</code>。</li>
+<li><strong>Pod 虚拟网段（Pod CIDR）</strong>：推荐 <strong><code>10.244.0.0/16</code></strong> 或 <strong><code>172.16.0.0/16</code></strong>（默认每台宿主机分一个 <code>/24</code> 子网，即每台节点最多可分 254 个 Pod IP；单节点默认硬限制 <code>maxPods: 110</code>）。</li>
+<li><strong>Service 虚拟网段（Service CIDR）</strong>：推荐 <strong><code>10.96.0.0/12</code></strong>（切勿配成 <code>/24</code>，否则全集群建满 254 个 Service 就报 IP 耗尽！）。</li>
+</ul>
+</li>
+<li><strong>Etcd 与控制面节点规划</strong>：<ul>
+<li>生产环境严禁单 Master 裸奔！必须部署 <strong>3 台（可承受挂 1 台）或 5 台（可承受挂 2 台）</strong> 控制面节点。</li>
+<li><strong>千万别选 2 台或 4 台偶数节点！</strong> 因为 Raft 协议要求多数派 $\lfloor N&#x2F;2 \rfloor + 1$ 存活：2 台挂 1 台就剩 1 台（$&lt;2$，整个集群只读瘫痪），容灾能力甚至不如 1 台！</li>
+<li>集群规模超过 50 个 Worker 节点时，强烈建议将 <strong><code>etcd</code> 从 Master 节点拆出来独立部署在 3 台专用高 IOPS NVMe SSD 服务器上</strong>，并在启动参数中调大空间配额 <code>--quota-backend-bytes=8589934592</code>（默认仅 2GB，写满会导致全集群只读锁死，调大到 8GB）。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="2-2-Linux-操作系统级必做基线调优脚本（所有节点上线前必跑）"><a href="#2-2-Linux-操作系统级必做基线调优脚本（所有节点上线前必跑）" class="headerlink" title="2.2 Linux 操作系统级必做基线调优脚本（所有节点上线前必跑）"></a>2.2 Linux 操作系统级必做基线调优脚本（所有节点上线前必跑）</h3><p>以 <code>root</code> 身份在所有 Master 和 Worker 节点执行以下标准化初始化脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 【生死线 1】彻底关闭 Swap 交换分区（Kubelet 默认检测到开启 Swap 会直接拒绝启动；且容器内存换出到磁盘会导致节点雪崩！）</span><br>swapoff -a<br>sed -i <span class="hljs-string">&#x27;/swap/s/^/#/&#x27;</span> /etc/fstab<br><br><span class="hljs-comment"># 2. 关闭防火墙与 SELinux（避免与 Calico/Cilium 及 IPVS 规则冲突）</span><br>systemctl <span class="hljs-built_in">disable</span> --now firewalld<br>setenforce 0<br>sed -i <span class="hljs-string">&#x27;s/^SELINUX=enforcing$/SELINUX=permissive/&#x27;</span> /etc/selinux/config<br><br><span class="hljs-comment"># 3. 配置开机自动加载内核模块（overlay 文件系统、桥接流量过滤与 IPVS 负载均衡模块）</span><br><span class="hljs-built_in">cat</span> &gt; /etc/modules-load.d/k8s-modules.conf &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span><br>overlay<br>br_netfilter<br>ip_vs<br>ip_vs_rr<br>ip_vs_wrr<br>ip_vs_sh<br>nf_conntrack<br>EOF<br>modprobe overlay &amp;&amp; modprobe br_netfilter &amp;&amp; modprobe ip_vs &amp;&amp; modprobe ip_vs_rr &amp;&amp; modprobe ip_vs_wrr &amp;&amp; modprobe ip_vs_sh &amp;&amp; modprobe nf_conntrack<br><br><span class="hljs-comment"># 4. 【生死线 2】调整 Linux 内核网络与资源参数 /etc/sysctl.d/99-kubernetes-cri.conf</span><br><span class="hljs-built_in">cat</span> &gt; /etc/sysctl.d/99-kubernetes-cri.conf &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span><br><span class="hljs-comment"># 必须开启桥接流量经过 iptables/netfilter（否则同节点 Pod 访问 Service 会出现包原路返回无法反 NAT 的诡异超时！）</span><br>net.bridge.bridge-nf-call-iptables  = 1<br>net.bridge.bridge-nf-call-ip6tables = 1<br>net.ipv4.ip_forward                 = 1<br><br><span class="hljs-comment"># 彻底禁止使用 Swap 并禁止 OOM 时无脑重启系统</span><br>vm.swappiness = 0<br>vm.overcommit_memory = 1<br>vm.panic_on_oom = 0<br><br><span class="hljs-comment"># 【高并发救命参数】调大 netfilter 连接跟踪表上限（默认 65536 在高并发短连接下极易打满，报 nf_conntrack: table full, dropping packet！）</span><br>net.netfilter.nf_conntrack_max = 1048576<br>net.nf_conntrack_max = 1048576<br>net.netfilter.nf_conntrack_tcp_timeout_established = 1200<br><br><span class="hljs-comment"># 调大 inotify 监听上限（防止节点上跑 Filebeat/Prometheus 或过多 Pod 时报 Too many open files / inotify watches exhausted！）</span><br>fs.inotify.max_user_instances = 8192<br>fs.inotify.max_user_watches = 524288<br>fs.file-max = 2097152<br><br><span class="hljs-comment"># 扩大本地端口范围与全连接队列</span><br>net.ipv4.ip_local_port_range = 10240 65535<br>net.core.somaxconn = 32768<br>net.ipv4.tcp_max_syn_backlog = 32768<br>EOF<br>sysctl --system<br><br><span class="hljs-comment"># 5. 【生死线 3】配置 containerd 的 Cgroup 驱动为 systemd（必须与 Kubelet 的 cgroupDriver: systemd 完全一致！）</span><br><span class="hljs-built_in">mkdir</span> -p /etc/containerd<br>containerd config default &gt; /etc/containerd/config.toml<br><span class="hljs-comment"># 将 SystemdCgroup 改为 true，并把 pause 沙箱镜像替换为国内可达镜像源：</span><br>sed -i <span class="hljs-string">&#x27;s/SystemdCgroup = false/SystemdCgroup = true/g&#x27;</span> /etc/containerd/config.toml<br>sed -i <span class="hljs-string">&#x27;s|registry.k8s.io/pause:3.8|registry.aliyuncs.com/google_containers/pause:3.9|g&#x27;</span> /etc/containerd/config.toml<br>systemctl <span class="hljs-built_in">enable</span> --now containerd<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-3-告别-docker-命令：K8s-1-24-运维标配-crictl-速查与进程反查技巧"><a href="#2-3-告别-docker-命令：K8s-1-24-运维标配-crictl-速查与进程反查技巧" class="headerlink" title="2.3 告别 docker 命令：K8s 1.24+ 运维标配 crictl 速查与进程反查技巧"></a>2.3 告别 <code>docker</code> 命令：K8s 1.24+ 运维标配 <code>crictl</code> 速查与进程反查技巧</h3><p>升级到 K8s 1.24+ 后，登录宿主机敲 <code>docker ps</code> 会提示找不到命令。此时运维必须熟练使用 K8s 官方容器运行时调试工具 <strong><code>crictl</code></strong>（首次使用前先执行以下配置消除报错提示）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> &gt; /etc/crictl.yaml &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span><br>runtime-endpoint: unix:///run/containerd/containerd.sock<br>image-endpoint: unix:///run/containerd/containerd.sock<br><span class="hljs-built_in">timeout</span>: 10<br>debug: <span class="hljs-literal">false</span><br>EOF<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">运维场景</th>
+<th align="left">旧版 Docker 命令</th>
+<th align="left"><strong>新版 K8s 1.24+ <code>crictl</code> 标准命令</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">查看正在运行的容器</td>
+<td align="left"><code>docker ps</code></td>
+<td align="left"><code>crictl ps</code></td>
+</tr>
+<tr>
+<td align="left">查看本机运行的 <strong>Pod 沙箱</strong></td>
+<td align="left">（无直接对应）</td>
+<td align="left"><strong><code>crictl pods</code></strong>（支持 <code>--name</code>、<code>--namespace</code> 过滤）</td>
+</tr>
+<tr>
+<td align="left">查看本机已下载的镜像</td>
+<td align="left"><code>docker images</code></td>
+<td align="left"><code>crictl images</code></td>
+</tr>
+<tr>
+<td align="left">查看容器标准输出日志</td>
+<td align="left"><code>docker logs -f --tail 100 &lt;ID&gt;</code></td>
+<td align="left"><code>crictl logs -f --tail 100 &lt;Container-ID&gt;</code></td>
+</tr>
+<tr>
+<td align="left">进入本机容器内部排障</td>
+<td align="left"><code>docker exec -it &lt;ID&gt; /bin/sh</code></td>
+<td align="left"><code>crictl exec -it &lt;Container-ID&gt; /bin/sh</code></td>
+</tr>
+<tr>
+<td align="left">查看容器底层详情（含 IP、PID、挂载）</td>
+<td align="left"><code>docker inspect &lt;ID&gt;</code></td>
+<td align="left"><code>crictl inspect &lt;Container-ID&gt;</code></td>
+</tr>
+<tr>
+<td align="left">一键清理本机未使用的废旧镜像</td>
+<td align="left"><code>docker image prune -a</code></td>
+<td align="left"><strong><code>crictl rmi --prune</code></strong>（磁盘告警救急神命令！）</td>
+</tr>
+</tbody></table>
+<h4 id="运维高手必会：在宿主机-top-看到一个吃满-CPU-的进程-PID（如-28456），怎么-3-秒钟反查出它是哪个-K8s-Pod？"><a href="#运维高手必会：在宿主机-top-看到一个吃满-CPU-的进程-PID（如-28456），怎么-3-秒钟反查出它是哪个-K8s-Pod？" class="headerlink" title="运维高手必会：在宿主机 top 看到一个吃满 CPU 的进程 PID（如 28456），怎么 3 秒钟反查出它是哪个 K8s Pod？"></a>运维高手必会：在宿主机 <code>top</code> 看到一个吃满 CPU 的进程 PID（如 <code>28456</code>），怎么 3 秒钟反查出它是哪个 K8s Pod？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 方法 1：直接看该进程的 cgroup 路径拿容器 ID，再用 crictl 查出所属 Pod 名与 Namespace！</span><br>CID=$(<span class="hljs-built_in">cat</span> /proc/28456/cgroup | <span class="hljs-built_in">head</span> -n 1 | grep -oE <span class="hljs-string">&#x27;[0-9a-f]&#123;64&#125;&#x27;</span> | <span class="hljs-built_in">head</span> -c 13)<br>crictl ps --<span class="hljs-built_in">id</span> <span class="hljs-variable">$CID</span><br><br><span class="hljs-comment"># 方法 2（更直观）：直接看该进程在容器内被注入的 HOSTNAME 环境变量（K8s 默认把 Pod 名称设为容器的 HOSTNAME！）：</span><br><span class="hljs-built_in">tr</span> <span class="hljs-string">&#x27;\0&#x27;</span> <span class="hljs-string">&#x27;\n&#x27;</span> &lt; /proc/28456/environ | grep -E <span class="hljs-string">&quot;^HOSTNAME=|^POD_&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第三章：工作负载（Workloads）与生产级-Pod-YAML-黄金规范（中级篇）"><a href="#第三章：工作负载（Workloads）与生产级-Pod-YAML-黄金规范（中级篇）" class="headerlink" title="第三章：工作负载（Workloads）与生产级 Pod YAML 黄金规范（中级篇）"></a>第三章：工作负载（Workloads）与生产级 Pod YAML 黄金规范（中级篇）</h2><p>很多公司把服务迁上 K8s 后，反而觉得“不如以前虚拟机稳定”——一会儿发版报 <code>502</code>，一会儿容器莫名其妙被杀重启，一会儿一台物理机挂了整个微服务全军覆没。<strong>99% 的原因，都是因为研发写的 Deployment YAML 缺少了生产级护栏！</strong></p>
+<h3 id="3-1-避免“上线即故障”：一份满分生产级-Deployment-YAML-黄金模板"><a href="#3-1-避免“上线即故障”：一份满分生产级-Deployment-YAML-黄金模板" class="headerlink" title="3.1 避免“上线即故障”：一份满分生产级 Deployment YAML 黄金模板"></a>3.1 避免“上线即故障”：一份满分生产级 Deployment YAML 黄金模板</h3><p>请把下面这份模板作为公司内部所有微服务上线的<strong>强制标准基线</strong>（每一段注释都对应一个真实的线上血泪教训）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">apps/v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">Deployment</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">order-service</span><br>  <span class="hljs-attr">namespace:</span> <span class="hljs-string">prod-ecommerce</span><br>  <span class="hljs-attr">labels:</span><br>    <span class="hljs-attr">app:</span> <span class="hljs-string">order-service</span><br>    <span class="hljs-attr">tier:</span> <span class="hljs-string">backend</span><br><span class="hljs-attr">spec:</span><br>  <span class="hljs-attr">replicas:</span> <span class="hljs-number">3</span><br>  <span class="hljs-attr">revisionHistoryLimit:</span> <span class="hljs-number">10</span>  <span class="hljs-comment"># 保留最近 10 个历史 ReplicaSet 版本供秒级回滚</span><br>  <span class="hljs-attr">selector:</span><br>    <span class="hljs-attr">matchLabels:</span><br>      <span class="hljs-attr">app:</span> <span class="hljs-string">order-service</span><br>  <span class="hljs-comment"># ================= 1. 零停机滚动升级策略 =================</span><br>  <span class="hljs-attr">strategy:</span><br>    <span class="hljs-attr">type:</span> <span class="hljs-string">RollingUpdate</span><br>    <span class="hljs-attr">rollingUpdate:</span><br>      <span class="hljs-attr">maxSurge:</span> <span class="hljs-number">25</span><span class="hljs-string">%</span>         <span class="hljs-comment"># 升级时最多允许额外多创建 25% 的新 Pod</span><br>      <span class="hljs-attr">maxUnavailable:</span> <span class="hljs-number">0</span>     <span class="hljs-comment"># 【关键】升级过程中绝对不允许减少可用 Pod 数量（先起新 Pod Ready 后，再杀老 Pod！）</span><br><br>  <span class="hljs-attr">template:</span><br>    <span class="hljs-attr">metadata:</span><br>      <span class="hljs-attr">labels:</span><br>        <span class="hljs-attr">app:</span> <span class="hljs-string">order-service</span><br>        <span class="hljs-attr">tier:</span> <span class="hljs-string">backend</span><br>    <span class="hljs-attr">spec:</span><br>      <span class="hljs-comment"># 优雅终止宽限期（默认 30 秒：发 SIGTERM 后最多等 30 秒，超时未退出才发 SIGKILL 强杀）</span><br>      <span class="hljs-attr">terminationGracePeriodSeconds:</span> <span class="hljs-number">45</span><br><br>      <span class="hljs-comment"># ================= 2. 高可用反亲和性：严禁鸡蛋放在同一个篮子里！ =================</span><br>      <span class="hljs-comment"># 软反亲和性：尽量将同一个微服务的多个 Pod 打散调度到不同的宿主机（kubernetes.io/hostname）上，防止单机断电服务全挂！</span><br>      <span class="hljs-attr">affinity:</span><br>        <span class="hljs-attr">podAntiAffinity:</span><br>          <span class="hljs-attr">preferredDuringSchedulingIgnoredDuringExecution:</span><br>            <span class="hljs-bullet">-</span> <span class="hljs-attr">weight:</span> <span class="hljs-number">100</span><br>              <span class="hljs-attr">podAffinityTerm:</span><br>                <span class="hljs-attr">labelSelector:</span><br>                  <span class="hljs-attr">matchExpressions:</span><br>                    <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">app</span><br>                      <span class="hljs-attr">operator:</span> <span class="hljs-string">In</span><br>                      <span class="hljs-attr">values:</span> [<span class="hljs-string">&quot;order-service&quot;</span>]<br>                <span class="hljs-attr">topologyKey:</span> <span class="hljs-string">&quot;kubernetes.io/hostname&quot;</span><br><br>      <span class="hljs-attr">containers:</span><br>        <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">order-service</span><br>          <span class="hljs-comment"># 【军规】生产环境严禁使用 :latest 标签！必须使用精确的版本号或 Git Commit SHA</span><br>          <span class="hljs-attr">image:</span> <span class="hljs-string">harbor.internal.com/ecommerce/order-service:v2.4.1</span><br>          <span class="hljs-attr">imagePullPolicy:</span> <span class="hljs-string">IfNotPresent</span><br>          <span class="hljs-attr">ports:</span><br>            <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">http</span><br>              <span class="hljs-attr">containerPort:</span> <span class="hljs-number">8080</span><br>              <span class="hljs-attr">protocol:</span> <span class="hljs-string">TCP</span><br><br>          <span class="hljs-comment"># 【Java 容器防被误杀铁律】通过环境变量让 JVM 自动感知容器内存上限（只用容器 Limit 的 75% 作为堆内存，留 25% 给元空间、堆外内存和线程栈！）</span><br>          <span class="hljs-comment"># 千万不要在 4G Limit 的容器里写死 -Xmx4096m，否则 JVM 一算上堆外内存超过 4G 就会被 Linux 内核当场 OOMKilled (137)！</span><br>          <span class="hljs-attr">env:</span><br>            <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">TZ</span><br>              <span class="hljs-attr">value:</span> <span class="hljs-string">&quot;Asia/Shanghai&quot;</span><br>            <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">JAVA_TOOL_OPTIONS</span><br>              <span class="hljs-attr">value:</span> <span class="hljs-string">&quot;-XX:+UseContainerSupport -XX:InitialRAMPercentage=75.0 -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError&quot;</span><br><br>          <span class="hljs-comment"># ================= 3. 资源请求（Requests）与硬限制（Limits） =================</span><br>          <span class="hljs-attr">resources:</span><br>            <span class="hljs-attr">requests:</span><br>              <span class="hljs-attr">cpu:</span> <span class="hljs-string">&quot;500m&quot;</span>       <span class="hljs-comment"># 调度保底：0.5 核（Scheduler 按 requests 计算节点剩余容量）</span><br>              <span class="hljs-attr">memory:</span> <span class="hljs-string">&quot;2Gi&quot;</span>     <span class="hljs-comment"># 调度保底：2GB</span><br>            <span class="hljs-attr">limits:</span><br>              <span class="hljs-attr">cpu:</span> <span class="hljs-string">&quot;2000m&quot;</span>      <span class="hljs-comment"># 峰值上限：最多允许突发用到 2 核（超出会触发 CFS Throttling 限流变慢，但绝不会杀死容器）</span><br>              <span class="hljs-attr">memory:</span> <span class="hljs-string">&quot;4Gi&quot;</span>     <span class="hljs-comment"># 内存红线：一旦容器进程实际物理内存（WorkingSet）突破 4GB，立刻触发 OOMKilled (Exit Code 137)！</span><br><br>          <span class="hljs-comment"># ================= 4. 三大健康检查探针（防假死、防早杀、防雪崩） =================</span><br>          <span class="hljs-comment"># （1）启动探针（StartupProbe，K8s 1.18+）：专门保护启动慢的胖应用（如 Spring Boot）！</span><br>          <span class="hljs-comment"># 在它成功之前，Liveness 和 Readiness 探针都不会启动。此处最多给 30 * 5s = 150 秒启动时间。</span><br>          <span class="hljs-attr">startupProbe:</span><br>            <span class="hljs-attr">httpGet:</span><br>              <span class="hljs-attr">path:</span> <span class="hljs-string">/actuator/health/liveness</span><br>              <span class="hljs-attr">port:</span> <span class="hljs-number">8080</span><br>            <span class="hljs-attr">failureThreshold:</span> <span class="hljs-number">30</span><br>            <span class="hljs-attr">periodSeconds:</span> <span class="hljs-number">5</span><br><br>          <span class="hljs-comment"># （2）就绪探针（ReadinessProbe）：决定“能不能接外部流量”！</span><br>          <span class="hljs-comment"># 一旦连续失败 2 次，K8s 不会重启容器，但会立刻把该 Pod IP 从 Service 的 Endpoints 列表里摘除，不再往里转流量！</span><br>          <span class="hljs-attr">readinessProbe:</span><br>            <span class="hljs-attr">httpGet:</span><br>              <span class="hljs-attr">path:</span> <span class="hljs-string">/actuator/health/readiness</span><br>              <span class="hljs-attr">port:</span> <span class="hljs-number">8080</span><br>            <span class="hljs-attr">initialDelaySeconds:</span> <span class="hljs-number">5</span><br>            <span class="hljs-attr">periodSeconds:</span> <span class="hljs-number">5</span><br>            <span class="hljs-attr">timeoutSeconds:</span> <span class="hljs-number">3</span><br>            <span class="hljs-attr">failureThreshold:</span> <span class="hljs-number">2</span><br>            <span class="hljs-attr">successThreshold:</span> <span class="hljs-number">1</span><br><br>          <span class="hljs-comment"># （3）存活探针（LivenessProbe）：决定“要不要杀掉重启容器”！</span><br>          <span class="hljs-comment"># ⚠️ 【运维生死警告】：Liveness 探针接口里绝不能去连 MySQL / Redis 等下游依赖！</span><br>          <span class="hljs-comment"># 想象一下：如果 Redis 闪断了 10 秒，你全公司 50 个微服务的 Liveness 接口全因为连不上 Redis 返回 500，K8s 会同时把你全公司几百个 Pod 全部杀掉重启，引发毁灭性的级联雪崩！Liveness 只能做进程内部轻量级自检！</span><br>          <span class="hljs-attr">livenessProbe:</span><br>            <span class="hljs-attr">httpGet:</span><br>              <span class="hljs-attr">path:</span> <span class="hljs-string">/actuator/health/liveness</span><br>              <span class="hljs-attr">port:</span> <span class="hljs-number">8080</span><br>            <span class="hljs-attr">initialDelaySeconds:</span> <span class="hljs-number">15</span><br>            <span class="hljs-attr">periodSeconds:</span> <span class="hljs-number">10</span><br>            <span class="hljs-attr">timeoutSeconds:</span> <span class="hljs-number">3</span><br>            <span class="hljs-attr">failureThreshold:</span> <span class="hljs-number">3</span><br><br>          <span class="hljs-comment"># ================= 5. 彻底消灭滚动发版时的 502 Bad Gateway =================</span><br>          <span class="hljs-attr">lifecycle:</span><br>            <span class="hljs-attr">preStop:</span><br>              <span class="hljs-attr">exec:</span><br>                <span class="hljs-comment"># 为什么下线前要先 sleep 10 秒？详见下文 3.2 节图解！</span><br>                <span class="hljs-attr">command:</span> [<span class="hljs-string">&quot;/bin/sh&quot;</span>, <span class="hljs-string">&quot;-c&quot;</span>, <span class="hljs-string">&quot;sleep 10&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-2-深度解密：为什么发版或缩容时，前端总是偶发报-502-Bad-Gateway？"><a href="#3-2-深度解密：为什么发版或缩容时，前端总是偶发报-502-Bad-Gateway？" class="headerlink" title="3.2 深度解密：为什么发版或缩容时，前端总是偶发报 502 Bad Gateway？"></a>3.2 深度解密：为什么发版或缩容时，前端总是偶发报 <code>502 Bad Gateway</code>？</h3><p>这是 K8s 面试与生产排障的头号经典问题。<br>很多运维百思不得其解：“我已经配了 <code>readinessProbe</code>，应用代码里也开了优雅停机（Graceful Shutdown），为什么每次滚动更新杀老 Pod 的那几秒钟，Ingress-Nginx 还是会报几十个 <code>502 Connection refused</code>？”</p>
+<h4 id="根因：K8s-删除-Pod-时的“两条异步并发链路赛跑”！"><a href="#根因：K8s-删除-Pod-时的“两条异步并发链路赛跑”！" class="headerlink" title="根因：K8s 删除 Pod 时的“两条异步并发链路赛跑”！"></a>根因：K8s 删除 Pod 时的“两条异步并发链路赛跑”！</h4><p>当你删除一个老 Pod 时，APIServer 会<strong>同时通知两条完全独立、互不等待的链路</strong>：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs css">                   ┌──► 【链路 <span class="hljs-selector-tag">A</span>：本机杀进程（极快，几毫秒！）】<br>                   │    通知宿主机 kubelet ──► 如果没配 preStop，立刻向容器发 SIGTERM 信号！<br>                   │    ──► 容器里的 Tomcat/Go 收到信号，<span class="hljs-number">10</span>毫秒内直接关闭了 <span class="hljs-number">8080</span> 监听端口！<br><span class="hljs-selector-attr">[APIServer 下令]</span> ──┤<br><span class="hljs-selector-attr">[删除老 Pod IP]</span>    └──► 【链路 <span class="hljs-selector-tag">B</span>：全网摘流量（较慢，需 <span class="hljs-number">1</span>~<span class="hljs-number">3</span> 秒！）】<br>                        通知 EndpointController ──► 从 Endpoints 移除该 Pod IP ──► 通知所有节点的 kube-proxy <br>                        ──► 以及通知 Ingress-Nginx Controller 动态更新 upstream 列表（耗时约 <span class="hljs-number">1</span>~<span class="hljs-number">3</span> 秒！）<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>看懂悲剧是怎么发生的了吗？</strong><br><strong>链路 A 跑得太快了！</strong> 在第 <code>0.01</code> 秒时，容器已经把 8080 端口关门停业了；而此时链路 B 的 Ingress-Nginx 和 <code>kube-proxy</code> 还没收到“摘除这个 Pod IP”的通知！在接下来的 <code>1 ~ 3 秒</code> 时间窗口内，Ingress 还在源源不断地把新用户的请求转发给这个已经关门的旧 Pod IP，自然全部撞墙报 <strong><code>502 Connection refused</code></strong>！</li>
+<li><strong>为什么 <code>preStop: sleep 10</code> 能完美根治？</strong><br>加了 <code>preStop: sleep 10</code> 后，链路 A 在发 <code>SIGTERM</code> 关停应用之前，会先原地等 10 秒（这 10 秒内老容器依然正常处理在途请求）；与此同时，链路 B 在第 2 秒就已经把全集群的 IPVS 规则和 Ingress 上游列表更新完毕，再也没有任何新流量发过来了。等到第 10 秒 <code>sleep</code> 结束，Kubelet 再发 <code>SIGTERM</code> 让应用体面退出——<strong>真正实现 100% 零 502 无损发布</strong>！</li>
+</ul>
+<hr>
+<h2 id="第四章：K8s-网络全链路打通：CNI、Service、CoreDNS-与-Ingress（中级篇）"><a href="#第四章：K8s-网络全链路打通：CNI、Service、CoreDNS-与-Ingress（中级篇）" class="headerlink" title="第四章：K8s 网络全链路打通：CNI、Service、CoreDNS 与 Ingress（中级篇）"></a>第四章：K8s 网络全链路打通：CNI、Service、CoreDNS 与 Ingress（中级篇）</h2><h3 id="4-1-CNI-容器网络插件怎么选？（Flannel-vs-Calico-vs-Cilium）"><a href="#4-1-CNI-容器网络插件怎么选？（Flannel-vs-Calico-vs-Cilium）" class="headerlink" title="4.1 CNI 容器网络插件怎么选？（Flannel vs Calico vs Cilium）"></a>4.1 CNI 容器网络插件怎么选？（Flannel vs Calico vs Cilium）</h3><table>
+<thead>
+<tr>
+<th align="left">CNI 插件</th>
+<th align="left">常见网络模式</th>
+<th align="left">底层原理通俗解读</th>
+<th align="left">性能与特性对比</th>
+<th align="left">生产选型建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Flannel</strong></td>
+<td align="left"><strong>VXLAN</strong>（Overlay 隧道） &#x2F; Host-GW</td>
+<td align="left">把 Pod 发出的网络包封装在宿主机 UDP 包里（隧道封包解包），跨宿主机传输。</td>
+<td align="left">架构最简单稳定；但 VXLAN 封包会多占 50 字节头部（MTU 变为 1450），带来约 5%~10% 的性能损耗，且<strong>不支持 <code>NetworkPolicy</code> 网络隔离策略</strong>。</td>
+<td align="left">节点数 <code>&lt; 50 台</code>、无需复杂网络安全隔离的中小集群首选，简单省心。</td>
+</tr>
+<tr>
+<td align="left"><strong>Calico</strong></td>
+<td align="left"><strong>IPIP</strong>（隧道） &#x2F; <strong>BGP</strong>（纯三层路由直连）</td>
+<td align="left">利用 Linux 内核路由表和 BGP 协议直接广播各节点的 Pod 子网路由，无需隧道封包（BGP 模式）。</td>
+<td align="left"><strong>目前企业级生产占有率第一</strong>！BGP 模式下性能接近物理机原生网络，且原生支持强大的 <code>NetworkPolicy</code> 防火墙策略。</td>
+<td align="left">50 ~ 500+ 节点中大型自建机房（BGP）或云主机（IPIP&#x2F;VXLAN）生产标准配置。</td>
+</tr>
+<tr>
+<td align="left"><strong>Cilium</strong></td>
+<td align="left"><strong>eBPF</strong>（内核字节码直通）</td>
+<td align="left">彻底绕过老旧笨重的 Linux <code>iptables</code> &#x2F; <code>netfilter</code> 链，直接在内核 Socket 层通过 eBPF 完成转发与安全策略。</td>
+<td align="left"><strong>性能天花板</strong>！可彻底替代 <code>kube-proxy</code>，提供极强的 L7 可观测性（Hubble），但对宿主机 Linux 内核版本要求较高（建议 Kernel <code>&gt;= 5.10</code>）。</td>
+<td align="left">高版本内核、超大规模集群（上千节点）或对网络性能&#x2F;可观测性有极致要求的云原生团队。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="4-2-终结-K8s-最诡异的“CoreDNS-5-秒解析延迟毛刺”！"><a href="#4-2-终结-K8s-最诡异的“CoreDNS-5-秒解析延迟毛刺”！" class="headerlink" title="4.2 终结 K8s 最诡异的“CoreDNS 5 秒解析延迟毛刺”！"></a>4.2 终结 K8s 最诡异的“CoreDNS 5 秒解析延迟毛刺”！</h3><p>很多团队上 K8s 后都会遇到一个极其灵异的现象：<strong>Pod 里的应用调外部接口（比如调微信支付 <code>api.mch.weixin.qq.com</code> 或内网 RDS <code>mysql.internal.com</code>），平时只要 2ms，但每隔一会儿就会莫名其妙卡顿整整 5 秒钟（5000ms）！</strong></p>
+<h4 id="（1）两大真凶拆解"><a href="#（1）两大真凶拆解" class="headerlink" title="（1）两大真凶拆解"></a>（1）两大真凶拆解</h4><ol>
+<li><strong>真凶一：<code>/etc/resolv.conf</code> 里默认的 <code>options ndots:5</code> 导致域名放大 5 倍查询！</strong><br>你可以进任意一个 Pod 执行 <code>cat /etc/resolv.conf</code>，会看到：<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">nameserver 10.96.0.10<br>search prod-ecommerce.svc.cluster.local svc.cluster.local cluster.local<br>options ndots:5<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>什么是 <code>ndots:5</code>？</strong> 它的意思是：<strong>如果你请求的域名里面，点号 <code>.</code> 的数量少于 5 个</strong>，Linux 解析器就会认为它不是一个完整域名，而是集群内部缩写！于是它会<strong>先把你的域名依次拼上 <code>search</code> 里的 3 个后缀去查一遍</strong>！</li>
+<li>举例：当你访问 <code>api.mch.weixin.qq.com</code>（里面只有 4 个点 <code>&lt; 5</code>）时，Pod 竟然会按顺序向 CoreDNS 发起以下 <strong>4 次查询（每次还同时发 A 记录 IPv4 和 AAAA 记录 IPv6 共 8 个 UDP 包！）</strong>：<ol>
+<li><code>api.mch.weixin.qq.com.prod-ecommerce.svc.cluster.local</code> -&gt; 返回 NXDOMAIN（不存在）</li>
+<li><code>api.mch.weixin.qq.com.svc.cluster.local</code> -&gt; 返回 NXDOMAIN</li>
+<li><code>api.mch.weixin.qq.com.cluster.local</code> -&gt; 返回 NXDOMAIN</li>
+<li>最后第 4 次才去查真正的 <code>api.mch.weixin.qq.com</code> -&gt; 成功！</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><strong>真凶二：Linux 内核 <code>nf_conntrack</code> 处理并发 UDP DNS 包时的竞争丢包</strong><br>由于 glibc 同时并发发出 IPv4（A）和 IPv6（AAAA）两个 UDP 请求包复用同一个 Socket 源端口，在经过宿主机内核 DNAT 转发给 CoreDNS 时，两个包在 <code>conntrack</code> 表插入时发生冲突，导致其中一个包被内核静默丢弃！而 glibc 默认的 DNS 重试超时时间正好是 <strong>5 秒</strong>！</li>
+</ol>
+<h4 id="（2）生产环境一键根治方案"><a href="#（2）生产环境一键根治方案" class="headerlink" title="（2）生产环境一键根治方案"></a>（2）生产环境一键根治方案</h4><ul>
+<li><strong>方法 A（应用级最快解法，修改 Deployment 的 <code>dnsConfig</code>）</strong>：<br>将 <code>ndots</code> 从默认的 <code>5</code> 调小为 <strong><code>2</code></strong>，并加上 <code>single-request-reopen</code>（避免 A 和 AAAA 记录并发冲突）：<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">spec:</span><br>  <span class="hljs-attr">template:</span><br>    <span class="hljs-attr">spec:</span><br>      <span class="hljs-attr">dnsConfig:</span><br>        <span class="hljs-attr">options:</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">ndots</span><br>            <span class="hljs-attr">value:</span> <span class="hljs-string">&quot;2&quot;</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">single-request-reopen</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">timeout</span><br>            <span class="hljs-attr">value:</span> <span class="hljs-string">&quot;2&quot;</span><br>          <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">attempts</span><br>            <span class="hljs-attr">value:</span> <span class="hljs-string">&quot;2&quot;</span><br></code></pre></td></tr></table></figure></li>
+<li><strong>方法 B（集群级一劳永逸解法）</strong>：在集群中部署官方的 <strong><code>NodeLocal DNSCache</code></strong>（以 DaemonSet 方式在每台节点跑一个本地 DNS 缓存，并将 Pod 到 CoreDNS 的 UDP 升级为 TCP 连接），彻底消灭 5 秒毛刺并把 CoreDNS 负载降低 80%！</li>
+</ul>
+<hr>
+<h2 id="第五章：持久化存储（PV-PVC-StorageClass）与配置挂载深坑（进阶篇）"><a href="#第五章：持久化存储（PV-PVC-StorageClass）与配置挂载深坑（进阶篇）" class="headerlink" title="第五章：持久化存储（PV &#x2F; PVC &#x2F; StorageClass）与配置挂载深坑（进阶篇）"></a>第五章：持久化存储（PV &#x2F; PVC &#x2F; StorageClass）与配置挂载深坑（进阶篇）</h2><h3 id="5-1-用“买房与切房”秒懂-PV、PVC-与-StorageClass"><a href="#5-1-用“买房与切房”秒懂-PV、PVC-与-StorageClass" class="headerlink" title="5.1 用“买房与切房”秒懂 PV、PVC 与 StorageClass"></a>5.1 用“买房与切房”秒懂 PV、PVC 与 StorageClass</h3><p>很多新手分不清 PV、PVC 和 StorageClass 的关系：</p>
+<ul>
+<li><strong>PV（PersistentVolume，持久卷）</strong>：相当于<strong>运维提前准备好的一套真实物理毛坯房</strong>（背面挂着真实的 NFS 目录、Ceph RBD 块设备或阿里云 ESSD 云盘）。</li>
+<li><strong>PVC（PersistentVolumeClaim，持久卷申领）</strong>：相当于<strong>研发提交的一张“租房申请单”</strong>（上面只写：“我要租一套 50GB、支持单机读写 <code>ReadWriteOnce</code> 的房子”，研发根本不关心底层是 Ceph 还是 NFS）。</li>
+<li><strong>StorageClass（存储类，动态供给）</strong>：如果公司有 1000 个微服务，每次研发提一张 PVC 申请单，难道都要运维手动去建一个 PV 吗？太累了！于是有了 <strong>StorageClass（全自动售楼处 + CSI 插件）</strong>——研发只要提交 PVC 并指定 <code>storageClassName: ceph-rbd</code>，StorageClass 就会自动调存储接口切出一块 50GB 的盘、自动创建出对应的 PV 并与 PVC 绑定（<code>Bound</code>）！</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># 1. 定义生产级 StorageClass（注意：核心数据库存储的 reclaimPolicy 必须设为 Retain 保留！）</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">storage.k8s.io/v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">StorageClass</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">prod-ssd-sc</span><br><span class="hljs-attr">provisioner:</span> <span class="hljs-string">rbd.csi.ceph.com</span>          <span class="hljs-comment"># 对应集群安装的 CSI 存储驱动名</span><br><span class="hljs-attr">reclaimPolicy:</span> <span class="hljs-string">Retain</span>                  <span class="hljs-comment"># 【保命配置】当研发误删了 PVC 时，底层物理 PV 和数据依然保留不删除！（默认是 Delete 会直接删盘！）</span><br><span class="hljs-attr">allowVolumeExpansion:</span> <span class="hljs-literal">true</span>             <span class="hljs-comment"># 允许未来在线直接修改 PVC 的 storage 大小实现动态无损扩容！</span><br><span class="hljs-attr">volumeBindingMode:</span> <span class="hljs-string">WaitForFirstConsumer</span> <span class="hljs-comment"># 延迟绑定：等 Pod 真正被 Scheduler 调度定下节点后，再在该节点所在可用区创建云盘！</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-2-⚠️-运维高频踩坑点：为什么修改了-ConfigMap，容器里的配置文件却不自动热更新？"><a href="#5-2-⚠️-运维高频踩坑点：为什么修改了-ConfigMap，容器里的配置文件却不自动热更新？" class="headerlink" title="5.2 ⚠️ 运维高频踩坑点：为什么修改了 ConfigMap，容器里的配置文件却不自动热更新？"></a>5.2 ⚠️ 运维高频踩坑点：为什么修改了 ConfigMap，容器里的配置文件却不自动热更新？</h3><p>这是运维在管理 Nginx 或微服务配置时必踩的大坑：</p>
+<ul>
+<li><strong>现象</strong>：你把 <code>nginx.conf</code> 放进了 <code>ConfigMap</code> 里，然后在 Deployment 里通过 <code>volumeMounts</code> 挂载到了容器内的 <code>/etc/nginx/nginx.conf</code>。某天你用 <code>kubectl edit cm</code> 修改了配置，等了 10 分钟，进容器看 <code>/etc/nginx/nginx.conf</code> 居然还是旧内容！</li>
+<li><strong>根因揭秘（<code>subPath</code> 的致命副作用）</strong>：<ul>
+<li>如果你是<strong>整个目录挂载</strong>（不写 <code>subPath</code>）：Kubelet 底层用的是符号链接替换，修改 ConfigMap 后大约 <strong>1 分钟内</strong>，容器里的文件会自动同步更新。</li>
+<li>但因为你不想覆盖 <code>/etc/nginx/</code> 目录下的其他默认文件，你用了 <strong><code>subPath: nginx.conf</code> 单文件挂载</strong>！<strong>在 K8s 设计中，凡是使用 <code>subPath</code> 挂载的 ConfigMap 或 Secret，容器内的文件永远不会自动接收热更新！</strong></li>
+</ul>
+</li>
+<li><strong>正确解法</strong>：<ol>
+<li>要么把需要挂载的配置文件放在单独的子目录（如 <code>/etc/nginx/conf.d/</code>）下，去掉 <code>subPath</code> 直接挂载目录；</li>
+<li>要么使用开源控制器 <strong><code>Reloader</code>（stakater&#x2F;Reloader）</strong>，或遵循 GitOps 规范：每次修改配置时同步更新 Deployment Pod Template 的 Annotation（如 <code>config-hash</code>），触发 Pod 滚动更新。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="第六章：集群日常运维高频操作：节点维护、证书续期与-Etcd-灾备（进阶篇）"><a href="#第六章：集群日常运维高频操作：节点维护、证书续期与-Etcd-灾备（进阶篇）" class="headerlink" title="第六章：集群日常运维高频操作：节点维护、证书续期与 Etcd 灾备（进阶篇）"></a>第六章：集群日常运维高频操作：节点维护、证书续期与 Etcd 灾备（进阶篇）</h2><h3 id="6-1-宿主机安全停机维护标准三步曲（Cordon-Drain-Uncordon）"><a href="#6-1-宿主机安全停机维护标准三步曲（Cordon-Drain-Uncordon）" class="headerlink" title="6.1 宿主机安全停机维护标准三步曲（Cordon -&gt; Drain -&gt; Uncordon）"></a>6.1 宿主机安全停机维护标准三步曲（Cordon -&gt; Drain -&gt; Uncordon）</h3><p>当某台 Worker 宿主机（如 <code>node-05</code>）内存条故障报错、或者需要升级 Linux 内核重启时，<strong>严禁直接在机器上敲 <code>reboot</code>！</strong> 必须按以下 3 步先将该节点上的业务 Pod 平滑驱逐到其他机器上：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 【第 1 步：Cordon（警戒封锁）】—— 将 node-05 标记为不可调度（SchedulingDisabled），不再接收任何新创建的 Pod</span><br>kubectl cordon node-05<br><br><span class="hljs-comment"># 【第 2 步：Drain（安全排水）】—— 将 node-05 上正在运行的所有业务 Pod 优雅驱逐（在其他健康节点重建）</span><br><span class="hljs-comment"># --ignore-daemonsets：忽略无法被驱逐的 DaemonSet 节点级守护进程（如 kube-proxy、calico-node）</span><br><span class="hljs-comment"># --delete-emptydir-data：允许驱逐挂载了临时 emptyDir 卷的 Pod</span><br>kubectl drain node-05 --ignore-daemonsets --delete-emptydir-data<br><br><span class="hljs-comment"># 【第 3 步：停机维护】—— 确认 node-05 上除 DaemonSet 外已无业务 Pod 后，安全重启或维修机器</span><br><span class="hljs-comment"># 机器维护完成重新开机且状态恢复 Ready 后，解除封锁恢复正常调度：</span><br>kubectl uncordon node-05<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>如何防止运维执行 <code>kubectl drain</code> 时把某个只有 2 个副本的核心服务同时驱逐导致业务中断？</strong><br>为核心服务配置 <strong><code>PodDisruptionBudget (PDB，Pod 中断预算)</code></strong>！</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">policy/v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">PodDisruptionBudget</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">order-service-pdb</span><br>  <span class="hljs-attr">namespace:</span> <span class="hljs-string">prod-ecommerce</span><br><span class="hljs-attr">spec:</span><br>  <span class="hljs-attr">minAvailable:</span> <span class="hljs-number">2</span>   <span class="hljs-comment"># 无论运维怎么 drain 节点，K8s 保证任何时刻至少有 2 个副本处于 Ready 可用状态，驱逐完 1 个等新副本 Ready 后才允许驱逐下一个！</span><br>  <span class="hljs-attr">selector:</span><br>    <span class="hljs-attr">matchLabels:</span><br>      <span class="hljs-attr">app:</span> <span class="hljs-string">order-service</span><br></code></pre></td></tr></table></figure></blockquote>
+<hr>
+<h3 id="6-2-kubeadm-集群一年一度大考：1-年期证书过期检查与一键无损续期"><a href="#6-2-kubeadm-集群一年一度大考：1-年期证书过期检查与一键无损续期" class="headerlink" title="6.2 kubeadm 集群一年一度大考：1 年期证书过期检查与一键无损续期"></a>6.2 <code>kubeadm</code> 集群一年一度大考：1 年期证书过期检查与一键无损续期</h3><p>使用 <code>kubeadm</code> 搭建的 K8s 集群，其内部组件通信证书（APIServer、ControllerManager、Scheduler、Etcd 等客户端&#x2F;服务端证书）<strong>默认有效期只有 1 年</strong>！<br>很多公司集群安稳跑了 365 天，到了第 366 天早上，敲 <code>kubectl get nodes</code> 突然直接报错：<br><strong><code>Unable to connect to the server: x509: certificate has expired or is not yet valid</code></strong>！</p>
+<p>请在<strong>每台 Master 控制平面节点</strong>上按以下 4 步完成一键续期（全程约 1 分钟，不影响 Worker 节点上正在跑的业务容器）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 【第 1 步】查看当前节点所有证书的剩余到期时间（发现 RESIDUAL TIME 少于 30d 时即可安排续期）</span><br>kubeadm certs check-expiration<br><br><span class="hljs-comment"># 【第 2 步】备份原有的 /etc/kubernetes 目录（运维保命好习惯！）</span><br><span class="hljs-built_in">cp</span> -r /etc/kubernetes /etc/kubernetes.bak_$(<span class="hljs-built_in">date</span> +%F)<br><br><span class="hljs-comment"># 【第 3 步】一键自动续期所有证书（有效期自动顺延 1 年），并覆盖更新 root 用户的 ~/.kube/config</span><br>kubeadm certs renew all<br><span class="hljs-built_in">cp</span> -i /etc/kubernetes/admin.conf <span class="hljs-variable">$HOME</span>/.kube/config<br><br><span class="hljs-comment"># 【第 4 步】重启四大静态 Pod（APIServer / ControllerManager / Scheduler / Etcd）使新证书加载生效！</span><br><span class="hljs-comment"># 最稳妥的重启静态 Pod 方法：将 /etc/kubernetes/manifests/ 下的 YAML 移出 10 秒再移回（或通过 crictl stop 对应容器让 kubelet 自动秒级拉起）</span><br>crictl ps --name <span class="hljs-string">&quot;kube-apiserver|kube-controller-manager|kube-scheduler|etcd&quot;</span> -q | xargs -r crictl stop<br><br><span class="hljs-comment"># 再次验证所有证书有效期已变为 364d，且 kubectl get nodes 正常！</span><br>kubeadm certs check-expiration<br>kubectl get nodes<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-3-Etcd-数据库定时快照备份与灾难恢复（删库跑路后的唯一后悔药）"><a href="#6-3-Etcd-数据库定时快照备份与灾难恢复（删库跑路后的唯一后悔药）" class="headerlink" title="6.3 Etcd 数据库定时快照备份与灾难恢复（删库跑路后的唯一后悔药）"></a>6.3 Etcd 数据库定时快照备份与灾难恢复（删库跑路后的唯一后悔药）</h3><p>如果有人误执行了 <code>kubectl delete ns prod-ecommerce</code> 把整个生产命名空间删了，或者 3 台 Master 硬盘同时损毁，唯一的救命手段就是恢复 <strong>Etcd 快照备份</strong>！</p>
+<h4 id="（1）日常定时快照备份脚本（写入-Master-节点的-Crontab-每天凌晨执行）"><a href="#（1）日常定时快照备份脚本（写入-Master-节点的-Crontab-每天凌晨执行）" class="headerlink" title="（1）日常定时快照备份脚本（写入 Master 节点的 Crontab 每天凌晨执行）"></a>（1）日常定时快照备份脚本（写入 Master 节点的 Crontab 每天凌晨执行）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br>BACKUP_DIR=<span class="hljs-string">&quot;/data/etcd_backup&quot;</span><br><span class="hljs-built_in">mkdir</span> -p <span class="hljs-variable">$BACKUP_DIR</span><br><br><span class="hljs-comment"># 使用 etcdctl 拍快照（务必加上 ETCDCTL_API=3 并指定 3 个证书路径）</span><br>ETCDCTL_API=3 /usr/local/bin/etcdctl \<br>  --endpoints=https://127.0.0.1:2379 \<br>  --cacert=/etc/kubernetes/pki/etcd/ca.crt \<br>  --cert=/etc/kubernetes/pki/etcd/server.crt \<br>  --key=/etc/kubernetes/pki/etcd/server.key \<br>  snapshot save <span class="hljs-variable">$&#123;BACKUP_DIR&#125;</span>/etcd-snapshot-$(<span class="hljs-built_in">date</span> +%Y%m%d_%H%M).db<br><br><span class="hljs-comment"># 校验快照文件完整性</span><br>ETCDCTL_API=3 /usr/local/bin/etcdctl --write-out=table snapshot status <span class="hljs-variable">$&#123;BACKUP_DIR&#125;</span>/etcd-snapshot-$(<span class="hljs-built_in">date</span> +%Y%m%d_%H%M).db<br><br><span class="hljs-comment"># 自动清理 15 天前的旧快照</span><br>find <span class="hljs-variable">$BACKUP_DIR</span> -name <span class="hljs-string">&quot;etcd-snapshot-*.db&quot;</span> -mtime +15 -delete<br></code></pre></td></tr></table></figure>
+
+<h4 id="（2）Etcd-灾难恢复标准-4-步-SOP（以单-Master-或恢复测试为例）"><a href="#（2）Etcd-灾难恢复标准-4-步-SOP（以单-Master-或恢复测试为例）" class="headerlink" title="（2）Etcd 灾难恢复标准 4 步 SOP（以单 Master 或恢复测试为例）"></a>（2）Etcd 灾难恢复标准 4 步 SOP（以单 Master 或恢复测试为例）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 【第 1 步】将 /etc/kubernetes/manifests/ 下的静态 Pod YAML 临时移走，停止 APIServer 和 Etcd 进程</span><br><span class="hljs-built_in">mkdir</span> -p /etc/kubernetes/manifests.bak<br><span class="hljs-built_in">mv</span> /etc/kubernetes/manifests/*.yaml /etc/kubernetes/manifests.bak/<br><span class="hljs-comment"># 等待 10 秒确认 crictl ps 中 etcd 和 kube-apiserver 已退出</span><br><br><span class="hljs-comment"># 【第 2 步】备份并移走原来损坏的 /var/lib/etcd 数据目录</span><br><span class="hljs-built_in">mv</span> /var/lib/etcd /var/lib/etcd.broken_$(<span class="hljs-built_in">date</span> +%s)<br><br><span class="hljs-comment"># 【第 3 步】使用 etcdctl snapshot restore 将快照恢复到新的 /var/lib/etcd 目录</span><br><span class="hljs-comment"># （若是 3 节点 Etcd 集群，需在 3 台机器上分别带上各自的 --name、--initial-cluster 和 --initial-advertise-peer-urls 参数执行）</span><br>ETCDCTL_API=3 /usr/local/bin/etcdctl snapshot restore \<br>  /data/etcd_backup/etcd-snapshot-20261026_0200.db \<br>  --data-dir=/var/lib/etcd<br><br><span class="hljs-comment"># 【第 4 步】将静态 Pod YAML 移回 /etc/kubernetes/manifests/，Kubelet 会自动拉起 Etcd 和 APIServer，误删的资源全部复活！</span><br><span class="hljs-built_in">mv</span> /etc/kubernetes/manifests.bak/*.yaml /etc/kubernetes/manifests/<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第七章：RBAC-权限安全、多租户资源配额（ResourceQuota）与网络隔离（精通篇）"><a href="#第七章：RBAC-权限安全、多租户资源配额（ResourceQuota）与网络隔离（精通篇）" class="headerlink" title="第七章：RBAC 权限安全、多租户资源配额（ResourceQuota）与网络隔离（精通篇）"></a>第七章：RBAC 权限安全、多租户资源配额（ResourceQuota）与网络隔离（精通篇）</h2><h3 id="7-1-RBAC-实战：如何给研发团队发一个“只能看日志和进容器，不能删-Deployment、不能看-Secret”的受限权限？"><a href="#7-1-RBAC-实战：如何给研发团队发一个“只能看日志和进容器，不能删-Deployment、不能看-Secret”的受限权限？" class="headerlink" title="7.1 RBAC 实战：如何给研发团队发一个“只能看日志和进容器，不能删 Deployment、不能看 Secret”的受限权限？"></a>7.1 RBAC 实战：如何给研发团队发一个“只能看日志和进容器，不能删 Deployment、不能看 Secret”的受限权限？</h3><p>在生产环境里，<strong>绝对禁止把 <code>/etc/kubernetes/admin.conf</code>（超级管理员 <code>cluster-admin</code>）直接发给全体研发</strong>！通过以下 YAML，我们可以为研发创建一个限制在 <code>prod-ecommerce</code> 命名空间内的安全角色：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># 1. 创建服务账号（ServiceAccount）</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">ServiceAccount</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">dev-readonly-sa</span><br>  <span class="hljs-attr">namespace:</span> <span class="hljs-string">prod-ecommerce</span><br><span class="hljs-meta">---</span><br><span class="hljs-comment"># 2. 创建细粒度角色（Role）：允许查看 Pod/Deployment/Service，允许查看 Pod 日志（pods/log）和 exec 进入容器排障（pods/exec），但严禁 delete Deployment 或读取 Secret！</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">rbac.authorization.k8s.io/v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">Role</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">dev-troubleshoot-role</span><br>  <span class="hljs-attr">namespace:</span> <span class="hljs-string">prod-ecommerce</span><br><span class="hljs-attr">rules:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">apiGroups:</span> [<span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;apps&quot;</span>, <span class="hljs-string">&quot;networking.k8s.io&quot;</span>]<br>    <span class="hljs-attr">resources:</span> [<span class="hljs-string">&quot;pods&quot;</span>, <span class="hljs-string">&quot;pods/log&quot;</span>, <span class="hljs-string">&quot;deployments&quot;</span>, <span class="hljs-string">&quot;services&quot;</span>, <span class="hljs-string">&quot;ingresses&quot;</span>, <span class="hljs-string">&quot;events&quot;</span>, <span class="hljs-string">&quot;configmaps&quot;</span>]<br>    <span class="hljs-attr">verbs:</span> [<span class="hljs-string">&quot;get&quot;</span>, <span class="hljs-string">&quot;list&quot;</span>, <span class="hljs-string">&quot;watch&quot;</span>]<br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">apiGroups:</span> [<span class="hljs-string">&quot;&quot;</span>]<br>    <span class="hljs-attr">resources:</span> [<span class="hljs-string">&quot;pods/exec&quot;</span>]<br>    <span class="hljs-attr">verbs:</span> [<span class="hljs-string">&quot;create&quot;</span>, <span class="hljs-string">&quot;get&quot;</span>]<br><span class="hljs-meta">---</span><br><span class="hljs-comment"># 3. 将 Role 绑定给 ServiceAccount（RoleBinding）</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">rbac.authorization.k8s.io/v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">RoleBinding</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">dev-troubleshoot-binding</span><br>  <span class="hljs-attr">namespace:</span> <span class="hljs-string">prod-ecommerce</span><br><span class="hljs-attr">subjects:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">kind:</span> <span class="hljs-string">ServiceAccount</span><br>    <span class="hljs-attr">name:</span> <span class="hljs-string">dev-readonly-sa</span><br>    <span class="hljs-attr">namespace:</span> <span class="hljs-string">prod-ecommerce</span><br><span class="hljs-attr">roleRef:</span><br>  <span class="hljs-attr">kind:</span> <span class="hljs-string">Role</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">dev-troubleshoot-role</span><br>  <span class="hljs-attr">apiGroup:</span> <span class="hljs-string">rbac.authorization.k8s.io</span><br></code></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>生成 Token 命令（K8s 1.24+）</strong>：执行 <code>kubectl create token dev-readonly-sa -n prod-ecommerce --duration=8760h</code> 即可生成有效期 1 年的专属 JWT Token，填入 <code>kubeconfig</code> 文件发给研发即可！</p>
+</blockquote>
+<hr>
+<h3 id="7-2-多租户防失控双保险：LimitRange（单-Pod-默认限制）-ResourceQuota（命名空间总配额）"><a href="#7-2-多租户防失控双保险：LimitRange（单-Pod-默认限制）-ResourceQuota（命名空间总配额）" class="headerlink" title="7.2 多租户防失控双保险：LimitRange（单 Pod 默认限制）+ ResourceQuota（命名空间总配额）"></a>7.2 多租户防失控双保险：<code>LimitRange</code>（单 Pod 默认限制）+ <code>ResourceQuota</code>（命名空间总配额）</h3><p>为了防止某个粗心的研发提交了一个忘了写 <code>resources.limits</code> 的 YAML，或者手滑把 <code>replicas: 3</code> 写成了 <code>replicas: 300</code> 把整个集群榨干，运维必须在每个业务 Namespace 下配置这两把锁：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># 【第 1 把锁：LimitRange】—— 如果研发创建的 Pod 忘了写 requests/limits，自动帮他补上默认值！</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">LimitRange</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">default-container-limits</span><br>  <span class="hljs-attr">namespace:</span> <span class="hljs-string">prod-ecommerce</span><br><span class="hljs-attr">spec:</span><br>  <span class="hljs-attr">limits:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">type:</span> <span class="hljs-string">Container</span><br>      <span class="hljs-attr">default:</span>          <span class="hljs-comment"># 默认注入的 limits</span><br>        <span class="hljs-attr">cpu:</span> <span class="hljs-string">&quot;1000m&quot;</span><br>        <span class="hljs-attr">memory:</span> <span class="hljs-string">&quot;2Gi&quot;</span><br>      <span class="hljs-attr">defaultRequest:</span>   <span class="hljs-comment"># 默认注入的 requests</span><br>        <span class="hljs-attr">cpu:</span> <span class="hljs-string">&quot;200m&quot;</span><br>        <span class="hljs-attr">memory:</span> <span class="hljs-string">&quot;512Mi&quot;</span><br>      <span class="hljs-attr">max:</span>              <span class="hljs-comment"># 单个容器最大不允许超过 8核 16G</span><br>        <span class="hljs-attr">cpu:</span> <span class="hljs-string">&quot;8000m&quot;</span><br>        <span class="hljs-attr">memory:</span> <span class="hljs-string">&quot;16Gi&quot;</span><br><span class="hljs-meta">---</span><br><span class="hljs-comment"># 【第 2 把锁：ResourceQuota】—— 锁死整个 prod-ecommerce 命名空间最多能消耗的集群总资源天花板！</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">ResourceQuota</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">namespace-total-quota</span><br>  <span class="hljs-attr">namespace:</span> <span class="hljs-string">prod-ecommerce</span><br><span class="hljs-attr">spec:</span><br>  <span class="hljs-attr">hard:</span><br>    <span class="hljs-attr">requests.cpu:</span> <span class="hljs-string">&quot;64&quot;</span><br>    <span class="hljs-attr">requests.memory:</span> <span class="hljs-string">&quot;128Gi&quot;</span><br>    <span class="hljs-attr">limits.cpu:</span> <span class="hljs-string">&quot;128&quot;</span><br>    <span class="hljs-attr">limits.memory:</span> <span class="hljs-string">&quot;256Gi&quot;</span><br>    <span class="hljs-attr">pods:</span> <span class="hljs-string">&quot;200&quot;</span>                    <span class="hljs-comment"># 该命名空间最多允许存在 200 个 Pod</span><br>    <span class="hljs-attr">persistentvolumeclaims:</span> <span class="hljs-string">&quot;50&quot;</span>   <span class="hljs-comment"># 最多允许申请 50 个 PVC 存储卷</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第八章：生产故障应急预案手册（Runbook）与监控体系建设（精通篇）"><a href="#第八章：生产故障应急预案手册（Runbook）与监控体系建设（精通篇）" class="headerlink" title="第八章：生产故障应急预案手册（Runbook）与监控体系建设（精通篇）"></a>第八章：生产故障应急预案手册（Runbook）与监控体系建设（精通篇）</h2><h3 id="8-1-Prometheus-kube-prometheus-stack-核心监控告警矩阵"><a href="#8-1-Prometheus-kube-prometheus-stack-核心监控告警矩阵" class="headerlink" title="8.1 Prometheus (kube-prometheus-stack) 核心监控告警矩阵"></a>8.1 Prometheus (<code>kube-prometheus-stack</code>) 核心监控告警矩阵</h3><table>
+<thead>
+<tr>
+<th align="left">监控层级</th>
+<th align="left">核心告警规则与指标表达式（示例）</th>
+<th align="left">Warning 阈值</th>
+<th align="left">Critical 阈值</th>
+<th align="left">故障指向与处置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>节点层</strong></td>
+<td align="left"><code>kube_node_status_condition&#123;condition=&quot;Ready&quot;,status=&quot;true&quot;&#125; == 0</code></td>
+<td align="left">持续 1 分钟</td>
+<td align="left"><strong>持续 3 分钟</strong></td>
+<td align="left">节点 <code>NotReady</code> 失联，满 5 分钟将触发大规模 Pod 驱逐迁移。</td>
+</tr>
+<tr>
+<td align="left"><strong>节点层</strong></td>
+<td align="left">节点磁盘&#x2F;Inode 使用率</td>
+<td align="left"><strong>&gt; 80%</strong></td>
+<td align="left"><strong>&gt; 85%</strong></td>
+<td align="left"><strong>达到 85% 会触发 Kubelet <code>DiskPressure</code> 污点</strong>，开始强制驱逐该节点上的业务 Pod！</td>
+</tr>
+<tr>
+<td align="left"><strong>控制面</strong></td>
+<td align="left"><code>etcd_server_has_leader == 0</code> 或 <code>wal_fsync_duration_seconds &gt; 0.1</code></td>
+<td align="left">WAL 刷盘 &gt; 25ms</td>
+<td align="left"><strong>无 Leader 或刷盘 &gt; 100ms</strong></td>
+<td align="left">Etcd 磁盘 I&#x2F;O 严重卡顿或脑裂，需立即检查磁盘负载。</td>
+</tr>
+<tr>
+<td align="left"><strong>控制面</strong></td>
+<td align="left">APIServer 证书剩余有效期</td>
+<td align="left"><strong>&lt; 30 天</strong></td>
+<td align="left"><strong>&lt; 7 天</strong></td>
+<td align="left">立即按第六章 6.2 节执行 <code>kubeadm certs renew all</code>。</td>
+</tr>
+<tr>
+<td align="left"><strong>Pod 层</strong></td>
+<td align="left"><code>increase(kube_pod_container_status_restarts_total[15m]) &gt; 3</code></td>
+<td align="left">&gt; 3 次</td>
+<td align="left"><strong>15 分钟重启 &gt; 5 次</strong></td>
+<td align="left">容器陷入 <code>CrashLoopBackOff</code> 或频繁被 <code>OOMKilled</code>。</td>
+</tr>
+<tr>
+<td align="left"><strong>Pod 层</strong></td>
+<td align="left">容器内存使用率 <code>container_memory_working_set_bytes / limit</code></td>
+<td align="left"><strong>&gt; 85%</strong></td>
+<td align="left"><strong>&gt; 92%</strong></td>
+<td align="left">注意：<strong>K8s 判别 OOM 看的是 <code>working_set_bytes</code>（不含可回收 Cache），而非 <code>usage_bytes</code>！</strong> 超过 92% 随时会被 OOMKill。</td>
+</tr>
+<tr>
+<td align="left"><strong>Pod 层</strong></td>
+<td align="left">CPU 限流率 <code>rate(container_cpu_cfs_throttled_periods_total[5m])</code></td>
+<td align="left"><strong>&gt; 25%</strong></td>
+<td align="left"><strong>&gt; 50%</strong></td>
+<td align="left">容器 CPU <code>limits</code> 设得太小，导致应用频繁被内核 CFS 暂停限流，接口延迟飙升！</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="8-2-七大经典生产事故应急排障-SOP（手把手抢救指南）"><a href="#8-2-七大经典生产事故应急排障-SOP（手把手抢救指南）" class="headerlink" title="8.2 七大经典生产事故应急排障 SOP（手把手抢救指南）"></a>8.2 七大经典生产事故应急排障 SOP（手把手抢救指南）</h3><h4 id="事故一：Pod-一直卡在-Pending-状态，死活调度不出去！"><a href="#事故一：Pod-一直卡在-Pending-状态，死活调度不出去！" class="headerlink" title="事故一：Pod 一直卡在 Pending 状态，死活调度不出去！"></a>事故一：Pod 一直卡在 <code>Pending</code> 状态，死活调度不出去！</h4><p><strong>排障铁律</strong>：<code>Pending</code> 说明卡在第一章图解的 <strong>【第 3 步：Scheduler 排班选机】</strong>（或者正在等 PVC 绑定）。直接敲：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl describe pod &lt;卡住的Pod名&gt; -n &lt;命名空间&gt;<br></code></pre></td></tr></table></figure>
+<p>拉到最底下的 <strong><code>Events</code></strong>，看 <code>FailedScheduling</code> 后面写的原因，按此表秒解：</p>
+<table>
+<thead>
+<tr>
+<th align="left"><code>FailedScheduling</code> 报错关键字</th>
+<th align="left">大白话翻译（为什么分不出去？）</th>
+<th align="left">一招制敌解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>0/10 nodes are available: 10 Insufficient cpu</code> (或 <code>Insufficient memory</code>)</td>
+<td align="left">集群里所有节点的剩余可分配 CPU&#x2F;内存，都不够满足这个 Pod 的 <strong><code>resources.requests</code></strong>！（注意：Scheduler 只看各节点已分配 <code>requests</code> 的总和，不看实际物理使用率！）</td>
+<td align="left">① 调小该 Deployment 的 <code>resources.requests</code>；② 清理废弃的测试 Deployment；③ 扩容新 Worker 节点。</td>
+</tr>
+<tr>
+<td align="left"><code>3 node(s) had untolerated taint &#123;node.kubernetes.io/disk-pressure: &#125;</code></td>
+<td align="left">节点磁盘使用率超过了 <strong>85%</strong>，Kubelet 自动给节点打上了 <code>disk-pressure</code> 污点拒绝新 Pod！</td>
+<td align="left">登录对应宿主机执行 <code>crictl rmi --prune</code> 清理废旧镜像，或清理 <code>/var/log</code> 释放磁盘空间。</td>
+</tr>
+<tr>
+<td align="left"><code>pod has unbound immediate PersistentVolumeClaims</code></td>
+<td align="left">Pod 挂载的 PVC 存储卷一直处于 <code>Pending</code> 未绑定状态。</td>
+<td align="left">执行 <code>kubectl describe pvc &lt;PVC名&gt;</code>，检查是不是 <code>storageClassName</code> 写错了，或者 CSI 存储插件挂了。</td>
+</tr>
+<tr>
+<td align="left"><code>didn&#39;t match pod anti-affinity rules</code></td>
+<td align="left">你在 YAML 里配了<strong>硬反亲和性</strong>（<code>requiredDuringScheduling...</code> 要求每个节点最多跑 1 个副本），现在你有 3 台机器却把副本数扩到了 4 个，第 4 个副本无处可去！</td>
+<td align="left">将硬反亲和性改为软反亲和性 <code>preferredDuringScheduling...</code>，或者扩容节点。</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="事故二：Pod-陷入-CrashLoopBackOff-或-OOMKilled-无限重启循环！"><a href="#事故二：Pod-陷入-CrashLoopBackOff-或-OOMKilled-无限重启循环！" class="headerlink" title="事故二：Pod 陷入 CrashLoopBackOff 或 OOMKilled 无限重启循环！"></a>事故二：Pod 陷入 <code>CrashLoopBackOff</code> 或 <code>OOMKilled</code> 无限重启循环！</h4><p><strong>什么是 <code>CrashLoopBackOff</code>？</strong> 它的意思是：<strong>容器启动了，但里面的主进程（PID 1）很快就报错退出了！Kubelet 试图帮它重启，但它一启动又死了，于是 Kubelet 按指数退避（等 10s -&gt; 20s -&gt; 40s -&gt; 最长 5分钟）循环重试。</strong></p>
+<p><strong>3 步精准定位容器死因</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 【第 1 步】查看 Pod 详情里的 Last State -&gt; Exit Code（退出码就是破案铁证！）</span><br>kubectl describe pod &lt;Pod名&gt; -n &lt;命名空间&gt; | grep -A 10 <span class="hljs-string">&quot;Last State:&quot;</span><br><br><span class="hljs-comment"># 【第 2 步】查看【上一次崩溃死掉的那个容器】死前留下的最后 100 行遗言日志（加上 -p / --previous 参数！）</span><br>kubectl logs &lt;Pod名&gt; -n &lt;命名空间&gt; --previous --<span class="hljs-built_in">tail</span>=100<br></code></pre></td></tr></table></figure>
+
+<p><strong>根据 <code>Exit Code（退出码）</code> 一眼定乾坤</strong>：</p>
+<ul>
+<li><strong><code>Exit Code: 137</code>（<code>Reason: OOMKilled</code>，最常见！）</strong>：<ul>
+<li>$137 &#x3D; 128 + 9$（代表收到了系统强制必杀信号 <code>SIGKILL / kill -9</code>）。</li>
+<li><strong>两大诱因</strong>：① 容器实际内存突破了 YAML 里的 <code>resources.limits.memory</code>，被 Linux 内核 Cgroup OOM Killer 当场击毙（可在宿主机 <code>dmesg -T | grep -i &quot;Killed process&quot;</code> 看到铁证）；② <strong>Liveness 存活探针连续失败</strong>，被 Kubelet 主动强杀重启（在 <code>describe pod</code> 底部的 Events 里会看到 <code>Liveness probe failed... Container will be restarted</code>）！</li>
+<li><strong>根治</strong>：若是内存不够，调大 <code>limits.memory</code> 并为 Java 加上 <code>-XX:MaxRAMPercentage=75.0</code>；若是启动慢被探针误杀，加上 <code>startupProbe</code>。</li>
+</ul>
+</li>
+<li><strong><code>Exit Code: 143</code></strong>：<ul>
+<li>$143 &#x3D; 128 + 15$（收到了优雅终止信号 <code>SIGTERM / kill -15</code>），说明是人为缩容、滚动更新或健康检查触发的正常关闭。</li>
+</ul>
+</li>
+<li><strong><code>Exit Code: 1</code> 或 <code>127</code></strong>：<ul>
+<li>业务代码自身抛出未捕获异常崩溃（如连不上数据库、缺少配置文件），或 <code>127</code> 启动命令路径写错找不到二进制文件。如果容器一启动 0.1 秒就死，连进容器排查的机会都没有，直接在 YAML 里加一行 <code>command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;sleep 3600&quot;]</code> 让容器先挂住不死，再 <code>kubectl exec -it</code> 进去手动跑启动命令看报错！</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="事故三：删除-Pod-或-Namespace-时，永远卡在-Terminating-状态删不掉！"><a href="#事故三：删除-Pod-或-Namespace-时，永远卡在-Terminating-状态删不掉！" class="headerlink" title="事故三：删除 Pod 或 Namespace 时，永远卡在 Terminating 状态删不掉！"></a>事故三：删除 Pod 或 Namespace 时，永远卡在 <code>Terminating</code> 状态删不掉！</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 【场景 A：单个 Pod 卡在 Terminating 超过 5 分钟】</span><br><span class="hljs-comment"># 常见原因 1：容器内有进程卡在内核态 D 状态（Uninterruptible Sleep，比如挂载的远端 NFS Server 宕机了，umount 卡死）</span><br><span class="hljs-comment"># 常见原因 2：宿主机已经断电失联（Node NotReady），APIServer 一直在等那台死掉机器上的 Kubelet 汇报“容器已销毁”</span><br><span class="hljs-comment"># 在确认原宿主机已关机或容器确实已无写入风险后，执行强制抹除账本命令：</span><br>kubectl delete pod &lt;Pod名&gt; -n &lt;命名空间&gt; --force --grace-period=0<br><br><span class="hljs-comment"># 【场景 B：删除整个 Namespace 时，永远卡在 Terminating 删不掉！】</span><br><span class="hljs-comment"># 原因：该 Namespace 的 metadata.finalizers 列表里还残留着某个已被卸载的第三方 Operator 钩子！</span><br><span class="hljs-comment"># 一行命令清空该 Namespace 的 finalizers 锁，1 秒钟彻底删除：</span><br>kubectl get namespace &lt;卡住的NS名&gt; -o json | jq <span class="hljs-string">&#x27;.spec.finalizers = []&#x27;</span> | curl -k -H <span class="hljs-string">&quot;Content-Type: application/json&quot;</span> -X PUT --data-binary @- http://127.0.0.1:8001/api/v1/namespaces/&lt;卡住的NS名&gt;/finalize<br><span class="hljs-comment"># （注：先在另一个窗口运行 kubectl proxy --port=8001 开启本地代理，或直接使用 kubectl replace --raw &quot;/api/v1/namespaces/&lt;NS名&gt;/finalize&quot; -f -）</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="事故四：Pod-狀態完全正常（Running-1-1），直接-curl-Pod-IP-是通的，但通过-Service-ClusterIP-或-NodePort-却死活连不通！"><a href="#事故四：Pod-狀態完全正常（Running-1-1），直接-curl-Pod-IP-是通的，但通过-Service-ClusterIP-或-NodePort-却死活连不通！" class="headerlink" title="事故四：Pod 狀態完全正常（Running 1/1），直接 curl Pod IP 是通的，但通过 Service ClusterIP 或 NodePort 却死活连不通！"></a>事故四：Pod 狀態完全正常（<code>Running 1/1</code>），直接 curl Pod IP 是通的，但通过 <code>Service ClusterIP</code> 或 <code>NodePort</code> 却死活连不通！</h4><p>请按以下 <strong>4 步排障清单</strong> 逐一核对，100% 能抓出问题：</p>
+<ol>
+<li><strong>第 1 步（看 Endpoints 有没有挂上 Pod IP — 80% 栽在这里！）</strong>：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl get endpoints &lt;Service名称&gt; -n &lt;命名空间&gt;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>如果看到 <code>ENDPOINTS</code> 那一列是 <strong><code>&lt;none&gt;</code>（空的）</strong>！说明你的 <strong>Service YAML 里的 <code>spec.selector</code> 标签选择器，跟 Deployment Pod 上的 <code>metadata.labels</code> 标签没有完全对齐匹配上</strong>（比如拼错了一个字母）！或者 Pod 的 <code>readinessProbe</code> 还没通过！</li>
+</ul>
+</li>
+<li><strong>第 2 步（核对 <code>targetPort</code> 与容器真实监听端口）</strong>：<br>Service 的 <code>port</code> 是虚拟端口，而 <strong><code>targetPort</code> 必须完全等于容器内部进程实际监听的端口</strong>！</li>
+<li><strong>第 3 步（检查研发是不是把服务监听在了 <code>127.0.0.1</code> 上！）</strong>：<br>如果研发在 Python&#x2F;Node.js&#x2F;Go 代码里写死了 <code>listen(&quot;127.0.0.1:8080&quot;)</code>，那么你在容器里面自己 <code>curl 127.0.0.1:8080</code> 是通的，但从 Service 或外部走 Pod 网卡 IP 进来全部报 <code>Connection refused</code>！<strong>容器内服务必须监听 <code>0.0.0.0</code></strong>！</li>
+<li><strong>第 4 步（检查节点 <code>ipvsadm</code> 转发规则与 <code>br_netfilter</code>）</strong>：<br>登录宿主机执行 <code>ipvsadm -Ln -t &lt;ClusterIP&gt;:&lt;Port&gt;</code> 查看是否有真实后端 RS 列表。</li>
+</ol>
+<hr>
+<h4 id="事故五：容器里只装了二进制程序（Distroless-Alpine-极简镜像），里面既没有-bash、也没有-curl、netstat、tcpdump，怎么排障？"><a href="#事故五：容器里只装了二进制程序（Distroless-Alpine-极简镜像），里面既没有-bash、也没有-curl、netstat、tcpdump，怎么排障？" class="headerlink" title="事故五：容器里只装了二进制程序（Distroless &#x2F; Alpine 极简镜像），里面既没有 bash、也没有 curl、netstat、tcpdump，怎么排障？"></a>事故五：容器里只装了二进制程序（Distroless &#x2F; Alpine 极简镜像），里面既没有 <code>bash</code>、也没有 <code>curl</code>、<code>netstat</code>、<code>tcpdump</code>，怎么排障？</h4><p>在 K8s 1.23+ 中，千万不要去改生产镜像装一堆黑客最爱的调试工具！直接使用官方神技 <strong><code>kubectl debug</code>（临时调试容器 Ephemeral Containers）</strong>，把自带全套网络诊断工具的 <code>nicolaka/netshoot</code> 动态挂载注入到目标故障 Pod 的网络与进程空间中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 直接将一个装满 tcpdump / curl / dig / ss / strace 的 netshoot 临时容器挂到正在运行的 order-service Pod 上，共享它的网卡和进程树！</span><br>kubectl debug -it &lt;目标Pod名&gt; -n prod-ecommerce --image=nicolaka/netshoot --target=order-service<br></code></pre></td></tr></table></figure>
+<p>进去后，你敲 <code>ss -tlpn</code> 或 <code>tcpdump -i eth0</code> 抓到的，就是那个极简业务容器一模一样的实时网络流量！</p>
+<hr>
+<h4 id="事故六：宿主机-df-h-看磁盘才用了-40-，但容器启动或写日志狂报-No-space-left-on-device！"><a href="#事故六：宿主机-df-h-看磁盘才用了-40-，但容器启动或写日志狂报-No-space-left-on-device！" class="headerlink" title="事故六：宿主机 df -h 看磁盘才用了 40%，但容器启动或写日志狂报 No space left on device！"></a>事故六：宿主机 <code>df -h</code> 看磁盘才用了 40%，但容器启动或写日志狂报 <code>No space left on device</code>！</h4><p>当看到 <code>No space left on device</code> 而磁盘空间明明很空时，只有以下 <strong>3 种真凶</strong>：</p>
+<ol>
+<li><strong>真凶 A：磁盘的 Inode（索引节点）被海量 1KB 小文件耗尽了（100%）！</strong><ul>
+<li>立即执行 <strong><code>df -i</code></strong>！如果看到某个分区的 <code>IUse%</code> 是 <strong><code>100%</code></strong>，说明某个容器在 <code>/var/lib/containerd</code> 或挂载目录生成了数百万个碎片小文件，删掉对应目录即可。</li>
+</ul>
+</li>
+<li><strong>真凶 B：文件已被删除，但进程还死死抓着文件句柄未释放（Deleted Files）</strong><ul>
+<li>执行 <code>lsof -nP | grep &#39;(deleted)&#39;</code>，找出占用几个 GB 已删除大日志文件的进程并重启它。</li>
+</ul>
+</li>
+<li><strong>真凶 C（K8s 特有）：Linux 内核的 <code>inotify</code> 队列耗尽了！</strong><ul>
+<li>在 Linux 中，当 <code>fs.inotify.max_user_watches</code> 被占满时，很多程序报错信息也会诡异地提示 <code>No space left on device</code>！按第二章 2.2 节执行 <code>sysctl -w fs.inotify.max_user_watches=524288</code> 立即恢复。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h4 id="事故七：集群突然有一批-Pod-变成-Evicted（被驱逐）状态，满屏飘红！"><a href="#事故七：集群突然有一批-Pod-变成-Evicted（被驱逐）状态，满屏飘红！" class="headerlink" title="事故七：集群突然有一批 Pod 变成 Evicted（被驱逐）状态，满屏飘红！"></a>事故七：集群突然有一批 Pod 变成 <code>Evicted</code>（被驱逐）状态，满屏飘红！</h4><ul>
+<li><strong>为什么会出现 <code>Evicted</code>？</strong><br>当某台 Worker 节点的内存即将耗尽（<code>MemoryPressure</code>）或根分区磁盘超过 85%（<code>DiskPressure</code>）时，那台机器上的 Kubelet 为了保住宿主机不死机，会按优先级（<strong>先杀不写 <code>resources</code> 的 <code>BestEffort</code> Pod -&gt; 再杀实际用量超过 <code>requests</code> 最多的 <code>Burstable</code> Pod</strong>）把它们强制踢死，并在原地留下一个状态为 <code>Evicted</code> 的尸体记录（同时控制器会在其他健康机器上把新副本拉起来）。</li>
+<li><strong>一键批量清理全集群所有 <code>Evicted</code> 尸体记录命令</strong>：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl get pods -A --field-selector=status.phase=Failed -o json | \<br>  jq -r <span class="hljs-string">&#x27;.items[] | select(.status.reason==&quot;Evicted&quot;) | &quot;\(.metadata.namespace) \(.metadata.name)&quot;&#x27;</span> | \<br>  xargs -r -n 2 sh -c <span class="hljs-string">&#x27;kubectl delete pod $1 -n $0&#x27;</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h3 id="8-3-云原生运维工程师日常巡检-Checklist"><a href="#8-3-云原生运维工程师日常巡检-Checklist" class="headerlink" title="8.3 云原生运维工程师日常巡检 Checklist"></a>8.3 云原生运维工程师日常巡检 Checklist</h3><p>建议将以下检查项固化为日常巡检规范或自动化脚本：</p>
+<table>
+<thead>
+<tr>
+<th align="left">巡检周期</th>
+<th align="left">巡检项目</th>
+<th align="left">健康基线标准</th>
+<th align="left">关联检查命令 &#x2F; 方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>每日巡检（自动化）</strong></td>
+<td align="left">节点健康状态与负载水位</td>
+<td align="left">所有节点 <code>STATUS == Ready</code>，CPU&#x2F;Memory 实际使用率 <code>&lt; 75%</code></td>
+<td align="left"><code>kubectl get nodes</code> &amp; <code>kubectl top nodes</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每日巡检（自动化）</strong></td>
+<td align="left">核心系统组件 Pod 状态</td>
+<td align="left"><code>kube-system</code> 与监控&#x2F;网关命名空间下所有 Pod 均为 <code>Running</code> 且无异常高频重启</td>
+<td align="left"><code>kubectl get pods -n kube-system</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每日巡检（自动化）</strong></td>
+<td align="left">异常业务 Pod 扫描</td>
+<td align="left">全集群无卡在 <code>Pending</code>、<code>CrashLoopBackOff</code>、<code>ImagePullBackOff</code>、<code>Evicted</code> 状态的 Pod</td>
+<td align="left"><code>kubectl get pods -A --field-selector=status.phase!=Running,status.phase!=Succeeded</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每日巡检（自动化）</strong></td>
+<td align="left">Etcd 自动快照备份核查</td>
+<td align="left">确认今日凌晨的 <code>etcd-snapshot-xxx.db</code> 已成功生成且文件大小正常</td>
+<td align="left">检查 <code>/data/etcd_backup</code> 及异地存储</td>
+</tr>
+<tr>
+<td align="left"><strong>每周巡检</strong></td>
+<td align="left">节点磁盘与 Inode 水位</td>
+<td align="left">所有节点 <code>/var/lib/containerd</code> 及根分区空间使用率 <code>&lt; 75%</code>，Inode <code>IUse% &lt; 60%</code></td>
+<td align="left"><code>df -h</code> &amp; <code>df -i</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每周巡检</strong></td>
+<td align="left">PVC 存储卷空间水位</td>
+<td align="left">监控 <code>kubelet_volume_stats_used_bytes</code> 占比 <code>&lt; 80%</code></td>
+<td align="left">Prometheus 存储大盘</td>
+</tr>
+<tr>
+<td align="left"><strong>每月巡检</strong></td>
+<td align="left">集群证书与域名 SSL 证书有效期</td>
+<td align="left"><code>kubeadm certs check-expiration</code> 剩余时间 <code>&gt; 60 天</code>；Ingress TLS 证书 <code>&gt; 30 天</code></td>
+<td align="left"><code>kubeadm certs check-expiration</code></td>
+</tr>
+<tr>
+<td align="left"><strong>每季度演练</strong></td>
+<td align="left">Etcd 快照异机恢复与节点故障演练</td>
+<td align="left">在测试集群验证 Etcd 备份恢复流程；抽检核心微服务是否均已配齐 <code>requests/limits</code>、<code>preStop</code> 与反亲和性</td>
+<td align="left">第六章 6.3 节 &amp; 第三章 3.1 节基线审计</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Kubernetes/" class="print-no-link">#Kubernetes</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/10/27/Elasticsearch%20%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%EF%BC%9A%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%A4%A7%E6%95%B0%E6%8D%AE%E8%BF%90%E7%BB%B4%E5%AE%9E%E6%88%98%E6%89%8B%E5%86%8C/" title="Elasticsearch 从入门到精通：生产级大数据运维实战手册">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Elasticsearch 从入门到精通：生产级大数据运维实战手册</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/10/27/Nginx%20%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E7%B2%BE%E9%80%9A%EF%BC%9A%E7%94%9F%E4%BA%A7%E7%BA%A7%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%BF%90%E7%BB%B4%E5%AE%9E%E6%88%98%E6%89%8B%E5%86%8C/" title="Nginx 从入门到精通：生产级中间件运维实战手册">
+                        <span class="hidden-mobile">Nginx 从入门到精通：生产级中间件运维实战手册</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://www.biibll.com" target="_blank" rel="nofollow noopener"><span>Return 200 OK</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
