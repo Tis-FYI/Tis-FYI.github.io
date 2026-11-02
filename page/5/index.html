@@ -229,6 +229,67 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/03/19/%E6%89%8B%E5%8A%A8%E6%B8%85%E7%90%86Linux%E7%9A%84%E7%BC%93%E5%AD%98/" target="_self">
+          手动清理Linux的缓存
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/19/%E6%89%8B%E5%8A%A8%E6%B8%85%E7%90%86Linux%E7%9A%84%E7%BC%93%E5%AD%98/" target="_self">
+        <div>
+          1）清理pagecache（页面缓存）1[root@backup ~]# echo 1 &gt; /proc/sys/vm/drop_caches   或者 # sysctl -w vm.drop_caches=1    2）清理dentries（目录缓存）和inodes1[root@backup ~]# echo 2 &gt; /proc/sys/vm/drop_caches   或者 # sy
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-03-19 11:16" pubdate>
+              2025-03-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/linux/">#linux</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/03/19/%E5%85%B3%E4%BA%8EEOF%E5%92%8C-EOF%E8%AF%AD%E5%8F%A5%E7%9A%84%E6%84%8F%E6%80%9D/" target="_self">
           关于EOF和-EOF语句的意思
         </a>
@@ -765,67 +826,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9FJenkins/">#云原生Jenkins</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/03/19/Kubernetes1-24_1-25%E9%9B%86%E7%BE%A4%E4%BD%BF%E7%94%A8docker%E4%BD%9C%E4%B8%BA%E5%AE%B9%E5%99%A8/" target="_self">
-          Kubernetes1.24/1.25集群使用docker作为容器
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/03/19/Kubernetes1-24_1-25%E9%9B%86%E7%BE%A4%E4%BD%BF%E7%94%A8docker%E4%BD%9C%E4%B8%BA%E5%AE%B9%E5%99%A8/" target="_self">
-        <div>
-          背景在新版本Kubernetes环境（1.24以及以上版本）下官方不在支持docker作为容器运行时了，若要继续使用docker 需要对docker进行配置一番。需要安装cri-docker作为Kubernetes容器 查看当前容器运行时1234567891011121314# 查看指定节点容器运行时kubectl  describe node k8s-node05  | grep Contain
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-03-19 11:07" pubdate>
-              2025-03-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/" class="category-chain-item">云原生</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9FKubernetes/">#云原生Kubernetes</a>
             
           </div>
         

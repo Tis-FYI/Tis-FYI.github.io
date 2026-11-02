@@ -1,0 +1,817 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="TAO">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="达梦数据库（DM8）索引运维与调优实战手册 作者视角：10年+ 生产环境 DBA 实战经验总结适用对象：数据库运维工程师、DBA、参与 SQL 审核的后端研发人员核心理念：在生产环境中，“建对索引”只是及格，“不锁表、不抖动、可回退”才是资深运维的标准。   第一部分：核心认知——DM8 索引与 Oracle&#x2F;MySQL 的本质区别很多刚接触 DM8 的运维工程师会直接套用 Oracle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="达梦数据库（DM8）索引运维与调优实战手册">
+<meta property="og:url" content="https://blog.t-ao.cn/2026/11/02/%E8%BE%BE%E6%A2%A6%E6%95%B0%E6%8D%AE%E5%BA%93%EF%BC%88DM8%EF%BC%89%E7%B4%A2%E5%BC%95%E8%BF%90%E7%BB%B4%E4%B8%8E%E8%B0%83%E4%BC%98%E5%AE%9E%E6%88%98%E6%89%8B%E5%86%8C/index.html">
+<meta property="og:site_name" content="TAO&#39;s Blog">
+<meta property="og:description" content="达梦数据库（DM8）索引运维与调优实战手册 作者视角：10年+ 生产环境 DBA 实战经验总结适用对象：数据库运维工程师、DBA、参与 SQL 审核的后端研发人员核心理念：在生产环境中，“建对索引”只是及格，“不锁表、不抖动、可回退”才是资深运维的标准。   第一部分：核心认知——DM8 索引与 Oracle&#x2F;MySQL 的本质区别很多刚接触 DM8 的运维工程师会直接套用 Oracle">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-11-02T15:31:34.000Z">
+<meta property="article:modified_time" content="2026-11-02T03:45:30.261Z">
+<meta property="article:author" content="TAO">
+<meta property="article:tag" content="DM">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>达梦数据库（DM8）索引运维与调优实战手册 - TAO&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.t-ao.cn","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":1},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>IIRRR</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>文章</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>常用站点</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="达梦数据库（DM8）索引运维与调优实战手册"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-02 23:31" pubdate>
+          2026年11月2日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">达梦数据库（DM8）索引运维与调优实战手册</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="达梦数据库（DM8）索引运维与调优实战手册"><a href="#达梦数据库（DM8）索引运维与调优实战手册" class="headerlink" title="达梦数据库（DM8）索引运维与调优实战手册"></a>达梦数据库（DM8）索引运维与调优实战手册</h1><blockquote>
+<p><strong>作者视角</strong>：10年+ 生产环境 DBA 实战经验总结<br><strong>适用对象</strong>：数据库运维工程师、DBA、参与 SQL 审核的后端研发人员<br><strong>核心理念</strong>：在生产环境中，<strong>“建对索引”只是及格，“不锁表、不抖动、可回退”才是资深运维的标准。</strong></p>
+</blockquote>
+<hr>
+<h2 id="第一部分：核心认知——DM8-索引与-Oracle-MySQL-的本质区别"><a href="#第一部分：核心认知——DM8-索引与-Oracle-MySQL-的本质区别" class="headerlink" title="第一部分：核心认知——DM8 索引与 Oracle&#x2F;MySQL 的本质区别"></a>第一部分：核心认知——DM8 索引与 Oracle&#x2F;MySQL 的本质区别</h2><p>很多刚接触 DM8 的运维工程师会直接套用 Oracle 或 MySQL 的经验，结果在看执行计划和做空间规划时频频踩坑。在动手操作前，必须先搞懂 DM8 索引的三个底层特性：</p>
+<h3 id="1-1-默认表就是“索引”（索引组织表-IOT）"><a href="#1-1-默认表就是“索引”（索引组织表-IOT）" class="headerlink" title="1.1 默认表就是“索引”（索引组织表 IOT）"></a>1.1 默认表就是“索引”（索引组织表 IOT）</h3><ul>
+<li><strong>Oracle</strong>：默认创建的是<strong>堆表（Heap Table）</strong>，数据无序存放，主键和二级索引都独立于表数据之外。</li>
+<li><strong>MySQL (InnoDB)</strong>：默认是索引组织表，**强制使用主键（Primary Key）**作为聚集索引（Clustered Index）。</li>
+<li><strong>DM8（重点！）</strong>：默认也是<strong>索引组织表</strong>，每张表都有且仅有一个<strong>聚集索引（CLUSTER INDEX）</strong>，整张表的数据就是挂在这个聚集索引的 B+ 树叶子节点上的。<ul>
+<li><strong>潜规则 1</strong>：建表时如果不指定聚集索引，DM8 默认拿隐藏的物理行号 <strong><code>ROWID</code> 作为聚集索引键</strong>！</li>
+<li><strong>潜规则 2</strong>：在 DM8 中直接写 <code>PRIMARY KEY</code> 创建主键，默认生成的是 <strong><code>NOT CLUSTER</code>（非聚集唯一索引）</strong>，而不是聚集索引（除非建表时显式指定 <code>CLUSTER PRIMARY KEY</code> 或修改了 <code>PK_WITH_CLUSTER=1</code> 参数）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-为什么执行计划里-CSCN2-是全表扫描？"><a href="#1-2-为什么执行计划里-CSCN2-是全表扫描？" class="headerlink" title="1.2 为什么执行计划里 CSCN2 是全表扫描？"></a>1.2 为什么执行计划里 <code>CSCN2</code> 是全表扫描？</h3><p>在 DM8 的执行计划中，你永远看不到类似 Oracle 的 <code>TABLE ACCESS FULL</code>（全表扫描），取而代之的是 <strong><code>CSCN2</code>（Cluster Index Scan，聚集索引扫描）</strong>。</p>
+<ul>
+<li><strong>运维秒懂公式</strong>：因为整张表的数据都存在默认聚集索引里，所以<strong>扫描聚集索引 &#x3D; 全表扫描（<code>CSCN2</code>）</strong>！只要在大表上看到 <code>CSCN2</code>，就意味着没走二级索引，正在发生全表扫描！</li>
+</ul>
+<h3 id="1-3-常见索引类型及适用场景"><a href="#1-3-常见索引类型及适用场景" class="headerlink" title="1.3 常见索引类型及适用场景"></a>1.3 常见索引类型及适用场景</h3><table>
+<thead>
+<tr>
+<th align="left">索引类型</th>
+<th align="left">关键字</th>
+<th align="left">底层原理与运维适用场景</th>
+<th align="left">生产注意事项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>二级索引（B+树）</strong></td>
+<td align="left"><code>INDEX</code></td>
+<td align="left">最常用的默认索引。存储“索引键值 + 聚集索引键（通常是 ROWID）”。适合高选择性列（如订单号、手机号、身份证）。</td>
+<td align="left">增删改会带来索引维护开销，单表建议不超过 5~6 个。</td>
+</tr>
+<tr>
+<td align="left"><strong>聚集索引</strong></td>
+<td align="left"><code>CLUSTER INDEX</code></td>
+<td align="left"><strong>决定表数据在磁盘上的物理排序顺序</strong>。一张表只能有一个。极度适合按时间范围、连续 ID 批量扫描的场景。</td>
+<td align="left"><strong>严禁在大表业务高峰期新建或修改聚集索引</strong>，因为这等于把整张表物理重建并重新排序！</td>
+</tr>
+<tr>
+<td align="left"><strong>唯一索引</strong></td>
+<td align="left"><code>UNIQUE INDEX</code></td>
+<td align="left">保证索引列的值全局唯一（允许存在多个 <code>NULL</code> 值）。创建主键或唯一约束时系统会自动生成。</td>
+<td align="left">尽量用唯一索引代替普通索引，优化器能直接算出更精准的代价（Cost&#x3D;1）。</td>
+</tr>
+<tr>
+<td align="left"><strong>函数索引</strong></td>
+<td align="left"><code>INDEX ON (FUNC(col))</code></td>
+<td align="left">针对开发喜欢在 <code>WHERE</code> 左边写函数（如 <code>TO_CHAR(create_time)</code>、<code>UPPER(name)</code>）的场景，提前计算好函数结果建树。</td>
+<td align="left">查询时的函数表达式必须与建索引时<strong>一字不差</strong>才能命中。</td>
+</tr>
+<tr>
+<td align="left"><strong>位图索引</strong></td>
+<td align="left"><code>BITMAP INDEX</code></td>
+<td align="left">用二进制位（0&#x2F;1）记录状态，适合低基数（重复值极多，如性别、状态码）且多条件 <code>AND/OR</code> 组合查询的<strong>数仓&#x2F;报表场景</strong>。</td>
+<td align="left"><strong>OLTP 高并发交易库严禁使用位图索引！</strong> 因为位图索引锁的是一个位图段，并发 <code>UPDATE/INSERT</code> 会引发全表级死锁！</td>
+</tr>
+<tr>
+<td align="left"><strong>全文索引</strong></td>
+<td align="left"><code>CONTEXT INDEX</code></td>
+<td align="left">用于对大文本字段（<code>VARCHAR</code>&#x2F;<code>TEXT</code>&#x2F;<code>CLOB</code>）进行分词模糊检索，替代低效的 <code>LIKE &#39;%关键字%&#39;</code>。</td>
+<td align="left">需注意分词器选择及增量同步策略（<code>SYNC TRANSACTION</code>）。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="第二部分：日常运维实操——建、改、删、查的“保命规范”"><a href="#第二部分：日常运维实操——建、改、删、查的“保命规范”" class="headerlink" title="第二部分：日常运维实操——建、改、删、查的“保命规范”"></a>第二部分：日常运维实操——建、改、删、查的“保命规范”</h2><h3 id="2-1-全方位摸底：查询现有索引信息（日常必备-SQL）"><a href="#2-1-全方位摸底：查询现有索引信息（日常必备-SQL）" class="headerlink" title="2.1 全方位摸底：查询现有索引信息（日常必备 SQL）"></a>2.1 全方位摸底：查询现有索引信息（日常必备 SQL）</h3><h4 id="1-查看某张表有哪些索引、包含哪些列及其顺序"><a href="#1-查看某张表有哪些索引、包含哪些列及其顺序" class="headerlink" title="1. 查看某张表有哪些索引、包含哪些列及其顺序"></a>1. 查看某张表有哪些索引、包含哪些列及其顺序</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <br>    i.TABLE_OWNER <span class="hljs-keyword">AS</span> &quot;所属用户&quot;,<br>    i.TABLE_NAME <span class="hljs-keyword">AS</span> &quot;表名&quot;,<br>    i.INDEX_NAME <span class="hljs-keyword">AS</span> &quot;索引名称&quot;,<br>    i.INDEX_TYPE <span class="hljs-keyword">AS</span> &quot;索引类型&quot;, <span class="hljs-comment">-- NORMAL(普通) / CLUSTER(聚集) / BITMAP(位图)</span><br>    i.UNIQUENESS <span class="hljs-keyword">AS</span> &quot;是否唯一&quot;,<br>    i.STATUS <span class="hljs-keyword">AS</span> &quot;状态&quot;,         <span class="hljs-comment">-- VALID(有效) / UNUSABLE(失效)</span><br>    i.VISIBILITY <span class="hljs-keyword">AS</span> &quot;是否可见&quot;, <span class="hljs-comment">-- VISIBLE(可见) / INVISIBLE(隐式不可见)</span><br>    <span class="hljs-built_in">LISTAGG</span>(c.COLUMN_NAME, <span class="hljs-string">&#x27;, &#x27;</span>) <span class="hljs-keyword">WITHIN</span> <span class="hljs-keyword">GROUP</span> (<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> c.COLUMN_POSITION) <span class="hljs-keyword">AS</span> &quot;索引包含列(按顺序)&quot;<br><span class="hljs-keyword">FROM</span> DBA_INDEXES i<br><span class="hljs-keyword">JOIN</span> DBA_IND_COLUMNS c <br>  <span class="hljs-keyword">ON</span> i.OWNER <span class="hljs-operator">=</span> c.INDEX_OWNER <span class="hljs-keyword">AND</span> i.INDEX_NAME <span class="hljs-operator">=</span> c.INDEX_NAME<br><span class="hljs-keyword">WHERE</span> i.TABLE_OWNER <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;APP_USER&#x27;</span> <br>  <span class="hljs-keyword">AND</span> i.TABLE_NAME <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;ORDERS&#x27;</span><br><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> i.TABLE_OWNER, i.TABLE_NAME, i.INDEX_NAME, i.INDEX_TYPE, i.UNIQUENESS, i.STATUS, i.VISIBILITY;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-查看索引实际占用的物理空间大小（排查“索引比表还大”的膨胀问题）"><a href="#2-查看索引实际占用的物理空间大小（排查“索引比表还大”的膨胀问题）" class="headerlink" title="2. 查看索引实际占用的物理空间大小（排查“索引比表还大”的膨胀问题）"></a>2. 查看索引实际占用的物理空间大小（排查“索引比表还大”的膨胀问题）</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <br>    s.OWNER <span class="hljs-keyword">AS</span> &quot;所属用户&quot;,<br>    i.TABLE_NAME <span class="hljs-keyword">AS</span> &quot;所属表名&quot;,<br>    s.SEGMENT_NAME <span class="hljs-keyword">AS</span> &quot;索引名称&quot;,<br>    s.TABLESPACE_NAME <span class="hljs-keyword">AS</span> &quot;所在表空间&quot;,<br>    ROUND(s.BYTES <span class="hljs-operator">/</span> <span class="hljs-number">1024</span> <span class="hljs-operator">/</span> <span class="hljs-number">1024</span>, <span class="hljs-number">2</span>) <span class="hljs-keyword">AS</span> &quot;占用空间(MB)&quot;<br><span class="hljs-keyword">FROM</span> DBA_SEGMENTS s<br><span class="hljs-keyword">JOIN</span> DBA_INDEXES i <br>  <span class="hljs-keyword">ON</span> s.OWNER <span class="hljs-operator">=</span> i.OWNER <span class="hljs-keyword">AND</span> s.SEGMENT_NAME <span class="hljs-operator">=</span> i.INDEX_NAME<br><span class="hljs-keyword">WHERE</span> s.SEGMENT_TYPE <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;INDEX&#x27;</span><br>  <span class="hljs-keyword">AND</span> s.OWNER <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;APP_USER&#x27;</span><br><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> s.BYTES <span class="hljs-keyword">DESC</span>;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-导出某个索引的完整创建语句（变更前备份留底必备）"><a href="#3-导出某个索引的完整创建语句（变更前备份留底必备）" class="headerlink" title="3. 导出某个索引的完整创建语句（变更前备份留底必备）"></a>3. 导出某个索引的完整创建语句（变更前备份留底必备）</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 使用 DBMS_METADATA.GET_DDL 获取索引的精确建表语句</span><br><span class="hljs-keyword">SELECT</span> DBMS_METADATA.GET_DDL(<span class="hljs-string">&#x27;INDEX&#x27;</span>, <span class="hljs-string">&#x27;IDX_ORDERS_CUST_TIME&#x27;</span>, <span class="hljs-string">&#x27;APP_USER&#x27;</span>) <span class="hljs-keyword">FROM</span> DUAL;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-2-生产环境创建索引的“三条铁律”"><a href="#2-2-生产环境创建索引的“三条铁律”" class="headerlink" title="2.2 生产环境创建索引的“三条铁律”"></a>2.2 生产环境创建索引的“三条铁律”</h3><p>在千万级、亿级大表上直接执行一句简单的 <code>CREATE INDEX idx_xxx ON tab(col);</code> 是初级运维最常捅出的生产事故——<strong>直接锁死表，引发业务连接池雪崩</strong>。</p>
+<h4 id="生产标准建索引模板："><a href="#生产标准建索引模板：" class="headerlink" title="生产标准建索引模板："></a>生产标准建索引模板：</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> INDEX APP_USER.IDX_ORDERS_USER_TIME <br><span class="hljs-keyword">ON</span> APP_USER.ORDERS (USER_ID, CREATE_TIME) <br>TABLESPACE TBS_APP_IDX <br>ONLINE <br>PARALLEL <span class="hljs-number">4</span>;<br><br><span class="hljs-comment">-- 建完后重要收尾：必须将索引并行度改回 1（防止后续简单查询也触发多线程并行争抢 CPU！）</span><br><span class="hljs-keyword">ALTER</span> INDEX APP_USER.IDX_ORDERS_USER_TIME NOPARALLEL;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>铁律 1：必须加 <code>ONLINE</code> 关键字</strong><ul>
+<li>不加 <code>ONLINE</code> 会对表加排他锁，阻塞所有业务增删改（DML）；加上 <code>ONLINE</code> 后支持在线创建，建索引期间允许业务正常读写（仅在开始和结束瞬间请求极短暂的字典锁）。</li>
+</ul>
+</li>
+<li><strong>铁律 2：表数据与索引表空间分离（<code>TABLESPACE</code>）</strong><ul>
+<li>生产规范建议将大表索引单独存放在独立的索引表空间（如 <code>TBS_APP_IDX</code>），不仅方便单独统计与维护，在多块物理磁盘环境下还能分散 I&#x2F;O 压力。</li>
+</ul>
+</li>
+<li><strong>铁律 3：善用 <code>PARALLEL</code> 提速，但用完必须 <code>NOPARALLEL</code></strong><ul>
+<li>对于亿级大表，加上 <code>PARALLEL 4</code> 或 <code>8</code> 可开启多线程并行扫描建树，速度提升数倍。但建完后如果不执行 <code>ALTER INDEX ... NOPARALLEL</code>，该索引的并行度属性会保留，导致日后高并发小查询走该索引时全部派生并行线程，瞬间打满服务器 CPU！</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-3-索引的日常维护：重建、无损下线与碎片整理"><a href="#2-3-索引的日常维护：重建、无损下线与碎片整理" class="headerlink" title="2.3 索引的日常维护：重建、无损下线与碎片整理"></a>2.3 索引的日常维护：重建、无损下线与碎片整理</h3><h4 id="1-在线重建索引（解决索引碎片膨胀或修复-UNUSABLE-状态）"><a href="#1-在线重建索引（解决索引碎片膨胀或修复-UNUSABLE-状态）" class="headerlink" title="1. 在线重建索引（解决索引碎片膨胀或修复 UNUSABLE 状态）"></a>1. 在线重建索引（解决索引碎片膨胀或修复 <code>UNUSABLE</code> 状态）</h4><p>当一张表经历了大量 <code>DELETE</code> 或大批量 <code>UPDATE</code> 后，B+ 树会出现大量空洞（高水位线不降），导致索引体积比表本身还大，扫描变慢。此时需要在线重建：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 在线重建索引，不阻塞业务 DML，同时可顺便将其迁移到新的表空间</span><br><span class="hljs-keyword">ALTER</span> INDEX APP_USER.IDX_ORDERS_USER_TIME REBUILD TABLESPACE TBS_APP_IDX ONLINE;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-索引安全下线：先隐藏（INVISIBLE），观察无误再删除（DROP）"><a href="#2-索引安全下线：先隐藏（INVISIBLE），观察无误再删除（DROP）" class="headerlink" title="2. 索引安全下线：先隐藏（INVISIBLE），观察无误再删除（DROP）"></a>2. 索引安全下线：先隐藏（<code>INVISIBLE</code>），观察无误再删除（<code>DROP</code>）</h4><p><strong>千万不要凭感觉直接 <code>DROP INDEX</code>！</strong> 万一某个凌晨跑批的核心报表依赖这个索引，删掉后第二天直接全表扫描拖垮数据库，而重建一个百 G 索引需要几个小时，根本来不及回滚。</p>
+<p><strong>老手标准下线四步法</strong>：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 第一步：开启索引监控，观察一周内是否有 SQL 用到它</span><br><span class="hljs-keyword">ALTER</span> INDEX APP_USER.IDX_OLD_TEST MONITORING USAGE;<br><br><span class="hljs-comment">-- 第二步：一周后查询监控视图（USED = &#x27;NO&#x27; 说明期间没有任何 SQL 的执行计划用到它）</span><br><span class="hljs-keyword">SELECT</span> INDEX_NAME, TABLE_NAME, MONITORING, USED, START_MONITORING, END_MONITORING <br><span class="hljs-keyword">FROM</span> V$OBJECT_USAGE;<br><br><span class="hljs-comment">-- 第三步：先将索引设为“对优化器不可见（INVISIBLE）”</span><br><span class="hljs-comment">-- 此时物理索引依然存在且实时维护，但优化器假装看不见它。</span><br><span class="hljs-keyword">ALTER</span> INDEX APP_USER.IDX_OLD_TEST INVISIBLE;<br><br><span class="hljs-comment">-- 【应急回滚】：如果隐藏后业务突然报警变慢，只需 0.01 秒即可瞬间恢复！</span><br><span class="hljs-keyword">ALTER</span> INDEX APP_USER.IDX_OLD_TEST VISIBLE;<br><br><span class="hljs-comment">-- 第四步：隐藏观察 3~7 天业务平稳无异常后，在业务低峰期正式物理删除</span><br><span class="hljs-keyword">DROP</span> INDEX APP_USER.IDX_OLD_TEST;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第三部分：读懂执行计划——运维工程师的“X光机”"><a href="#第三部分：读懂执行计划——运维工程师的“X光机”" class="headerlink" title="第三部分：读懂执行计划——运维工程师的“X光机”"></a>第三部分：读懂执行计划——运维工程师的“X光机”</h2><p>当开发找你说“这条 SQL 很慢，帮我看看有没有走索引”时，你只需要用 <code>EXPLAIN</code> 照一下，重点看下面这几个核心算子。</p>
+<h3 id="3-1-常见索引算子好坏速查表"><a href="#3-1-常见索引算子好坏速查表" class="headerlink" title="3.1 常见索引算子好坏速查表"></a>3.1 常见索引算子好坏速查表</h3><p>在 <code>disql</code> 或管理工具中执行：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">EXPLAIN <span class="hljs-keyword">SELECT</span> ORDER_ID, TOTAL_AMOUNT <span class="hljs-keyword">FROM</span> APP_USER.ORDERS <span class="hljs-keyword">WHERE</span> USER_ID <span class="hljs-operator">=</span> <span class="hljs-number">10086</span> <span class="hljs-keyword">AND</span> STATUS <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;PAID&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">算子名称</th>
+<th align="left">全称</th>
+<th align="left">运维通俗解读</th>
+<th align="left">性能评级与调优方向</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong><code>CSCN2</code></strong></td>
+<td align="left">Cluster Index Scan</td>
+<td align="left"><strong>全表扫描</strong>（从头到尾扫一遍默认聚集索引）。</td>
+<td align="left">🔴 <strong>危险</strong>（大表出现必查，说明没建索引或索引失效）。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>SSEK2</code></strong></td>
+<td align="left">Secondary Index Seek</td>
+<td align="left"><strong>二级索引精准定位&#x2F;范围扫描</strong>（顺着 B+ 树精准找到目标数据）。</td>
+<td align="left">🟢 <strong>极佳</strong>（最理想的走索引状态）。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>CSEK2</code></strong></td>
+<td align="left">Cluster Index Seek</td>
+<td align="left"><strong>聚集索引精准定位&#x2F;范围扫描</strong>（直接命中物理排序键，连回表都省了）。</td>
+<td align="left">🟢 <strong>完美</strong>（速度最快的扫描方式）。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>BLKUP2</code></strong></td>
+<td align="left">Bookmark Lookup</td>
+<td align="left"><strong>回表操作</strong>（二级索引里只有 <code>USER_ID</code> 和 <code>ROWID</code>，拿到 <code>ROWID</code> 后回主表查 <code>TOTAL_AMOUNT</code> 等其他字段）。</td>
+<td align="left">🟡 <strong>关注</strong>（如果 <code>SSEK2</code> 扫出几行数据再 <code>BLKUP2</code> 很快；但如果扫出 50 万行再做 50 万次回表随机 I&#x2F;O，比全表扫描还慢！）。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>SSCN</code></strong></td>
+<td align="left">Secondary Index Scan</td>
+<td align="left"><strong>二级索引全扫描</strong>（把整个二级索引从头到尾扫一遍，不回表）。</td>
+<td align="left">🟡 <strong>一般</strong>（比全表扫描 <code>CSCN2</code> 快，因为索引体积比整表小，但通常说明没用上索引的前导列）。</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-算子组合实战解读案例"><a href="#3-2-算子组合实战解读案例" class="headerlink" title="3.2 算子组合实战解读案例"></a>3.2 算子组合实战解读案例</h3><p>假设有如下执行计划输出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">1   #NSET2: [1, 1, 60] <br>2     #PRJT2: [1, 1, 60]; exp_num(2), is_atom(FALSE) <br>3       #SLCT2: [1, 1, 60]; ORDERS.STATUS = &#x27;PAID&#x27;<br>4         #BLKUP2: [1, 15, 60]; IDX_ORDERS_USER(ORDERS)<br>5           #SSEK2: [1, 15, 60]; scan_type(ASC), IDX_ORDERS_USER(ORDERS), scan_range[10086,10086]<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>怎么读（从下往上，从第 5 行往第 1 行读）</strong>：<ol>
+<li><strong>第 5 行 <code>#SSEK2</code></strong>：通过二级索引 <code>IDX_ORDERS_USER</code>，精准定位 <code>USER_ID = 10086</code>，预估扫出 <code>15</code> 行（括号中间那个数字 <code>15</code> 就是预估行数 Cardinality）。</li>
+<li><strong>第 4 行 <code>#BLKUP2</code></strong>：拿着这 15 行的 <code>ROWID</code> 回主表 <code>ORDERS</code> 捞取数据行。</li>
+<li><strong>第 3 行 <code>#SLCT2</code></strong>：对捞出来的 15 行数据，在内存里过滤 <code>STATUS = &#39;PAID&#39;</code>，最终剩 <code>1</code> 行。</li>
+</ol>
+</li>
+<li><strong>运维诊断结论</strong>：如果 <code>USER_ID = 10086</code> 实际有 10 万条订单，但只有 2 条是 <code>&#39;PAID&#39;</code>，那么第 4 步就会发生 10 万次无效回表！<strong>优化方案</strong>：把索引改成 <code>(USER_ID, STATUS)</code> 联合索引，先在索引层过滤完，只回表 2 次！</li>
+</ul>
+<hr>
+<h2 id="第四部分：疑难杂症——明明建了索引，为什么死活不走？（十大失效元凶）"><a href="#第四部分：疑难杂症——明明建了索引，为什么死活不走？（十大失效元凶）" class="headerlink" title="第四部分：疑难杂症——明明建了索引，为什么死活不走？（十大失效元凶）"></a>第四部分：疑难杂症——明明建了索引，为什么死活不走？（十大失效元凶）</h2><p>这是日常运维被问得最多的问题。当你确认索引存在且状态为 <code>VALID</code>，但执行计划依然是 <code>CSCN2</code>（全表扫描）时，按以下清单逐一排查：</p>
+<h3 id="4-1-统计信息过期或缺失（占比-50-以上！）"><a href="#4-1-统计信息过期或缺失（占比-50-以上！）" class="headerlink" title="4.1 统计信息过期或缺失（占比 50% 以上！）"></a>4.1 统计信息过期或缺失（占比 50% 以上！）</h3><ul>
+<li><strong>原因</strong>：DM8 使用基于代价的优化器（CBO）。如果一张表刚建好时是空表，后来业务导进了 1000 万条数据，但没有收集统计信息，优化器还以为这张表只有 0 行！它觉得扫空表比走索引快，于是选择 <code>CSCN2</code>。</li>
+<li><strong>完美解决</strong>：手动收集该表及索引的统计信息：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 收集指定表的所有列及索引统计信息（采样率 100%）</span><br><span class="hljs-keyword">CALL</span> DBMS_STATS.GATHER_TABLE_STATS(<span class="hljs-string">&#x27;APP_USER&#x27;</span>, <span class="hljs-string">&#x27;ORDERS&#x27;</span>, <span class="hljs-keyword">NULL</span>, <span class="hljs-number">100</span>, <span class="hljs-literal">TRUE</span>, <span class="hljs-string">&#x27;FOR ALL COLUMNS SIZE AUTO&#x27;</span>);<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="4-2-隐式类型转换（最隐蔽的开发杀手）"><a href="#4-2-隐式类型转换（最隐蔽的开发杀手）" class="headerlink" title="4.2 隐式类型转换（最隐蔽的开发杀手）"></a>4.2 隐式类型转换（最隐蔽的开发杀手）</h3><ul>
+<li><strong>现象</strong>：表中 <code>PHONE</code>（手机号）字段定义的是 <code>VARCHAR(20)</code> 字符串类型，且建了索引。但开发写的 SQL 是：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> USERS <span class="hljs-keyword">WHERE</span> PHONE <span class="hljs-operator">=</span> <span class="hljs-number">13800138000</span>; <span class="hljs-comment">-- 注意：没加单引号，传的是数字！</span><br></code></pre></td></tr></table></figure></li>
+<li><strong>原因</strong>：DM8 为了兼容执行，会在底层把 SQL 自动改写成 <code>WHERE TO_NUMBER(PHONE) = 13800138000</code>。相当于对索引列套了函数，直接导致索引失效！</li>
+<li><strong>解决</strong>：督促开发严格对齐数据类型，字符串必须加单引号 <code>&#39;13800138000&#39;</code>。</li>
+</ul>
+<h3 id="4-3-违背复合索引“最左前缀原则”"><a href="#4-3-违背复合索引“最左前缀原则”" class="headerlink" title="4.3 违背复合索引“最左前缀原则”"></a>4.3 违背复合索引“最左前缀原则”</h3><ul>
+<li><strong>现象</strong>：创建了联合索引 <code>IDX_ABC (A, B, C)</code>。<ul>
+<li><code>WHERE A = 1 AND B = 2</code> -&gt; ✅ 走索引</li>
+<li><code>WHERE B = 2 AND C = 3</code> -&gt; ❌ <strong>不走索引 <code>SSEK2</code></strong>（没有带大哥 <code>A</code>，B+ 树无法定位起点！）</li>
+<li><code>WHERE A = 1 AND C = 3</code> -&gt; ⚠️ <strong>半走索引</strong>（只有 <code>A = 1</code> 能用于索引精准定位 <code>SSEK2</code>，<code>C = 3</code> 只能作为过滤条件）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-4-对索引列进行了函数运算、算术运算或左模糊匹配"><a href="#4-4-对索引列进行了函数运算、算术运算或左模糊匹配" class="headerlink" title="4.4 对索引列进行了函数运算、算术运算或左模糊匹配"></a>4.4 对索引列进行了函数运算、算术运算或左模糊匹配</h3><ul>
+<li><strong>反面教材 1</strong>：<code>WHERE TRUNC(CREATE_TIME) = &#39;2026-10-31&#39;</code><ul>
+<li><strong>正确改写</strong>：<code>WHERE CREATE_TIME &gt;= &#39;2026-10-31 00:00:00&#39; AND CREATE_TIME &lt; &#39;2026-11-01 00:00:00&#39;</code>（或创建函数索引）。</li>
+</ul>
+</li>
+<li><strong>反面教材 2</strong>：<code>WHERE AMOUNT + 100 &gt; 500</code><ul>
+<li><strong>正确改写</strong>：<code>WHERE AMOUNT &gt; 400</code>。</li>
+</ul>
+</li>
+<li><strong>反面教材 3</strong>：<code>WHERE NAME LIKE &#39;%张%&#39;</code> 或 <code>LIKE &#39;%张&#39;</code><ul>
+<li><strong>原因</strong>：前导通配符 <code>%</code> 无法利用 B+ 树字典序定位（注：<code>LIKE &#39;张%&#39;</code> 右模糊是可以走索引 <code>SSEK2</code> 的）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-5-使用了不等于（-、）、NOT-IN-或-IS-NULL"><a href="#4-5-使用了不等于（-、）、NOT-IN-或-IS-NULL" class="headerlink" title="4.5 使用了不等于（!=、&lt;&gt;）、NOT IN 或 IS NULL"></a>4.5 使用了不等于（<code>!=</code>、<code>&lt;&gt;</code>）、<code>NOT IN</code> 或 <code>IS NULL</code></h3><ul>
+<li><strong>原因</strong>：B+ 树擅长找“等于什么”或“在什么范围内”，不擅长找“不是什么”。此外，<strong>DM8 的单列 B+ 树索引默认不存储全为 <code>NULL</code> 的记录</strong>，所以 <code>WHERE COL IS NULL</code> 默认无法走单列索引！</li>
+<li><strong>运维妙招</strong>：如果业务确实需要高频查询 <code>WHERE STATUS IS NULL</code>，可以建一个包含常量或非空列的<strong>复合索引</strong>：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 加上一个常数 1，强制让 NULL 值也进入 B+ 树索引！</span><br><span class="hljs-keyword">CREATE</span> INDEX IDX_ORDERS_STATUS_NULL <span class="hljs-keyword">ON</span> APP_USER.ORDERS(STATUS, <span class="hljs-number">1</span>) ONLINE;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="4-6-走索引回表代价高于全表扫描（优化器觉得走索引更慢）"><a href="#4-6-走索引回表代价高于全表扫描（优化器觉得走索引更慢）" class="headerlink" title="4.6 走索引回表代价高于全表扫描（优化器觉得走索引更慢）"></a>4.6 走索引回表代价高于全表扫描（优化器觉得走索引更慢）</h3><ul>
+<li><strong>原因</strong>：如果查询条件 <code>WHERE STATUS = 1</code> 命中了全表 1000 万行里的 800 万行，走二级索引需要做 800 万次单块随机 I&#x2F;O 回表（<code>BLKUP2</code>），而全表扫描（<code>CSCN2</code>）走的是多块连续顺序 I&#x2F;O，优化器算出来全表扫描更快，就会主动放弃索引。</li>
+<li><strong>应急强制手段（使用 Hint）</strong>：如果你确定优化器算错了，且不方便改表结构，可以使用 Hint 强制指定走某个索引：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> <span class="hljs-comment">/*+ INDEX(ORDERS IDX_ORDERS_USER_TIME) */</span> <span class="hljs-operator">*</span> <br><span class="hljs-keyword">FROM</span> APP_USER.ORDERS <br><span class="hljs-keyword">WHERE</span> USER_ID <span class="hljs-operator">=</span> <span class="hljs-number">10086</span>;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h2 id="第五部分：高级进阶——分区表索引运维的“大坑”"><a href="#第五部分：高级进阶——分区表索引运维的“大坑”" class="headerlink" title="第五部分：高级进阶——分区表索引运维的“大坑”"></a>第五部分：高级进阶——分区表索引运维的“大坑”</h2><p>生产环境中，超过几千万行或几十 GB 的历史流水表通常会做成<strong>分区表（Partitioned Table）</strong>。分区表的索引分为两类，一旦选错，日常分区维护就会变成灾难：</p>
+<h3 id="5-1-局部索引（Local-Index）-vs-全局索引（Global-Index）"><a href="#5-1-局部索引（Local-Index）-vs-全局索引（Global-Index）" class="headerlink" title="5.1 局部索引（Local Index） vs 全局索引（Global Index）"></a>5.1 局部索引（Local Index） vs 全局索引（Global Index）</h3><ul>
+<li><p><strong>局部索引（默认，强烈推荐）</strong>：每个分区自己管自己的索引树（1 个表分区对应 1 个索引分区）。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> INDEX IDX_LOG_TIME <span class="hljs-keyword">ON</span> APP_USER.SYS_LOG(CREATE_TIME) <span class="hljs-keyword">LOCAL</span> ONLINE;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>巨大优势</strong>：当你月底清理历史数据执行 <code>ALTER TABLE SYS_LOG DROP PARTITION P_202501;</code> 时，对应的局部索引分区直接跟着秒删，<strong>其他分区的索引完全不受影响</strong>！</li>
+</ul>
+</li>
+<li><p><strong>全局索引（<code>GLOBAL</code>）</strong>：所有分区的数据共用一棵巨大的 B+ 树。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> INDEX IDX_LOG_ID <span class="hljs-keyword">ON</span> APP_USER.SYS_LOG(LOG_ID) <span class="hljs-keyword">GLOBAL</span> ONLINE;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>运维大坑</strong>：一旦对分区表执行了 <code>DROP PARTITION</code>、<code>TRUNCATE PARTITION</code> 或 <code>SPLIT PARTITION</code>，<strong>整张表上的所有 <code>GLOBAL</code> 全局索引会瞬间全部变成 <code>UNUSABLE</code>（失效状态）</strong>！紧接着业务所有查询报错或全部退化为全表扫描，瞬间引发生产故障！</li>
+<li><strong>避坑指南</strong>：<ol>
+<li>除非业务强制要求跨分区的全局唯一约束（全局唯一索引），否则尽量全部使用 <code>LOCAL</code> 局部索引。</li>
+<li>如果存在全局索引，在删除&#x2F;截断分区时必须加上 <code>UPDATE GLOBAL INDEXES</code> 子句（或者操作后立即 <code>REBUILD</code> 重建失效索引）：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">ALTER TABLE</span> APP_USER.SYS_LOG <span class="hljs-keyword">DROP</span> <span class="hljs-keyword">PARTITION</span> P_202501 <span class="hljs-keyword">UPDATE</span> <span class="hljs-keyword">GLOBAL</span> INDEXES;<br></code></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="第六部分：运维百宝箱——DM8-索引健康度一键巡检脚本"><a href="#第六部分：运维百宝箱——DM8-索引健康度一键巡检脚本" class="headerlink" title="第六部分：运维百宝箱——DM8 索引健康度一键巡检脚本"></a>第六部分：运维百宝箱——DM8 索引健康度一键巡检脚本</h2><p>将以下脚本纳入你的日常或每周巡检任务中，可以提前发现<strong>失效索引、隐藏未删索引、单表过多索引、冗余重复索引</strong>等隐患：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SET</span> LINESIZE <span class="hljs-number">200</span><br><span class="hljs-keyword">SET</span> PAGESIZE <span class="hljs-number">999</span><br><br>PROMPT <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">1.</span> 检查全库失效(UNUSABLE)的普通索引 <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><br><span class="hljs-comment">-- 发现后需立即执行：ALTER INDEX 用户名.索引名 REBUILD ONLINE;</span><br><span class="hljs-keyword">SELECT</span> OWNER, INDEX_NAME, TABLE_NAME, INDEX_TYPE, STATUS <br><span class="hljs-keyword">FROM</span> DBA_INDEXES <br><span class="hljs-keyword">WHERE</span> STATUS <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;UNUSABLE&#x27;</span> <br>  <span class="hljs-keyword">AND</span> OWNER <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;SYS&#x27;</span>, <span class="hljs-string">&#x27;SYSAUDITOR&#x27;</span>, <span class="hljs-string">&#x27;SYSSSO&#x27;</span>, <span class="hljs-string">&#x27;CTISYS&#x27;</span>);<br><br>PROMPT <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">2.</span> 检查全库失效的分区索引 <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><br><span class="hljs-comment">-- 发现后需立即执行：ALTER INDEX 用户名.索引名 REBUILD PARTITION 分区名 ONLINE;</span><br><span class="hljs-keyword">SELECT</span> INDEX_OWNER, INDEX_NAME, PARTITION_NAME, STATUS <br><span class="hljs-keyword">FROM</span> DBA_IND_PARTITIONS <br><span class="hljs-keyword">WHERE</span> STATUS <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;UNUSABLE&#x27;</span><br>  <span class="hljs-keyword">AND</span> INDEX_OWNER <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;SYS&#x27;</span>, <span class="hljs-string">&#x27;SYSAUDITOR&#x27;</span>, <span class="hljs-string">&#x27;SYSSSO&#x27;</span>, <span class="hljs-string">&#x27;CTISYS&#x27;</span>);<br><br>PROMPT <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">3.</span> 检查处于不可见(INVISIBLE)状态的索引 <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><br><span class="hljs-comment">-- 确认是否为准备下线但遗忘清理的索引</span><br><span class="hljs-keyword">SELECT</span> OWNER, INDEX_NAME, TABLE_NAME, INDEX_TYPE, VISIBILITY <br><span class="hljs-keyword">FROM</span> DBA_INDEXES <br><span class="hljs-keyword">WHERE</span> VISIBILITY <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;INVISIBLE&#x27;</span><br>  <span class="hljs-keyword">AND</span> OWNER <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;SYS&#x27;</span>, <span class="hljs-string">&#x27;SYSAUDITOR&#x27;</span>, <span class="hljs-string">&#x27;SYSSSO&#x27;</span>, <span class="hljs-string">&#x27;CTISYS&#x27;</span>);<br><br>PROMPT <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">4.</span> 检查并行度大于 <span class="hljs-number">1</span> 的危险索引 <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><br><span class="hljs-comment">-- 建索引开启 PARALLEL 后忘记改回 NOPARALLEL 的隐患排查</span><br><span class="hljs-keyword">SELECT</span> OWNER, INDEX_NAME, TABLE_NAME, DEGREE <br><span class="hljs-keyword">FROM</span> DBA_INDEXES <br><span class="hljs-keyword">WHERE</span> DEGREE <span class="hljs-operator">&gt;</span> <span class="hljs-string">&#x27;1&#x27;</span> <br>  <span class="hljs-keyword">AND</span> OWNER <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;SYS&#x27;</span>, <span class="hljs-string">&#x27;SYSAUDITOR&#x27;</span>, <span class="hljs-string">&#x27;SYSSSO&#x27;</span>, <span class="hljs-string">&#x27;CTISYS&#x27;</span>);<br><br>PROMPT <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">5.</span> 检查单表索引数量超过 <span class="hljs-number">5</span> 个的表(影响写入性能) <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><br><span class="hljs-keyword">SELECT</span> TABLE_OWNER, TABLE_NAME, <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-keyword">AS</span> &quot;索引总数量&quot;<br><span class="hljs-keyword">FROM</span> DBA_INDEXES<br><span class="hljs-keyword">WHERE</span> TABLE_OWNER <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;SYS&#x27;</span>, <span class="hljs-string">&#x27;SYSAUDITOR&#x27;</span>, <span class="hljs-string">&#x27;SYSSSO&#x27;</span>, <span class="hljs-string">&#x27;CTISYS&#x27;</span>)<br><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> TABLE_OWNER, TABLE_NAME<br><span class="hljs-keyword">HAVING</span> <span class="hljs-built_in">COUNT</span>(<span class="hljs-operator">*</span>) <span class="hljs-operator">&gt;</span> <span class="hljs-number">5</span><br><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> &quot;索引总数量&quot; <span class="hljs-keyword">DESC</span>;<br><br>PROMPT <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span> <span class="hljs-number">6.</span> 智能排查冗余<span class="hljs-operator">/</span>包含关系的重复索引 <span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><span class="hljs-operator">=</span><br><span class="hljs-comment">-- 例如：既有单列索引 (A)，又有联合索引 (A, B)，那么单列索引 (A) 通常是冗余的，浪费空间且拖慢写入</span><br><span class="hljs-keyword">WITH</span> IND_COLS <span class="hljs-keyword">AS</span> (<br>    <span class="hljs-keyword">SELECT</span> <br>        INDEX_OWNER, <br>        TABLE_NAME, <br>        INDEX_NAME,<br>        <span class="hljs-built_in">LISTAGG</span>(COLUMN_NAME, <span class="hljs-string">&#x27;,&#x27;</span>) <span class="hljs-keyword">WITHIN</span> <span class="hljs-keyword">GROUP</span> (<span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> COLUMN_POSITION) <span class="hljs-keyword">AS</span> COL_LIST<br>    <span class="hljs-keyword">FROM</span> DBA_IND_COLUMNS<br>    <span class="hljs-keyword">WHERE</span> INDEX_OWNER <span class="hljs-keyword">NOT</span> <span class="hljs-keyword">IN</span> (<span class="hljs-string">&#x27;SYS&#x27;</span>, <span class="hljs-string">&#x27;SYSAUDITOR&#x27;</span>, <span class="hljs-string">&#x27;SYSSSO&#x27;</span>, <span class="hljs-string">&#x27;CTISYS&#x27;</span>)<br>    <span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> INDEX_OWNER, TABLE_NAME, INDEX_NAME<br>)<br><span class="hljs-keyword">SELECT</span> <br>    a.INDEX_OWNER <span class="hljs-keyword">AS</span> &quot;所属用户&quot;,<br>    a.TABLE_NAME <span class="hljs-keyword">AS</span> &quot;表名&quot;,<br>    a.INDEX_NAME <span class="hljs-keyword">AS</span> &quot;疑似冗余短索引&quot;,<br>    a.COL_LIST <span class="hljs-keyword">AS</span> &quot;短索引列&quot;,<br>    b.INDEX_NAME <span class="hljs-keyword">AS</span> &quot;已存在的长索引&quot;,<br>    b.COL_LIST <span class="hljs-keyword">AS</span> &quot;长索引列&quot;<br><span class="hljs-keyword">FROM</span> IND_COLS a<br><span class="hljs-keyword">JOIN</span> IND_COLS b <br>  <span class="hljs-keyword">ON</span> a.INDEX_OWNER <span class="hljs-operator">=</span> b.INDEX_OWNER <br> <span class="hljs-keyword">AND</span> a.TABLE_NAME <span class="hljs-operator">=</span> b.TABLE_NAME <br> <span class="hljs-keyword">AND</span> a.INDEX_NAME <span class="hljs-operator">&lt;&gt;</span> b.INDEX_NAME<br><span class="hljs-keyword">WHERE</span> b.COL_LIST <span class="hljs-keyword">LIKE</span> a.COL_LIST <span class="hljs-operator">||</span> <span class="hljs-string">&#x27;,%&#x27;</span>;<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/DM/" class="category-chain-item">DM</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DM/" class="print-no-link">#DM</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/10/31/MySQL_MGR_%E6%90%AD%E5%BB%BA%E6%89%8B%E5%86%8C_5.7_8.0/" title="MySQL Group Replication (MGR) 完整搭建手册（5.7与8.0版本）">
+                        <span class="hidden-mobile">MySQL Group Replication (MGR) 完整搭建手册（5.7与8.0版本）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://www.biibll.com" target="_blank" rel="nofollow noopener"><span>Return 200 OK</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
